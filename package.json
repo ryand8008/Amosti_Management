@@ -1,0 +1,19 @@
+{
+  "name": "amosti_management",
+  "version": "1.0.0",
+  "description": "rent management ",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ryand8008/Amosti_Management.git"
+  },
+  "author": "Ryan De Leon",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ryand8008/Amosti_Management/issues"
+  },
+  "homepage": "https://github.com/ryand8008/Amosti_Management#readme"
+}
