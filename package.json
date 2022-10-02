@@ -2,9 +2,11 @@
   "name": "amosti_management",
   "version": "1.0.0",
   "description": "rent management ",
-  "main": "index.js",
+  "main": "index.ts",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "webpack -w",
+    "start": "npx serve",
+    "server": "node src/server.ts webpack"
   },
   "repository": {
     "type": "git",
@@ -15,5 +17,31 @@
   "bugs": {
     "url": "https://github.com/ryand8008/Amosti_Management/issues"
   },
-  "homepage": "https://github.com/ryand8008/Amosti_Management#readme"
+  "homepage": "https://github.com/ryand8008/Amosti_Management#readme",
+  "dependencies": {
+    "@types/cors": "^2.8.12",
+    "@types/node": "^18.8.0",
+    "@types/react": "^18.0.21",
+    "@types/react-dom": "^18.0.6",
+    "axios": "^0.27.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.1",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^4.8.4"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.14",
+    "@types/pg": "^8.6.5",
+    "@types/styled-components": "^5.1.26",
+    "eslint": "^8.24.0",
+    "html-webpack-plugin": "^5.5.0",
+    "source-map-loader": "^4.0.0",
+    "ts-loader": "^9.4.1",
+    "ts-node-dev": "^2.0.0",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0"
+  }
 }

@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    // Allow importing like `import React from 'react'`
+    "allowSyntheticDefaultImports": true,
+
+    // Use ES2015 module system
+    "module": "commonjs",
+
+    // Set React as the JSX factory
+    "jsx": "react",
+
+    // Target ES6 for more modern browsers
+    "target": "es6",
+
+    // Include typings from built-in lib declarations
+    "lib": ["es2015", "dom", "dom.iterable"],
+
+    // Include module source maps for debugging
+    "sourceMap": true,
+
+    "baseUrl": "src",
+    "outDir": "./dist/",
+    "esModuleInterop": true,
+  },
+ }
