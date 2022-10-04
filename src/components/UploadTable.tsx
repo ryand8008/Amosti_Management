@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 interface Sheet {
+  filter(arg0: (item: any) => void): unknown;
   corredora: string
   tenant_name: string
   building: string
   month: string
- 'amount (if false left over balance)': number
- 'date_paid (mm/dd/yyyy)': Date
+ 'amount': number
+ 'date_paid': Date
  apartment: string
- 'paid (boolean)': boolean
+ 'paid': boolean
 }
 
 interface Test {
@@ -19,11 +20,8 @@ interface Test {
 
 export const UploadTable = ({exceldata} ) => {
   const [headers, setHeaders] = useState<string[]>([''])
-  const [filterBy, setFilterBy] = useState<string>('')
-  console.log(exceldata, 'uploadtable exceldata TESTING')
 
   useEffect(() => {
-    console.log(exceldata, 'this is exceldata' )
     if (exceldata) {
       setHeaders(Object.keys(exceldata[0]))
 
@@ -45,9 +43,16 @@ export const UploadTable = ({exceldata} ) => {
             <StyledHeader key={index1}>{item}</StyledHeader>
             ): null}
         </tr>
-        <tr>
+            {exceldata ? exceldata.map((item) =>
+              <tr>
+              {headers.map((header) =>
+                <td>{item[header]}</td>
+              )}
+              </tr>
 
-        </tr>
+            ) :
+            null}
+
 
         </tbody>
         </StyledTable>

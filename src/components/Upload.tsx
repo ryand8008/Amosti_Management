@@ -6,26 +6,45 @@ import { UploadTable } from "./UploadTable";
 var xlsx = require("xlsx");
 
 interface Sheet {
+  filter(arg0: (item: any) => void): unknown;
   corredora: string
   tenant_name: string
   building: string
   month: string
- 'amount (if false left over balance)': number
- 'date_paid (mm/dd/yyyy)': Date
+ 'amount': number
+ 'date_paid': Date
  apartment: string
- 'paid (boolean)': boolean
+ 'paid': boolean
 }
 
 export const Upload = () => {
   const [excel, setExcel] = useState<Sheet>()
+  const [filterBy, setFilterBy] = useState<string>('')
+  // const [filterValue, setFilterValue] = useState<string>('')
 
+  //testing filtered excel
+  const [filteredExcel, setFilteredExcel] = useState()
 
   useEffect(() => {
     if (excel) {
       console.log(excel, 'this is excel')
-
     }
-  }, [excel])
+
+    if (filterBy !== '' && excel) {
+
+      // then use keys to filter and see if 'filterBy' is in the object
+      const filterList: any = excel.filter((item) => {
+        return item.building === filterBy
+      })
+      setFilteredExcel(filterList)
+
+    } else {
+      setFilteredExcel(null)
+    }
+
+    console.log(filterBy, 'this is filter')
+
+  }, [excel, filterBy])
 
   const readUploadFile = (e) => {
     e.preventDefault();
@@ -57,7 +76,15 @@ export const Upload = () => {
           id='upload'
           onChange={readUploadFile}
           />
-          <UploadTable exceldata={excel} />
+        {excel ?
+          <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
+            <option value=''>{filterBy !== '' ? 'default' : 'select a filter'}</option>
+            <option value='Building One'>Building One</option>
+            <option value='Building Two'>Building Two</option>
+          </select>
+          : null
+        }
+          {filteredExcel ? <UploadTable exceldata={filteredExcel} /> : <UploadTable exceldata={excel} />}
       </Window>
     </>
   )
