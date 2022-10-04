@@ -25,7 +25,7 @@ export const UploadTable = ({exceldata} ) => {
     if (exceldata) {
       setHeaders(Object.keys(exceldata[0]))
 
-      console.log(headers)
+      // console.log(headers)
     }
 
   }, [exceldata, headers.length])
