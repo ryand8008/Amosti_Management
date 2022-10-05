@@ -1,4 +1,3 @@
-import e from "cors";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { isExportDeclaration } from "typescript";
@@ -45,7 +44,6 @@ export const Upload = () => {
   const [files, setFiles] = useState<string[]>([])
 
   useEffect(() => {
-    console.log(excel)
 
     if (filterBy !== '' && excel) {
       // then use keys to filter and see if 'filterBy' is in the object
@@ -80,6 +78,9 @@ export const Upload = () => {
   }
 
   // create array of filtered arrays for individual tables
+  // TODO: check for duplicate file uploads so they do not add
+  //  -check file name
+  //  -check content
   const createFilteredBuildings = () => {
     let arrayBuilding = [];
     buildings.map((word) => {
@@ -88,34 +89,44 @@ export const Upload = () => {
     setBuildingArray(arrayBuilding)
   }
 
-// TODO: check for duplicate file uploads so they do not add
-//  -check file name
-//  -check content
 
+// TODO: handle multiple file upload
   const readUploadFile = (e) => {
     e.preventDefault();
+
+    let arrayyyy = [];
     if (e.target.files) {
-      const fileName = e.target.files[0]['name']
+
+      const filesToRead = Object.values(e.target.files)
+      filesToRead.map((file: any, index) =>
+      {
+
+        const fileName = file['name']
       if (!files.includes(fileName)) {
         setFiles(files => [...files, fileName])
       }
 
       const reader = new FileReader();
       reader.onload = (e) => {
-        const data = e.target.result;
+        const data = e.target.result
         const workbook = xlsx.read(data, { type: "array" });
         const sheetName = workbook.SheetNames[0];
         const worksheet = workbook.Sheets[sheetName];
         const json = xlsx.utils.sheet_to_json(worksheet);
-        // console.log(json); // original line
+        // console.log(json, 'this is json ', file.name); // original line
+
+        arrayyyy.push(...json)
         if (!excel) {
-          setExcel(json)
+          setExcel(arrayyyy)
+          console.log(arrayyyy, 'this arrayyyyy')
         } else {
-          setExcel(([]) => [...excel, ...json])
+          setExcel((excel) => [...excel, ...arrayyyy])
         }
       };
-      reader.readAsArrayBuffer(e.target.files[0]);
-    }
+      reader.readAsArrayBuffer(file);
+
+    })
+  }
   }
 
   // testing drag drop
@@ -160,7 +171,7 @@ export const Upload = () => {
           : null
           : null
         }
-          {!generateReport ? filteredExcel ? <UploadTable exceldata={filteredExcel} /> : <UploadTable exceldata={excel} /> : null}
+          {!generateReport && excel ? filteredExcel ? <UploadTable exceldata={filteredExcel} /> : <UploadTable exceldata={excel} /> : null}
 
           {generateReport && buildingArray.length > 0 ? buildingArray.map((item) => <UploadTable exceldata={item} />) : null}
       </Window>
