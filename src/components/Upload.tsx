@@ -12,10 +12,10 @@ interface Sheet {
   tenant_name: string
   building: string
   month: string
- 'amount': number
- 'date_paid': Date
- apartment: string
- 'paid': boolean
+  amount: number
+  date_paid: Date
+  apartment: string
+  paid: boolean
 }
 
 // TODO: create a way to show the uploaded files
@@ -36,7 +36,7 @@ export const Upload = () => {
 
   // generate report (boolean) => create separated tables
   const [generateReport, setGenerateReport] = useState<boolean>(false)
-  const [buildingArray, setBuildingArray] = useState<Sheet[]>()
+  const [buildingArray, setBuildingArray] = useState<Sheet[][]>([])
 
   // drag hook
   const [dragActive, setDragActive] = useState<boolean>(false);
@@ -45,6 +45,7 @@ export const Upload = () => {
   const [files, setFiles] = useState<string[]>([])
 
   useEffect(() => {
+    console.log(excel)
 
     if (filterBy !== '' && excel) {
       // then use keys to filter and see if 'filterBy' is in the object
@@ -58,14 +59,9 @@ export const Upload = () => {
 
     if (excel) {
       building()
-      // console.log(buildings)
-      // testfilter()
-      // console.log(buildingArray, 'building array')
     }
 
-    console.log(files, 'this is files')
-
-  }, [excel, filterBy, buildings.length])
+  }, [excel, filterBy, buildings.length, buildingArray.length])
 
 
   const building = async () => {
@@ -74,6 +70,22 @@ export const Upload = () => {
         setBuildings(([])=>[...buildings, item.building])
       }
     })
+  }
+
+  // filter buildings
+  const filterBuildings = (filterWord) => {
+    return excel.filter((item) => {
+      return item.building === filterWord
+    })
+  }
+
+  // create array of filtered arrays for individual tables
+  const createFilteredBuildings = () => {
+    let arrayBuilding = [];
+    buildings.map((word) => {
+      arrayBuilding.push(filterBuildings(word))
+    })
+    setBuildingArray(arrayBuilding)
   }
 
 // TODO: check for duplicate file uploads so they do not add
@@ -106,21 +118,6 @@ export const Upload = () => {
     }
   }
 
-  const showFiles = () => {
-    console.log( 'this is file list')
-  }
-
-  const testfilter = () => {
-    buildings.map((entry) => {
-      let testing = excel.map((item) => {
-        if (item.building === entry) {
-          setBuildingArray(([])=>[...buildingArray, item])
-        }
-      })
-      console.log(testing, 'this is testing')
-    })
-  }
-
   // testing drag drop
   // XLSX is a global from the standalone script
   const handleDrag = (e) => {
@@ -140,9 +137,7 @@ export const Upload = () => {
       <Window>
 
         <StyledTitle>hello from upload!</StyledTitle>
-        {/* <label>upload file!</label> */}
-        {/* <button onClick={(e) => setGenerateReport(!generateReport)}>generate report</button> */}
-        {/* <button onClick={}>generate report</button> */}
+        <button onClick={() => {createFilteredBuildings(), setGenerateReport(!generateReport)}}>{generateReport ? 'return' : 'generate report'}</button>
       <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input
           type='file'
@@ -154,7 +149,7 @@ export const Upload = () => {
           <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
           <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
       </form>
-        {excel ?
+        {!generateReport ? excel ?
           <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
             <option value=''>{filterBy !== '' ? 'unfiltered' : 'select a filter'}</option>
             {buildings.length > 0 ? buildings.map((item)=>
@@ -163,9 +158,11 @@ export const Upload = () => {
             : null }
           </select>
           : null
+          : null
         }
-          {filteredExcel ? <UploadTable exceldata={filteredExcel} /> : <UploadTable exceldata={excel} />}
-          {/* {generateReport ? excel.map((item, index) => )        : null} */}
+          {!generateReport ? filteredExcel ? <UploadTable exceldata={filteredExcel} /> : <UploadTable exceldata={excel} /> : null}
+
+          {generateReport && buildingArray.length > 0 ? buildingArray.map((item) => <UploadTable exceldata={item} />) : null}
       </Window>
     </>
   )
