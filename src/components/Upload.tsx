@@ -76,18 +76,18 @@ export const Upload = () => {
     })
   }
 
+// TODO: check for duplicate file uploads so they do not add
+//  -check file name
+//  -check content
 
   const readUploadFile = (e) => {
     e.preventDefault();
     if (e.target.files) {
-      console.log(e.target.files.length)
-      const testArray = Array.from(e.target.files)
-      console.log(testArray, 'test array')
-      let array = [];
-      testArray.map((item: any, index) => {
-        array.push(item.name)
-      })
-      setFiles(array)
+      const fileName = e.target.files[0]['name']
+      if (!files.includes(fileName)) {
+        setFiles(files => [...files, fileName])
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
         const data = e.target.result;
@@ -183,7 +183,11 @@ const Window = styled.div`
 `
 
 const DragBox = styled.div`
+  display: flex;
+  margin: auto;
   border: 1px solid black;
-  height: 300px;
-  width: 150px;
+  height: 100px;
+  width: 300px;
+  justify-content: center;
+  align-items: center;
 `
