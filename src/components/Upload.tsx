@@ -1,3 +1,4 @@
+import e from "cors";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { isExportDeclaration } from "typescript";
@@ -17,12 +18,31 @@ interface Sheet {
   paid: boolean
 }
 
+interface newSheet {
+  Depto: string
+  Nombre: string
+  Renta: number
+  Deposito: string
+  Corretaje: string
+  Admon: number
+  Gastos: string
+  Cost: number
+  Banknotes: number
+  Count: number
+  Totals: string
+  Amount: number
+}
+
 // TODO: create a way to show the uploaded files
 // TODO: delete a file and information
 // TODO: batch add files
 
 export const Upload = () => {
   const [excel, setExcel] = useState<Sheet[]>()
+
+  // new sheet
+  const [newExcel, setNewExcel] = useState<newSheet[]>()
+
   const [filterBy, setFilterBy] = useState<string>('')
   // const [filterValue, setFilterValue] = useState<string>('')
 
@@ -44,6 +64,8 @@ export const Upload = () => {
   const [files, setFiles] = useState<string[]>([])
 
   useEffect(() => {
+
+    console.log(newExcel, 'new excel data')
 
     if (filterBy !== '' && excel) {
       // then use keys to filter and see if 'filterBy' is in the object
@@ -98,35 +120,49 @@ export const Upload = () => {
     if (e.target.files) {
 
       const filesToRead = Object.values(e.target.files)
-      filesToRead.map((file: any, index) =>
-      {
+      // console.log(e.target.files, 'target files', filesToRead)
+      filesToRead.map((file: any, index) => {
 
         const fileName = file['name']
-      if (!files.includes(fileName)) {
-        setFiles(files => [...files, fileName])
-      }
-
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = e.target.result
-        const workbook = xlsx.read(data, { type: "array" });
-        const sheetName = workbook.SheetNames[0];
-        const worksheet = workbook.Sheets[sheetName];
-        const json = xlsx.utils.sheet_to_json(worksheet);
-        // console.log(json, 'this is json ', file.name); // original line
-
-        arrayyyy.push(...json)
-        if (!excel) {
-          setExcel(arrayyyy)
-          console.log(arrayyyy, 'this arrayyyyy')
-        } else {
-          setExcel((excel) => [...excel, ...arrayyyy])
+        if (!files.includes(fileName)) {
+          setFiles(files => [...files, fileName])
         }
-      };
-      reader.readAsArrayBuffer(file);
 
-    })
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const data = e.target.result
+          const workbook = xlsx.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const worksheet = workbook.Sheets[sheetName];
+          const json = xlsx.utils.sheet_to_json((worksheet), {defval:""});
+          // console.log(json, 'this is json ', file.name); // original line
+
+          arrayyyy.push(...json)
+          if (!excel) {
+            setExcel(arrayyyy)
+            setNewExcel(arrayyyy)
+          } else {
+            setExcel((excel) => [...excel, ...arrayyyy])
+            setNewExcel((newExcel) => [...newExcel, ...arrayyyy])
+          }
+        };
+        reader.readAsArrayBuffer(file);
+      })
+    }
   }
+
+
+  // handle clear fileList
+  const handleClear = (e) => {
+    const element: any = document.getElementById("uploads")
+    console.log(element.files, 'files')
+    if (element.files.length > 0) {
+      element.value = ''
+      setExcel(null)
+      setFiles([])
+    }
+    console.log(element.files, 'files after')
+
   }
 
   // testing drag drop
@@ -148,6 +184,7 @@ export const Upload = () => {
       <Window>
 
         <StyledTitle>hello from upload!</StyledTitle>
+        <button onClick={(e) => handleClear(e)}>clear files</button>
         <button onClick={() => {createFilteredBuildings(), setGenerateReport(!generateReport)}}>{generateReport ? 'return' : 'generate report'}</button>
       <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input
@@ -171,7 +208,7 @@ export const Upload = () => {
           : null
           : null
         }
-          {!generateReport && excel ? filteredExcel ? <UploadTable exceldata={filteredExcel} /> : <UploadTable exceldata={excel} /> : null}
+          {!generateReport && excel ? filteredExcel ? <UploadTable exceldata={filteredExcel} /> : <UploadTable exceldata={newExcel} /> : null}
 
           {generateReport && buildingArray.length > 0 ? buildingArray.map((item) => <UploadTable exceldata={item} />) : null}
       </Window>
