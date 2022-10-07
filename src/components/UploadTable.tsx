@@ -38,30 +38,53 @@ type Test = {
   testing: any
 }
 
-
+// testing param is the split excel => {filename: {unitInfo: [], costs: []}}
 export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   const [headers, setHeaders] = useState<string[]>([''])
   const [information, setInformation] = useState<any>([])
+
+  // unfiltered hook
+  const [unfiltered, setUnfiltered] = useState()
+
+  // console.log(Object.values(testing), 'this is values of testing') // Should be array - [filename: {unitInfo: [], costs: []}]
+
+  // const all = []
+  // Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2)))
+  // console.log(all, 'this is all')
+
+  // if (fileName === '') {
+  //   alert('confirmed')
+  // }
+
   useEffect(() => {
-    console.log(fileName, 'filename in table')
-    if (testing) {
+
+
+    if (fileName === '') {
+      const all = []
+      Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2)))
+      setInformation(([]) => [...all])
+    }
+
+    if (testing && fileName !== '') {
       if (!showCosts){
         setInformation(([]) => [...testing[fileName]['unitInfo']])
       } else {
         setInformation(([]) => [...testing[fileName]['costs']])
       }
-
-
-      if (information.length > 0) {
-        setHeaders(Object.keys(information[0]))
-      }
     }
 
+
+
+
+    if (information.length > 0) {
+      setHeaders(Object.keys(information[0]))
+    }
   }, [exceldata, headers.length, testing, fileName, information.length, showCosts])
 
 
   return (
     <>
+      {/* {fileName !== '' ? */}
       <StyledContainer>
         <StyledTitle>Hello from upload table!</StyledTitle>
         <StyledTable>
@@ -86,6 +109,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
         </tbody>
         </StyledTable>
       </StyledContainer>
+      {/* : null} */}
     </>
 
   )
