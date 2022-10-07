@@ -45,7 +45,7 @@ export const Upload = () => {
   const [excel, setExcel] = useState<newSheet[]>()
 
   // testing SPLIT EXCEL
-  const [splitExcel, setSplitExcel] = useState<any>()
+  const [splitExcel, setSplitExcel] = useState<any>({})
 
   // new sheet
   const [newExcel, setNewExcel] = useState<any>()
@@ -58,13 +58,8 @@ export const Upload = () => {
   //testing filtered excel
   const [filteredExcel, setFilteredExcel] = useState()
 
-  // filter by building => create array of array [ [building1], [building2]...]
-  const [filterBuilding, setFilterBuilding] = useState<Sheet[]>();
-  const [buildings, setBuildings] = useState<string[]>([])
-
   // generate report (boolean) => create separated tables
   const [generateReport, setGenerateReport] = useState<boolean>(false)
-  const [buildingArray, setBuildingArray] = useState<Sheet[][]>([])
 
   // drag hook
   const [dragActive, setDragActive] = useState<boolean>(false);
@@ -74,30 +69,25 @@ export const Upload = () => {
 
 
   //testing filelist things
-  const listFiles:any = document.getElementById("uploads")
+  // const listFiles:any = document.getElementById("uploads")
+  const [allFiles, setAllFiles] = useState<any>({})
+  // let cup = FileList.item(0)
+
+  const [testFn, setTestFn] = useState(false)
+
 
   useEffect(() => {
-    console.log(allFiles)
-    if (filterBy !== '' && listFiles.files.length > 0) {
+
+  }, [Object.entries(splitExcel).length, filterBy, allFiles])
 
 
-      // then use keys to filter and see if 'filterBy' is in the object
-      const testingFileList: any = Object.values(listFiles.files)
 
-        console.log(testingFileList, 'testing file list')
-      const filterList: any = testingFileList.filter((file) => {
-        return file.name === filterBy
-      })
-      // setFilteredExcel(filterList)
-    }
-
-  }, [excel, filterBy, buildings.length, buildingArray.length, listFiles])
-
-
-const [allFiles, setAllFiles] = useState([])
 // TODO: handle multiple file upload
+// TODO: need to figure out how to access fileList and update synchonously ***
   const readUploadFile = (e) => {
     e.preventDefault();
+
+
 
     let arrayyyy = [];
 
@@ -105,21 +95,17 @@ const [allFiles, setAllFiles] = useState([])
     let holding: any = {}
 
     if (e.target.files) {
-
-
       const filesToRead = Object.values(e.target.files)
 
-
-      console.log(filesToRead, 'filestoread')
+      const hello = allFiles.length > 1 ? allFiles : filesToRead
 
       filesToRead.map((file: any, index) => {
-        setAllFiles(([]) => [...allFiles, file])
         const fileName = file['name']
-        // testing object
         holding[fileName] = {'unitInfo': [], 'costs': []}
         // console.log(holding, 'test object') // should be {MultipleTEST.xslx : {unitinfo: [], costs: []}}
         if (!files.includes(fileName)) {
           setFiles(files => [...files, fileName])
+          console.log(files, ' this is files')
         }
 
         const reader = new FileReader();
@@ -148,25 +134,8 @@ const [allFiles, setAllFiles] = useState([])
               holding[fileName].costs.push(...json)
             }
           }
-          console.log(holding, 'this is holding')
-          setSplitExcel(holding)
-          // testing range
-          var range = xlsx.utils.decode_range(worksheet['!ref']);
-          range.s.c = 0;
-          range.e.c = 5;
-          var newRange = xlsx.utils.encode_range(range);
-          // worksheet['!ref'] = 'A1:F1'
-          const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange});
-          // console.log(json, 'this is json ', file.name); // original line
 
-          arrayyyy.push(...json)
-          if (!excel) {
-            setExcel(arrayyyy)
-            setNewExcel(arrayyyy)
-          } else {
-            setExcel((excel) => [...excel, ...arrayyyy])
-            setNewExcel((newExcel) => [...newExcel, ...arrayyyy])
-          }
+            setSplitExcel({...splitExcel, ...holding})
         };
         reader.readAsArrayBuffer(file);
       })
@@ -182,6 +151,7 @@ const [allFiles, setAllFiles] = useState([])
       setExcel(null)
       setFiles([])
       setFilteredExcel(null)
+      setSplitExcel({})
     }
 
   }
@@ -205,9 +175,9 @@ const [allFiles, setAllFiles] = useState([])
       <Window>
 
         <StyledTitle>hello from upload!</StyledTitle>
-        {/* <button onClick={(e) => handleClear(e)}>clear files</button> */}
+        <button onClick={() => setTestFn(!testFn)}>show</button>
 
-        {excel ?
+        {Object.entries(splitExcel).length > 0 ?
         <>
           <button onClick={() => { setGenerateReport(!generateReport); } }>
             {generateReport ? 'return' : 'generate report'}
@@ -228,7 +198,7 @@ const [allFiles, setAllFiles] = useState([])
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
       </form>
-        {!generateReport ? excel ?
+        {!generateReport ? splitExcel ?
           <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
             <option value=''>{filterBy !== '' ? 'unfiltered' : 'select a filter'}</option>
             {files.length > 0 ? files.map((file) =>
@@ -246,7 +216,7 @@ const [allFiles, setAllFiles] = useState([])
            : null}
 
           {/* {generateReport && buildingArray.length > 0 ? buildingArray.map((item) => <UploadTable exceldata={item} testing={null} fileName={null} showCosts={showCosts}/> ) : null} */}
-          {excel ? <button onClick={() => setShowCosts(() => !showCosts)}>show costs</button> : null}
+          {splitExcel ? <button onClick={() => setShowCosts(() => !showCosts)}>show costs</button> : null}
           <div>Testing: {showCosts}</div>
       </Window>
     </>

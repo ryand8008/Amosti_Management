@@ -48,16 +48,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
 
   // console.log(Object.values(testing), 'this is values of testing') // Should be array - [filename: {unitInfo: [], costs: []}]
 
-  // const all = []
-  // Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2)))
-  // console.log(all, 'this is all')
-
-  // if (fileName === '') {
-  //   alert('confirmed')
-  // }
-
   useEffect(() => {
-
 
     if (fileName === '') {
       const all = []
@@ -79,7 +70,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
     if (information.length > 0) {
       setHeaders(Object.keys(information[0]))
     }
-  }, [exceldata, headers.length, testing, fileName, information.length, showCosts])
+  }, [headers.length, testing, fileName, information.length, showCosts])
 
 
   return (
