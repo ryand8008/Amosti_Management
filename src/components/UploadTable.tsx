@@ -28,23 +28,36 @@ interface newSheet {
   Amount: number
 }
 
-interface Test {
+// type Costs = {
+
+// }
+
+type Test = {
+  [x: string]: any;
   excelData: Sheet
+  testing: any
 }
 
 
-export const UploadTable = ({exceldata} ) => {
+export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   const [headers, setHeaders] = useState<string[]>([''])
-
+  const [information, setInformation] = useState<any>([])
   useEffect(() => {
-    if (exceldata) {
-      setHeaders(Object.keys(exceldata[0]))
-      console.log(exceldata[0], 'this is excel data')
-      console.log(exceldata[1], 'this is excel[1]')
-      console.log(headers, 'headers')
+    console.log(fileName, 'filename in table')
+    if (testing) {
+      if (!showCosts){
+        setInformation(([]) => [...testing[fileName]['unitInfo']])
+      } else {
+        setInformation(([]) => [...testing[fileName]['costs']])
+      }
+
+
+      if (information.length > 0) {
+        setHeaders(Object.keys(information[0]))
+      }
     }
 
-  }, [exceldata, headers.length])
+  }, [exceldata, headers.length, testing, fileName, information.length, showCosts])
 
 
   return (
@@ -59,7 +72,7 @@ export const UploadTable = ({exceldata} ) => {
             <StyledHeader key={index1}>{item}</StyledHeader>
             ): null}
         </tr>
-            {exceldata ? exceldata.map((item) =>
+            {information.length > 0 ? information.map((item) =>
               <tr>
               {headers.map((header) =>
                 <td>{item[header]}</td>
