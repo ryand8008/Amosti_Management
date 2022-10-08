@@ -2,7 +2,7 @@ import e from "cors";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { isExportDeclaration } from "typescript";
-import { Filtered } from "./Filtered";
+import { Filtered } from "./filtered/Filtered";
 import { UploadTable } from "./UploadTable";
 
 var xlsx = require("xlsx");
@@ -68,11 +68,11 @@ export const Upload = () => {
   // display file names
   const [files, setFiles] = useState<string[]>([])
 
-  useEffect(() => {
+  // useEffect(() => {
 
-  }, [Object.entries(splitExcel).length, filterBy])
+  // }, [Object.entries(splitExcel).length, filterBy])
 
-
+console.log(splitExcel, 'split')
 
 // TODO: handle multiple file upload
 // TODO: need to figure out how to access fileList and update synchonously ***
@@ -88,7 +88,8 @@ export const Upload = () => {
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
-
+      console.log(e.target.files, 'files')
+      console.log(filesToRead)
 
       filesToRead.map((file: any, index) => {
         const fileName = file['name']
@@ -116,7 +117,6 @@ export const Upload = () => {
               var newRange = xlsx.utils.encode_range(range);
               // const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: false});
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
-
               holding[fileName].unitInfo.push(...json)
             } else if (i === 1) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
@@ -209,7 +209,7 @@ export const Upload = () => {
            : null}
 
           {/* {generateReport && buildingArray.length > 0 ? buildingArray.map((item) => <UploadTable exceldata={item} testing={null} fileName={null} showCosts={showCosts}/> ) : null} */}
-          {splitExcel && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
+          {Object.values(splitExcel).length > 0 && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
           <Filtered  data={splitExcel}/>
       </Window>
     </>
