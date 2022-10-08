@@ -2,6 +2,7 @@ import e from "cors";
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { isExportDeclaration } from "typescript";
+import { Filtered } from "./Filtered";
 import { UploadTable } from "./UploadTable";
 
 var xlsx = require("xlsx");
@@ -67,18 +68,9 @@ export const Upload = () => {
   // display file names
   const [files, setFiles] = useState<string[]>([])
 
-
-  //testing filelist things
-  // const listFiles:any = document.getElementById("uploads")
-  const [allFiles, setAllFiles] = useState<any>({})
-  // let cup = FileList.item(0)
-
-  const [testFn, setTestFn] = useState(false)
-
-
   useEffect(() => {
 
-  }, [Object.entries(splitExcel).length, filterBy, allFiles])
+  }, [Object.entries(splitExcel).length, filterBy])
 
 
 
@@ -97,7 +89,6 @@ export const Upload = () => {
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
 
-      const hello = allFiles.length > 1 ? allFiles : filesToRead
 
       filesToRead.map((file: any, index) => {
         const fileName = file['name']
@@ -123,7 +114,9 @@ export const Upload = () => {
               range.e.c = 5;
 
               var newRange = xlsx.utils.encode_range(range);
-              const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange});
+              // const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: false});
+              const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
+
               holding[fileName].unitInfo.push(...json)
             } else if (i === 1) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
@@ -152,6 +145,7 @@ export const Upload = () => {
       setFiles([])
       setFilteredExcel(null)
       setSplitExcel({})
+      setShowCosts(false)
     }
 
   }
@@ -175,7 +169,6 @@ export const Upload = () => {
       <Window>
 
         <StyledTitle>hello from upload!</StyledTitle>
-        <button onClick={() => setTestFn(!testFn)}>show</button>
 
         {Object.entries(splitExcel).length > 0 ?
         <>
@@ -198,9 +191,9 @@ export const Upload = () => {
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
       </form>
-        {!generateReport ? splitExcel ?
+        {!generateReport ? files.length > 1 ?
           <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
-            <option value=''>{filterBy !== '' ? 'unfiltered' : 'select a filter'}</option>
+            <option value=''>{filterBy !== '' ? 'show all files' : 'select a file'}</option>
             {files.length > 0 ? files.map((file) =>
               <option value={file}>{file}</option>
             )
@@ -211,13 +204,13 @@ export const Upload = () => {
           : null
         }
           {/* {!generateReport && splitExcel && filterBy !== '' ? */}
-          {!generateReport && splitExcel ?
+          {!generateReport &&  Object.values(splitExcel).length > 0?
            filteredExcel ? <UploadTable exceldata={filteredExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts}/> : <UploadTable exceldata={newExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts} />
            : null}
 
           {/* {generateReport && buildingArray.length > 0 ? buildingArray.map((item) => <UploadTable exceldata={item} testing={null} fileName={null} showCosts={showCosts}/> ) : null} */}
-          {splitExcel ? <button onClick={() => setShowCosts(() => !showCosts)}>show costs</button> : null}
-          <div>Testing: {showCosts}</div>
+          {splitExcel && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
+          <Filtered  data={splitExcel}/>
       </Window>
     </>
   )

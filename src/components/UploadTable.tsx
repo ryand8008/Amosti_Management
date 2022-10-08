@@ -54,6 +54,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
       const all = []
       Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2)))
       setInformation(([]) => [...all])
+
     }
 
     if (testing && fileName !== '') {
@@ -63,9 +64,6 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
         setInformation(([]) => [...testing[fileName]['costs']])
       }
     }
-
-
-
 
     if (information.length > 0) {
       setHeaders(Object.keys(information[0]))
