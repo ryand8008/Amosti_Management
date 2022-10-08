@@ -9,11 +9,8 @@ import styled from "styled-components";
 export const FilteredTable = ({info}) => {
 
   // console.log(info[1], 'building')
-  // console.log(info[1].map((item) => Object.values(item)))
   const headers = info[1].map((item) => Object.keys(item))
-  // console.log(headers, 'this is headers')
   const values = info[1].map((item) => Object.values(item))
-console.log(values.map((item) => item.map((item2) => console.log(item2, '2'))))
 
   return (
     <>

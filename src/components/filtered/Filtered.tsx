@@ -45,12 +45,13 @@ export const Filtered = ({data}) => {
       }
     })
 
+    console.log(holdThis)
 
     // Then use special char to split array into [{'buildingName': [rows of data]}, ...]
     let container = [];
     let start = 0
     let end = holdThis.indexOf('*', start + 1);
-    while (end !== -1) {
+    while (start < holdThis.length) {
       let toAdd = holdThis.slice(start, end)
       let objAdd = {}
       if (toAdd.length !== 0) {
@@ -63,8 +64,9 @@ export const Filtered = ({data}) => {
           container.push(objAdd)
       }
       start = end + 1
-      end = holdThis.indexOf('*', start);
+      end = holdThis.indexOf('*', start) !== -1 ? holdThis.indexOf('*', start) : holdThis.length - 1;
 }
+console.log(container, 'this is container')
     setCup(container)
   }
 
