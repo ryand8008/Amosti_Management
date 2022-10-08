@@ -72,8 +72,6 @@ export const Upload = () => {
 
   // }, [Object.entries(splitExcel).length, filterBy])
 
-console.log(splitExcel, 'split')
-
 // TODO: handle multiple file upload
 // TODO: need to figure out how to access fileList and update synchonously ***
   const readUploadFile = (e) => {
@@ -88,8 +86,6 @@ console.log(splitExcel, 'split')
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
-      console.log(e.target.files, 'files')
-      console.log(filesToRead)
 
       filesToRead.map((file: any, index) => {
         const fileName = file['name']
@@ -97,7 +93,6 @@ console.log(splitExcel, 'split')
         // console.log(holding, 'test object') // should be {MultipleTEST.xslx : {unitinfo: [], costs: []}}
         if (!files.includes(fileName)) {
           setFiles(files => [...files, fileName])
-          console.log(files, ' this is files')
         }
 
         const reader = new FileReader();

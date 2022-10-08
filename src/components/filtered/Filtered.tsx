@@ -8,10 +8,9 @@ interface FilteredTable {
 
 export const Filtered = ({data}) => {
 
-  console.log(data, 'this is data')
 
   const fileName = Object.keys(data)[0]
-  console.log(fileName)
+
 //   // headers hook
   const [cup, setCup] = useState<any[]>([])
   const [entries, setEntries] = useState<any[]>([])
@@ -20,10 +19,9 @@ export const Filtered = ({data}) => {
     if (data[fileName]) {
       parse()
       createEntries()
-      console.log('it works')
-      // Object.entries(cup).map((entry) => console.log(entry, 'entry'))
+
     }
-    console.log(entries, 'this is entries')
+
   }, [cup.length, data[fileName], entries.length])
 
   const createEntries = () => {
@@ -31,7 +29,6 @@ export const Filtered = ({data}) => {
       cup.map((item) => {
         temp.push(...Object.entries(item))
       })
-      console.log(temp, 'entries')
       setEntries(temp)
   }
 
@@ -47,7 +44,7 @@ export const Filtered = ({data}) => {
         holdThis.push(item)
       }
     })
-    console.log(holdThis, 'holdthis')
+
 
     // Then use special char to split array into [{'buildingName': [rows of data]}, ...]
     let container = [];
@@ -68,11 +65,8 @@ export const Filtered = ({data}) => {
       start = end + 1
       end = holdThis.indexOf('*', start);
 }
-    console.log(container, 'this is container')
     setCup(container)
   }
-
-  console.log(cup, 'cup')
 
   return (
     <>
