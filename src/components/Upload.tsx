@@ -71,6 +71,7 @@ export const Upload = () => {
   // useEffect(() => {
 
   // }, [Object.entries(splitExcel).length, filterBy])
+  console.log(splitExcel, 'this is split of all the work books')
 
 // TODO: handle multiple file upload
 // TODO: need to figure out how to access fileList and update synchonously ***
@@ -107,7 +108,7 @@ export const Upload = () => {
             if (i === 0) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
               range.s.c = 0;
-              range.e.c = 5;
+              range.e.c = 8;
 
               var newRange = xlsx.utils.encode_range(range);
               // const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: false});
@@ -115,8 +116,8 @@ export const Upload = () => {
               holding[fileName].unitInfo.push(...json)
             } else if (i === 1) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
-              range.s.c = 6;
-              range.e.c = 11;
+              range.s.c = 9;
+              range.e.c = 14;
               var newRange = xlsx.utils.encode_range(range);
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange});
               holding[fileName].costs.push(...json)

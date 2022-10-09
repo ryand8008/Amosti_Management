@@ -29,7 +29,7 @@ export const Filtered = ({data}) => {
       cup.map((item) => {
         temp.push(...Object.entries(item))
       })
-      setEntries(temp)
+      setEntries((entries) => [...temp])
   }
 
   const parse = () => {
@@ -45,7 +45,7 @@ export const Filtered = ({data}) => {
       }
     })
 
-    console.log(holdThis)
+    // console.log(holdThis)
 
     // Then use special char to split array into [{'buildingName': [rows of data]}, ...]
     let container = [];
@@ -66,7 +66,6 @@ export const Filtered = ({data}) => {
       start = end + 1
       end = holdThis.indexOf('*', start) !== -1 ? holdThis.indexOf('*', start) : holdThis.length - 1;
 }
-console.log(container, 'this is container')
     setCup(container)
   }
 

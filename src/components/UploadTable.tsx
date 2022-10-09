@@ -1,18 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
-interface Sheet {
-  filter(arg0: (item: any) => void): unknown;
-  corredora: string
-  tenant_name: string
-  building: string
-  month: string
- 'amount': number
- 'date_paid': Date
- apartment: string
- 'paid': boolean
-}
-
 interface newSheet {
   Depto: string
   Nombre: string
@@ -34,7 +22,6 @@ interface newSheet {
 
 type Test = {
   [x: string]: any;
-  excelData: Sheet
   testing: any
 }
 
@@ -43,21 +30,24 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   const [headers, setHeaders] = useState<string[]>([''])
   const [information, setInformation] = useState<any>([])
 
-  // unfiltered hook
-  const [unfiltered, setUnfiltered] = useState()
+  // month hook
+  const [month, setMonth] = useState<string>()
 
   // console.log(Object.values(testing), 'this is values of testing') // Should be array - [filename: {unitInfo: [], costs: []}]
 
   useEffect(() => {
-
     if (fileName === '') {
       const all = []
       Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2)))
       setInformation(([]) => [...all])
+      console.log(information[0], 'information should contain "{Month: <string>}"')
+      information[0] ? setMonth(information[0].Month) : null
 
     }
 
     if (testing && fileName !== '') {
+      // refactored
+      // !showCosts ? setInformation(([]) => [...testing[fileName]['unitInfo']]) : setInformation(([]) => [...testing[fileName]['costs']])
       if (!showCosts){
         setInformation(([]) => [...testing[fileName]['unitInfo']])
       } else {
@@ -68,7 +58,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
     if (information.length > 0) {
       setHeaders(Object.keys(information[0]))
     }
-  }, [headers.length, testing, fileName, information.length, showCosts])
+  }, [headers.length, testing, fileName, information.length, showCosts, month])
 
 
   return (
@@ -78,7 +68,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
         <StyledTitle>Hello from upload table!</StyledTitle>
         <StyledTable>
         <tbody>
-
+          <tr><td>{`Month: ${month ? month : 'loading...'}`}</td></tr>
         <tr>
           {headers ? headers.map((item: string, index1: React.Key) =>
             <StyledHeader key={index1}>{item}</StyledHeader>
