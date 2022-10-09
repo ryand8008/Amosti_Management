@@ -71,7 +71,6 @@ export const Upload = () => {
   // useEffect(() => {
 
   // }, [Object.entries(splitExcel).length, filterBy])
-  console.log(splitExcel, 'this is split of all the work books')
 
 // TODO: handle multiple file upload
 // TODO: need to figure out how to access fileList and update synchonously ***

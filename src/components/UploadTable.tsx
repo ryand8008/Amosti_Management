@@ -5,8 +5,8 @@ interface newSheet {
   Depto: string
   Nombre: string
   Renta: number
-  Deposito: string | ''
-  Corretaje: string | ''
+  Deposito: string
+  Corretaje: string
   Admon: number
   Gastos: string
   Cost: number
@@ -15,10 +15,6 @@ interface newSheet {
   Totals: string
   Amount: number
 }
-
-// type Costs = {
-
-// }
 
 type Test = {
   [x: string]: any;
@@ -38,7 +34,14 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   useEffect(() => {
     if (fileName === '') {
       const all = []
-      Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2)))
+      Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2))) //working code
+      console.log(all, 1)
+      all.map((item, index) => typeof item['Depto'] === 'string' ?
+       item['Depto'].toLowerCase() === 'subtotal' ? all.splice(index, 1) : null
+        : null)
+      console.log(all, 'should be different from 1')
+
+
       setInformation(([]) => [...all])
       console.log(information[0], 'information should contain "{Month: <string>}"')
       information[0] ? setMonth(information[0].Month) : null
@@ -58,6 +61,8 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
     if (information.length > 0) {
       setHeaders(Object.keys(information[0]))
     }
+    console.log(information)
+
   }, [headers.length, testing, fileName, information.length, showCosts, month])
 
 
@@ -69,20 +74,23 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
         <StyledTable>
         <tbody>
           <tr><td>{`Month: ${month ? month : 'loading...'}`}</td></tr>
-        <tr>
-          {headers ? headers.map((item: string, index1: React.Key) =>
-            <StyledHeader key={index1}>{item}</StyledHeader>
-            ): null}
-        </tr>
-            {information.length > 0 ? information.map((item) =>
+            <tr>
+              {headers ? headers.map((item: string, index1: React.Key) =>
+                <StyledHeader key={index1}>{item}</StyledHeader>
+              ) : null}
+            </tr>
+            {information.length > 0 ? information.map((item, index) =>
               <tr>
-              {headers.map((header) =>
-                <td>{item[header]}</td>
-              )}
+                {
+                headers.map((header) =>
+                  <td>{item[header]}</td>
+                )
+
+            }
               </tr>
 
             ) :
-            null}
+              null}
 
 
         </tbody>
