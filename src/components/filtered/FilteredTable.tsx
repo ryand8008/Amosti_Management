@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 // interface FilteredTable {
@@ -8,6 +8,7 @@ import styled from "styled-components";
 
 export const FilteredTable = ({info}) => {
 
+  const [buildingName, setBuildingName] = useState<string>()
   // console.log(info[1], 'building')
   const headers = info[1].map((item) => Object.keys(item))
   const values = info[1].map((item) => Object.values(item))
