@@ -72,6 +72,13 @@ export const Upload = () => {
   // display file names
   const [files, setFiles] = useState<string[]>([])
 
+  // checking aggregate
+  if (aggregate) {
+
+    console.log(aggregate['Dragón'])
+  }
+
+
 
 // find the location of key = Month: 'Gastos'
 const findGastos = (json)=>{
@@ -86,6 +93,7 @@ const findGastos = (json)=>{
   return gastosIndex
 
 }
+
 
 
   // TODO: handle multiple file upload
@@ -120,6 +128,7 @@ const findGastos = (json)=>{
           // raw data sheet
           const jsonMaster = xlsx.utils.sheet_to_json((worksheet));
           console.log(jsonMaster)
+          // if entry doesn't exist make it using aggregate for use context
           const [year, month ,buildingName] = [jsonMaster[0]['Year'], jsonMaster[0]['Month'], jsonMaster[0]['Depto']]
           let holding2 = {
             [buildingName]: {
@@ -132,6 +141,8 @@ const findGastos = (json)=>{
               }
             }
           }
+
+
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
             if (i === 0) {
@@ -155,15 +166,25 @@ const findGastos = (json)=>{
               holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
-            console.log(holding2, 'a bunch of nested stuff')
+
             setSplitExcel({...splitExcel, ...holding})
-            setAggregate({...aggregate, ...holding2})
+            // setAggregate({...aggregate, ...holding2}) // works but only for one file
+
+            // works only for sequential file upload for the same building. Will need to rework for multiple at a time, and for other buildings!! ****
+            if (!aggregate) {
+                setAggregate({...aggregate, ...holding2})
+            } else {
+              setAggregate({...aggregate[buildingName] = {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}})
+
+            }
+
+
+
         };
         reader.readAsArrayBuffer(file);
       })
     }
   }
-
 
   // handle clear fileList
   const handleClear = (e) => {
