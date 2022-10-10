@@ -26,24 +26,30 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   const [headers, setHeaders] = useState<string[]>([''])
   const [information, setInformation] = useState<any>([])
 
-  // month hook
+  // table month hook
   const [month, setMonth] = useState<string>()
+
+  // running total hook
+  const [runningTotal, setRunningTotal] = useState<number>()
 
   // console.log(Object.values(testing), 'this is values of testing') // Should be array - [filename: {unitInfo: [], costs: []}]
 
   useEffect(() => {
+    // tempTotal +=
+    // TODO: display subtotal for all!
     if (fileName === '') {
-      const all = []
+      const all = [] // remove subtotal for each workbook only for
+      let tempTotal = 0;
+      // console.log(tempTotal, 'temp total')
       Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2))) //working code
-      console.log(all, 1)
-      all.map((item, index) => typeof item['Depto'] === 'string' ?
-       item['Depto'].toLowerCase() === 'subtotal' ? all.splice(index, 1) : null
-        : null)
-      console.log(all, 'should be different from 1')
 
+      // all.map((item, index) => typeof item['Depto'] === 'string' ?
+      //  item['Depto'].toLowerCase() === 'subtotal' ? all.splice(index, 1) : console.log(Number(item['Renta']), typeof item['Renta'] , index)
+      //   : null)
 
+      setRunningTotal(tempTotal)
       setInformation(([]) => [...all])
-      console.log(information[0], 'information should contain "{Month: <string>}"')
+      // console.log(information[0], 'information should contain "{Month: <string>}"')
       information[0] ? setMonth(information[0].Month) : null
 
     }
@@ -54,7 +60,12 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
       if (!showCosts){
         setInformation(([]) => [...testing[fileName]['unitInfo']])
       } else {
+
         setInformation(([]) => [...testing[fileName]['costs']])
+        console.log(information, 'with costs')
+        // setInformation(information.splice(0,1))
+        // information.splice(0,1)
+        console.log('after splice information: ', information)
       }
     }
 
@@ -65,12 +76,12 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
 
   }, [headers.length, testing, fileName, information.length, showCosts, month])
 
-
+  // TODO: implement running total to end of table, or somehwere else?
   return (
     <>
       {/* {fileName !== '' ? */}
       <StyledContainer>
-        <StyledTitle>Hello from upload table!</StyledTitle>
+        <StyledTitle>'Upload data here: '</StyledTitle>
         <StyledTable>
         <tbody>
           <tr><td>{`Month: ${month ? month : 'loading...'}`}</td></tr>
@@ -91,7 +102,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
 
             ) :
               null}
-
+            {/* <tr>{runningTotal ? runningTotal : 'borked'}</tr> */}
 
         </tbody>
         </StyledTable>
@@ -104,10 +115,11 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
 
 const StyledContainer = styled.div`
   display: flex;
-  border: 1px solid red;
+  border: 1px solid;
   flex-direction: column;
   margin-top: 10px;
   width: fit-content;
+  border-radius: 5px;
 `
 
 const StyledTitle = styled.h1`
@@ -115,7 +127,7 @@ const StyledTitle = styled.h1`
 `
 const StyledTable = styled.table`
   display: flex;
-  border: 1px solid black;
+  border: 1px solid;
   // flex-direction: column;
 `
 

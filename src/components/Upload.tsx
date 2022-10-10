@@ -1,5 +1,6 @@
 import e from "cors";
 import React, { useEffect, useState } from "react";
+import { json } from "stream/consumers";
 import styled from "styled-components";
 import { isExportDeclaration } from "typescript";
 import { Filtered } from "./filtered/Filtered";
@@ -72,7 +73,26 @@ export const Upload = () => {
 
   // }, [Object.entries(splitExcel).length, filterBy])
 
-// TODO: handle multiple file upload
+
+console.log(splitExcel, 'split')
+
+
+// find the location of key = Month: 'Gastos'
+const findGastos = (json)=>{
+  let gastosIndex;
+
+  json.map((item,index)=>{
+      if (item.Month === 'Gastos') {
+          gastosIndex = index
+      }
+  }
+  )
+  return gastosIndex
+
+}
+
+
+  // TODO: handle multiple file upload
 // TODO: need to figure out how to access fileList and update synchonously ***
   const readUploadFile = (e) => {
     e.preventDefault();
@@ -101,13 +121,16 @@ export const Upload = () => {
           const workbook = xlsx.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
+          console.log(worksheet, 'this is worksheet')
+          // raw data sheet
+          const jsonMaster = xlsx.utils.sheet_to_json((worksheet));
 
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
             if (i === 0) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
-              range.s.c = 0;
-              range.e.c = 8;
+              range.s.r = 0;
+              range.e.r = findGastos(jsonMaster);
 
               var newRange = xlsx.utils.encode_range(range);
               // const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: false});
@@ -115,11 +138,12 @@ export const Upload = () => {
               holding[fileName].unitInfo.push(...json)
             } else if (i === 1) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
-              range.s.c = 9;
-              range.e.c = 14;
+              range.s.r = findGastos(jsonMaster)+1;
+              range.e.r = jsonMaster.length+1;
               var newRange = xlsx.utils.encode_range(range);
-              const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange});
-              holding[fileName].costs.push(...json)
+              const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, header: ['Gastos', 'Cost', 'Banknotes', 'Count', 'Totals', 'Amount']});
+              let newJson = json.slice(1, json.length)
+              holding[fileName].costs.push(...newJson)
             }
           }
 
@@ -163,13 +187,13 @@ export const Upload = () => {
     <>
       <Window>
 
-        <StyledTitle>hello from upload!</StyledTitle>
+        <StyledTitle>Insert Title Here (main)</StyledTitle>
 
         {Object.entries(splitExcel).length > 0 ?
         <>
-          <button onClick={() => { setGenerateReport(!generateReport); } }>
+          {/* <button onClick={() => { setGenerateReport(!generateReport); } }>
             {generateReport ? 'return' : 'generate report'}
-          </button>
+          </button> */}
           <button onClick={(e) => handleClear(e)}>
             clear files
           </button>
@@ -186,7 +210,7 @@ export const Upload = () => {
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
       </form>
-        {!generateReport ? files.length > 1 ?
+        {!generateReport ? files.length > 0 ?
           <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
             <option value=''>{filterBy !== '' ? 'show all files' : 'select a file'}</option>
             {files.length > 0 ? files.map((file) =>
@@ -203,8 +227,8 @@ export const Upload = () => {
            filteredExcel ? <UploadTable exceldata={filteredExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts}/> : <UploadTable exceldata={newExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts} />
            : null}
 
-          {/* {generateReport && buildingArray.length > 0 ? buildingArray.map((item) => <UploadTable exceldata={item} testing={null} fileName={null} showCosts={showCosts}/> ) : null} */}
-          {Object.values(splitExcel).length > 0 && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
+          <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button>
+          {/* {Object.values(splitExcel).length > 0 && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null} */}
           <Filtered  data={splitExcel}/>
       </Window>
     </>
@@ -227,8 +251,13 @@ const DragBox = styled.div`
   margin: auto;
   border: 1px solid black;
   height: 100px;
-  width: 300px;
+  min-width: 300px;
+  width: fit-content;
   justify-content: center;
   align-items: center;
+  border-radius: 3px;
+`
+const listitem = styled.ul`
+  margin: auto;
 `
 

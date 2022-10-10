@@ -21,7 +21,8 @@ export const FilteredTable = ({info}) => {
 // console.log(headers, values, 'headers | values')
   return (
     <>
-      <h1>hello from FilteredTable</h1>
+    <Container>
+      {/* <h1>hello from FilteredTable</h1> */}
       <h2>{`building: ${filterInfo[0]}`}</h2>
       <h2>{}</h2>
       <table>
@@ -42,11 +43,16 @@ export const FilteredTable = ({info}) => {
         )
         }
       </table>
-
+      </Container>
     </>
   )
 }
 
 const StyledRow = styled.td`
   display: flex;
+`
+
+const Container = styled.div`
+  border-bottom: 1px solid black;
+  // border-radius: 3px;
 `

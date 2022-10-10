@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import { FilteredTable } from "./FilteredTable";
 
 
@@ -71,10 +72,14 @@ export const Filtered = ({data}) => {
 
   return (
     <>
-      <h1>hello from Filtered!</h1>
+      <FilteredTitle>Filtered data</FilteredTitle>
 
       { entries.length > 0 ? entries.map((entry) =>
         <FilteredTable info={entry} />) : null}
     </>
   )
 }
+
+const FilteredTitle = styled.h1`
+  border: 1px dotted;
+`
