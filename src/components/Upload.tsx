@@ -73,10 +73,9 @@ export const Upload = () => {
   const [files, setFiles] = useState<string[]>([])
 
   // checking aggregate
-  if (aggregate) {
-
-    console.log(aggregate['Dragón'])
-  }
+  useEffect(() => {
+    console.log(aggregate, 'it do be here')
+  }, aggregate)
 
 
 
@@ -166,7 +165,7 @@ const findGastos = (json)=>{
               holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
-
+          console.log(holding2, 'holding 2')
             setSplitExcel({...splitExcel, ...holding})
             // setAggregate({...aggregate, ...holding2}) // works but only for one file
 
@@ -174,15 +173,32 @@ const findGastos = (json)=>{
             if (!aggregate) {
                 setAggregate({...aggregate, ...holding2})
             } else {
+              console.log(aggregate[buildingName], 'should have one at this point')
               setAggregate({...aggregate[buildingName] = {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}})
-
+              console.log(aggregate[buildingName], 'should have two at this point')
             }
+            // aggregate ? setAggregate({...aggregate[buildingName] = {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}}) : setAggregate({...holding2})
 
 
 
         };
         reader.readAsArrayBuffer(file);
       })
+    }
+  }
+
+  // const checkBuildingName = (buildingName, year, month) => {
+  //   if (aggregate[buildingName])
+  // }
+
+
+  const mergeToAgg = (buildingName, year, month) => {
+    if (!aggregate[buildingName]) {
+      aggregate[buildingName] = {[year]: {[month]: {'unitInfo': [], 'costs': []}}}
+    }
+
+    if (aggregate[buildingName]) {
+      if (aggregate[buildingName][year]) {}
     }
   }
 
