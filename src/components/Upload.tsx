@@ -1,8 +1,9 @@
 import e from "cors";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { json } from "stream/consumers";
 import styled from "styled-components";
 import { isExportDeclaration } from "typescript";
+import { AggregateContext } from "./context/ProjectContext";
 import { Filtered } from "./filtered/Filtered";
 import { UploadTable } from "./UploadTable";
 
@@ -44,6 +45,8 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
+  const { aggregate, setAggregate } = useContext(AggregateContext)
+
   const [excel, setExcel] = useState<newSheet[]>()
 
   // testing SPLIT EXCEL
@@ -69,13 +72,6 @@ export const Upload = () => {
   // display file names
   const [files, setFiles] = useState<string[]>([])
 
-  // useEffect(() => {
-
-  // }, [Object.entries(splitExcel).length, filterBy])
-
-
-console.log(splitExcel, 'split')
-
 
 // find the location of key = Month: 'Gastos'
 const findGastos = (json)=>{
@@ -97,12 +93,11 @@ const findGastos = (json)=>{
   const readUploadFile = (e) => {
     e.preventDefault();
 
-
-
     let arrayyyy = [];
 
     // test newSheet array
     let holding: any = {}
+
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
@@ -124,7 +119,19 @@ const findGastos = (json)=>{
           console.log(worksheet, 'this is worksheet')
           // raw data sheet
           const jsonMaster = xlsx.utils.sheet_to_json((worksheet));
-
+          console.log(jsonMaster)
+          const [year, month ,buildingName] = [jsonMaster[0]['Year'], jsonMaster[0]['Month'], jsonMaster[0]['Depto']]
+          let holding2 = {
+            [buildingName]: {
+              [year]: {
+                [month]:
+                  {
+                    'unitInfo': [],
+                    'costs': []
+                  }
+              }
+            }
+          }
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
             if (i === 0) {
@@ -136,6 +143,7 @@ const findGastos = (json)=>{
               // const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: false});
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
               holding[fileName].unitInfo.push(...json)
+              holding2[buildingName][year][month]['unitInfo'] = [...json]
             } else if (i === 1) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
               range.s.r = findGastos(jsonMaster)+1;
@@ -144,10 +152,12 @@ const findGastos = (json)=>{
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, header: ['Gastos', 'Cost', 'Banknotes', 'Count', 'Totals', 'Amount']});
               let newJson = json.slice(1, json.length)
               holding[fileName].costs.push(...newJson)
+              holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
-
+            console.log(holding2, 'a bunch of nested stuff')
             setSplitExcel({...splitExcel, ...holding})
+            setAggregate({...aggregate, ...holding2})
         };
         reader.readAsArrayBuffer(file);
       })

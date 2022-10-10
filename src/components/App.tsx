@@ -17,20 +17,5 @@ export const App = () => {
 }
 
 // shape of things to come
-const report = {
-  'buildingName': {
-    'enero':
-    {
-      'unitInfo': [],
-      'costs': [],
-    },
 
-    'febrero':
-    {
-      'unitInfo': [],
-      'costs': []
-    }
-  },
-
-}
 
