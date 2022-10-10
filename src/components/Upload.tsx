@@ -82,7 +82,7 @@ const findGastos = (json)=>{
   let gastosIndex;
 
   json.map((item,index)=>{
-      if (item.Month === 'Gastos') {
+      if (item.Year === 'Gastos') {
           gastosIndex = index
       }
   }

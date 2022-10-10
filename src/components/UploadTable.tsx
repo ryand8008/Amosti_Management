@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
+import { AggregateContext } from './context/ProjectContext'
 
 interface newSheet {
   Depto: string
@@ -26,6 +27,10 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   const [headers, setHeaders] = useState<string[]>([''])
   const [information, setInformation] = useState<any>([])
 
+  // use context
+  const {hello} = useContext(AggregateContext)
+
+  console.log(hello, 'this should be "world"')
   // table month hook
   const [month, setMonth] = useState<string>()
 
@@ -43,9 +48,9 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
       // console.log(tempTotal, 'temp total')
       Object.values(testing).map((item: any) => item.unitInfo.map((item2) => all.push(item2))) //working code
 
-      // all.map((item, index) => typeof item['Depto'] === 'string' ?
-      //  item['Depto'].toLowerCase() === 'subtotal' ? all.splice(index, 1) : console.log(Number(item['Renta']), typeof item['Renta'] , index)
-      //   : null)
+      all.map((item, index) => typeof item['Depto'] === 'string' ?
+       item['Depto'].toLowerCase() === 'subtotal' ? all.splice(index, 1) : console.log(Number(item['Renta']), typeof item['Renta'] , index)
+        : null)
 
       setRunningTotal(tempTotal)
       setInformation(([]) => [...all])

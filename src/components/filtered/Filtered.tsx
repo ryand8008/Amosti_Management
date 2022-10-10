@@ -20,7 +20,6 @@ export const Filtered = ({data}) => {
     if (data[fileName]) {
       parse()
       createEntries()
-
     }
 
   }, [cup.length, data[fileName], entries.length])
