@@ -1,8 +1,5 @@
-import e from "cors";
 import React, { useContext, useEffect, useState } from "react";
-import { json } from "stream/consumers";
 import styled from "styled-components";
-import { isExportDeclaration } from "typescript";
 import { AggregateContext } from "./context/ProjectContext";
 import { Filtered } from "./filtered/Filtered";
 import { UploadTable } from "./UploadTable";
@@ -45,7 +42,7 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
-  const { aggregateW, setAggregateW } = useContext(AggregateContext)
+  const { aggregate, setAggregate, mergeToAgg, gatherInfo } = useContext(AggregateContext)
 
   const [excel, setExcel] = useState<newSheet[]>()
 
@@ -53,7 +50,7 @@ export const Upload = () => {
   const [splitExcel, setSplitExcel] = useState<any>({})
 
   // new sheet
-  const [newExcel, setNewExcel] = useState<any>()
+  const [newExcel, setNewExcel] = useState<any>({})
 
   const [showCosts, setShowCosts] = useState<boolean>(false)
 
@@ -74,8 +71,10 @@ export const Upload = () => {
 
   // checking aggregate
   useEffect(() => {
-    console.log(aggregateW, 'it do be here')
-  }, [aggregateW])
+    console.log(aggregate, 'it do be here')
+
+    console.log(splitExcel, 'splitExcel')
+  }, [aggregate, newExcel])
 
 
 
@@ -97,14 +96,17 @@ const findGastos = (json)=>{
 
   // TODO: handle multiple file upload
 // TODO: need to figure out how to access fileList and update synchonously ***
-  const readUploadFile = (e) => {
+  const readUploadFile = async (e) => {
     e.preventDefault();
 
     let arrayyyy = [];
 
     // test newSheet array
     let holding: any = {}
-
+    let holding2: any = {}
+    let buildingName;
+    let year;
+    let month;
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
@@ -118,18 +120,17 @@ const findGastos = (json)=>{
         }
 
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = async (e) => {
           const data = e.target.result
           const workbook = xlsx.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
-          console.log(worksheet, 'this is worksheet')
           // raw data sheet
           const jsonMaster = xlsx.utils.sheet_to_json((worksheet));
-          console.log(jsonMaster)
           // if entry doesn't exist make it using aggregate for use context
-          const [year, month ,buildingName] = [jsonMaster[0]['Year'], jsonMaster[0]['Month'], jsonMaster[0]['Depto']]
-          let holding2 = {
+          [year, month ,buildingName] =  [jsonMaster[0]['Year'], jsonMaster[0]['Month'], jsonMaster[0]['Depto']]
+
+          holding2 = {
             [buildingName]: {
               [year]: {
                 [month]:
@@ -140,6 +141,8 @@ const findGastos = (json)=>{
               }
             }
           }
+          gatherInfo(holding2, buildingName, year)
+            // await mergeToAgg(buildingName, year, holding2,)
 
 
           // create two arrays, [units info] | [total costs] => refactor later****
@@ -165,50 +168,62 @@ const findGastos = (json)=>{
               holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
-          console.log(holding2, 'holding 2')
+          console.log(holding2, 'holding')
+          console.log(splitExcel)
             setSplitExcel({...splitExcel, ...holding})
-            // setAggregate({...aggregate, ...holding2}) // works but only for one file
 
-            // // works only for sequential file upload for the same building. Will need to rework for multiple at a time, and for other buildings!! ****
-            // if (!aggregateW) {
-            //     setAggregateW({...aggregateW, ...holding2})
-            // } else {
-            //   console.log(aggregateW[buildingName], 'should have one at this point')
-            //   setAggregateW({...aggregateW[buildingName] = {[year]: {...aggregateW[buildingName][year], ...holding2[buildingName][year]}}})
-            //   console.log(aggregateW[buildingName], 'should have two at this point')
-            // }
 
-            // NOT SURE
-            console.log(holding)
-            console.log(holding2)
-            mergeToAgg(buildingName, year, month, holding2, aggregateW)
-
+            // function to add data to aggregate context variable
+          //  await mergeToAgg(buildingName, year, holding2)
 
         };
         reader.readAsArrayBuffer(file);
       })
     }
+    // await mergeToAgg(buildingName, year, holding2)
   }
 
-  // const checkBuildingName = (buildingName, year, month) => {
-  //   if (aggregate[buildingName])
+  // const mergeToAgg = async (buildingName, year, month, holding2, aggregate) => {
+  //   console.log(aggregate)
+  //   if (!aggregate) {
+
+  //     await setNewExcel({...aggregate, ...holding2})
+  //   } else if (!aggregate[buildingName]) {
+
+  //       await setNewExcel({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
+  //         )
+  //   } else if (aggregate[buildingName][year]) {
+
+  //     setNewExcel(
+  //       {...newExcel[buildingName], ...holding2[buildingName]}
+  //     )
+      // await setNewExcel({
+      //   ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
+      //   })
+  //   }
   // }
 
 
-  const mergeToAgg = (buildingName, year, month, holding2, aggregate) => {
-    if (!aggregate) {
-      setAggregateW({...aggregate, ...holding2})
-    } else if (!aggregate[buildingName]) {
-      setAggregateW({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
-        )
-    } else if (aggregate[buildingName][year]) {
+  // const mergeToAgg = async (buildingName, year, month, holding2, aggregate) => {
+  //   console.log(aggregate)
+  //   if (!aggregate) {
+  //     await setAggregate({...aggregate, ...holding2})
+  //     await setNewExcel({...aggregate, ...holding2})
+  //   } else if (!aggregate[buildingName]) {
+  //     await setAggregate({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
+  //       )
+  //       await setNewExcel({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
+  //         )
+  //   } else if (aggregate[buildingName][year]) {
 
-      setAggregateW({
-      ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
-      })
-    }
-
-  }
+  //     await setAggregate({
+  //     ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
+  //     })
+  //     await setNewExcel({
+  //       ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
+  //       })
+  //   }
+  // }
 
   // handle clear fileList
   const handleClear = (e) => {
@@ -220,6 +235,7 @@ const findGastos = (json)=>{
       setFilteredExcel(null)
       setSplitExcel({})
       setShowCosts(false)
+      setAggregate(null)
     }
 
   }
