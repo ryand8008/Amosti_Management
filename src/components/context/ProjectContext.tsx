@@ -32,17 +32,13 @@ const AggregateProvider = ({children}) => {
     console.log(container, 'effect')
     if (container.length > 0) {
       container.map(async (item, index) => {
-        let buildingName = Object.keys(item)[0]
-        let year = Object.keys(item[buildingName])[0]
+        let buildingName = Object.keys(await item)[0]
+        let year = Object.keys(await item[buildingName])[0]
         if (index === 0) {
-          await setAggregate((aggregate) => ({ ...aggregate, ...item }))
+          setAggregate((aggregate) => ({ ...aggregate, ...item }))
 
         } else {
-          // this ends up with {2022: {}, september: {}, octover: {}}
-          // setAggregate((aggregate) => ({...aggregate['Dragón'], ...{...aggregate['Dragón'][2022], ...item['Dragón'][2022]}}))
-          // // this works as intended but hard coded to 'Dragon'
-          // setAggregate((aggregate) => ({['Dragón']: {[2022]: {...aggregate['Dragón'][2022], ...{...aggregate['Dragón'][2022], ...item['Dragón'][2022]}}}}))
-          await mergeToAgg(buildingName, year, item)
+          mergeToAgg(item)
         }
       }
       )
@@ -53,26 +49,33 @@ const AggregateProvider = ({children}) => {
   }, [aggregate ? Object.keys(aggregate).length : aggregate, checkCount, container.length])
 
 
-  const gatherInfo = async (holding2, buildingName, year) => {
+  const gatherInfo = async (holding2) => {
     await setContainer((container) => [...container, {...holding2}])
   }
 
-  const mergeToAgg = async (buildingName, year, item) => {
-    console.log(aggregate, 'merge agg')
-    if (await aggregate) {
+  const mergeToAgg = async (item) => {
 
-      console.log(await aggregate?.buildingName?.year, 'here?')
+    let buildingName = Object.keys(await item)[0]
+    let year =  Object.keys(await item[buildingName])[0]
+
+    try {
+      if (aggregate[buildingName]) {
+
+       setAggregate( (aggregate) => ({...aggregate, ...{[buildingName]: {[year]: {...aggregate[buildingName][year], ...{...aggregate[buildingName][year], ...item[buildingName][year]}}}}}))
+
+      }
+      else {
+        setAggregate((aggregate) => ({...aggregate,[buildingName]: {...item[buildingName]}}))
+      }
+
     }
-    // if (aggregate[buildingName][year]) {
-
-      await setAggregate((aggregate) => ({[buildingName]: {[year]: {...aggregate[buildingName][year], ...{...aggregate[buildingName][year], ...item[buildingName][year]}}}}))
-    // }
-
-    // if (!aggregate[buildingName]) {
-    //   console.log('borked')
-    // }
+    catch {
+      console.log('borked')
+    }
   }
 
+  // used to upload multiple files of the same building (batch upload)
+  //await setAggregate((aggregate) => ({[buildingName]: {[year]: {...aggregate[buildingName][year], ...{...aggregate[buildingName][year], ...item[buildingName][year]}}}}))
 
 
   return (
