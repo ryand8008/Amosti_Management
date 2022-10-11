@@ -45,7 +45,7 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
-  const { aggregate, setAggregate } = useContext(AggregateContext)
+  const { aggregateW, setAggregateW } = useContext(AggregateContext)
 
   const [excel, setExcel] = useState<newSheet[]>()
 
@@ -74,8 +74,8 @@ export const Upload = () => {
 
   // checking aggregate
   useEffect(() => {
-    console.log(aggregate, 'it do be here')
-  }, aggregate)
+    console.log(aggregateW, 'it do be here')
+  }, [aggregateW])
 
 
 
@@ -169,16 +169,19 @@ const findGastos = (json)=>{
             setSplitExcel({...splitExcel, ...holding})
             // setAggregate({...aggregate, ...holding2}) // works but only for one file
 
-            // works only for sequential file upload for the same building. Will need to rework for multiple at a time, and for other buildings!! ****
-            if (!aggregate) {
-                setAggregate({...aggregate, ...holding2})
-            } else {
-              console.log(aggregate[buildingName], 'should have one at this point')
-              setAggregate({...aggregate[buildingName] = {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}})
-              console.log(aggregate[buildingName], 'should have two at this point')
-            }
-            // aggregate ? setAggregate({...aggregate[buildingName] = {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}}) : setAggregate({...holding2})
+            // // works only for sequential file upload for the same building. Will need to rework for multiple at a time, and for other buildings!! ****
+            // if (!aggregateW) {
+            //     setAggregateW({...aggregateW, ...holding2})
+            // } else {
+            //   console.log(aggregateW[buildingName], 'should have one at this point')
+            //   setAggregateW({...aggregateW[buildingName] = {[year]: {...aggregateW[buildingName][year], ...holding2[buildingName][year]}}})
+            //   console.log(aggregateW[buildingName], 'should have two at this point')
+            // }
 
+            // NOT SURE
+            console.log(holding)
+            console.log(holding2)
+            mergeToAgg(buildingName, year, month, holding2, aggregateW)
 
 
         };
@@ -192,14 +195,19 @@ const findGastos = (json)=>{
   // }
 
 
-  const mergeToAgg = (buildingName, year, month) => {
-    if (!aggregate[buildingName]) {
-      aggregate[buildingName] = {[year]: {[month]: {'unitInfo': [], 'costs': []}}}
+  const mergeToAgg = (buildingName, year, month, holding2, aggregate) => {
+    if (!aggregate) {
+      setAggregateW({...aggregate, ...holding2})
+    } else if (!aggregate[buildingName]) {
+      setAggregateW({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
+        )
+    } else if (aggregate[buildingName][year]) {
+
+      setAggregateW({
+      ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
+      })
     }
 
-    if (aggregate[buildingName]) {
-      if (aggregate[buildingName][year]) {}
-    }
   }
 
   // handle clear fileList

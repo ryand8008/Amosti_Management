@@ -28,8 +28,8 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   const [information, setInformation] = useState<any>([])
 
   // use context
-  const {hello, aggregate} = useContext(AggregateContext)
-  // console.log(aggregate, 'aggre')
+  const {hello, aggregateW} = useContext(AggregateContext)
+  console.log(aggregateW, 'aggre')
   // table month hook
   const [month, setMonth] = useState<string>()
 

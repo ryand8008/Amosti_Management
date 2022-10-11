@@ -3,18 +3,18 @@ import React, { useState } from "react";
 
 interface ReportType {
   hello: string
-  aggregate: any
-  setAggregate: (newInformation) => void;
+  aggregateW: any
+  setAggregateW: (newInformation) => void;
 }
 
 
 export const AggregateContext = React.createContext<ReportType | null>(null)
 
 const AggregateProvider = ({children}) => {
-  const [aggregate, setAggregate] = useState<any>()
+  const [aggregateW, setAggregateW] = useState<any>(null)
   const hello = 'world!'
   return (
-    <AggregateContext.Provider value={{hello, aggregate, setAggregate}}>
+    <AggregateContext.Provider value={{hello, aggregateW, setAggregateW}}>
       {children}
     </AggregateContext.Provider>
   )
