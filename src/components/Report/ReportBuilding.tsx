@@ -2,6 +2,7 @@ import { AggregateContext } from "../context/ProjectContext";
 import React, { useContext, useEffect, useState } from "react";
 import { ReportTable } from "./ReportTable";
 import styled from "styled-components";
+import { bindComplete } from "pg-protocol/dist/messages";
 
 
 // potentially receive 'buildingName' and 'Year'
@@ -17,7 +18,7 @@ export const ReportBuilding = () => {
   const [months, setMonths] = useState<string[]>()
   const [ units, setUnits] = useState<string[]>([])
   const [annualRent, setAnnualRent] = useState<any>()
-
+  const [annualUnitTotal, setAnnualUnitTotal] = useState<any>()
   // hard coded year
   const year = 2022;
 
@@ -53,11 +54,16 @@ export const ReportBuilding = () => {
     // testing unit array
     if (months && units.length > 0) {
       console.log(units)
-      buildUnitArrays();
+      buildUnitArrays()
+    }
+
+    if (annualRent && units.length > 0) {
+      console.log('neter')
+      getAnnualRentTotal()
     }
 
 
-  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length])
+  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null])
 
   const buildUnits = async (months: string[]) => {
     let monthToChoose = await months[0]
@@ -75,6 +81,7 @@ export const ReportBuilding = () => {
     setUnits(units)
   }
 
+  // build unit array - structure: {buildingname: {year: {units: {[unitname]: [...rent for each month]}}}}
   const buildUnitArrays = () => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
@@ -96,7 +103,8 @@ export const ReportBuilding = () => {
             tempArr = blob[buildingName][year]['units'][tempUnit];
           }
           let insertionPoint = hardCodeMonths.indexOf(month)
-          tempArr[insertionPoint] = item['Renta'];
+          console.log(typeof item['Renta'], item['Renta'], index)
+          tempArr[insertionPoint] = Number(item['Renta']);
 
           blob[buildingName][year]['units'][tempUnit] = tempArr;
 
@@ -110,6 +118,26 @@ export const ReportBuilding = () => {
     setAnnualRent(() => blob)
   }
 
+  // annual total for a specific unit
+  const getAnnualRentTotal = () => {
+    let annualTotal = {}
+    let array = annualRent[buildingName][year]['units']
+    units.forEach((unit, index) =>{
+      if (index !== 0) {
+        annualTotal[unit] = 0
+        array[unit].forEach((item:any) => {
+          if (item !== '-') {
+            annualTotal[unit] += item
+          }
+        })
+
+      }
+    })
+
+    // annual total should look like this => {[unit1]: NUMBER, [unit2]: NUMBER, ...}
+
+    setAnnualUnitTotal(() => annualTotal)
+  }
 
   return (
     <>
@@ -119,13 +147,16 @@ export const ReportBuilding = () => {
       { hardCodeMonths.map((item) =>
       <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
       )}
+      <StyleMonthsHeaders>annual</StyleMonthsHeaders>
     </StyledHeaderContainer>
       {annualRent ? units.map((unit, index) =>
         <tr>
           <StyledCell>{unit !== buildingName ? unit : null}</StyledCell>
           {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) =>
             <StyledCell>{item2}</StyledCell>
-          ) :null}
+          )
+          :null}
+          <StyledCell>{annualUnitTotal && unit !== buildingName ? annualUnitTotal[unit] : null}</StyledCell>
         </tr>
       ) :null
     }
