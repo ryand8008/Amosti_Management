@@ -9,7 +9,7 @@ import styled from "styled-components";
 
 // This function should receive a building's information, and only that.
 export const ReportBuilding = () => {
-  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
+  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'may', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
   const [buildingNames, setBuildingNames] = useState<string[]>([])
   const [headers, setHeaders ] = useState<string[]>([])
@@ -31,6 +31,8 @@ export const ReportBuilding = () => {
 
     if (annualRent) {
       console.log(annualRent, 'annual rent')
+      console.log(Object.entries(annualRent[buildingName][year]['units']), 'units')
+      // annualRent[buildingName][year]['units'].map((item) => console.log(item))
     }
     const monthkeys = Object.keys(aggregate[buildingName][year])
     setMonths(monthkeys)
@@ -55,7 +57,7 @@ export const ReportBuilding = () => {
     }
 
 
-  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, annualRent])
+  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, ])
 
   const buildUnits = async (months: string[]) => {
     let monthToChoose = await months[0]
@@ -75,8 +77,8 @@ export const ReportBuilding = () => {
     months.forEach((month) =>{
       aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
         let tempUnit = units[index]
-
-        if (index !== 0 && index !== aggregate[buildingName][year][month]['unitInfo'].length) {
+        console.log(tempUnit, 'tempunit')
+        if (index !== 0 && index !== aggregate[buildingName][year][month]['unitInfo'].length-1) {
 
           let tempArr;
           if(!blob[buildingName][year]['units'][tempUnit])
@@ -106,16 +108,23 @@ export const ReportBuilding = () => {
   return (
     <>
    <StyledTable>
-        <StyledHeaderContainer>
-          <th>leave blank</th>
-          { hardCodeMonths.map((item) =>
-          <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
-          )}
-        </StyledHeaderContainer>
-
+    <StyledHeaderContainer>
+      <th>{buildingName}</th>
+      { hardCodeMonths.map((item) =>
+      <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
+      )}
+    </StyledHeaderContainer>
+      {annualRent ? Object.entries(annualRent[buildingName][year]['units']).map((item: [string, string[]]) =>
         <tr>
-
+          <StyledCell>{item[0]}</StyledCell>
+          {item[1].map((item2) =>
+            <StyledCell>{item2}</StyledCell>
+          )}
         </tr>
+      ) :null
+
+    }
+
 
     </StyledTable>
 
@@ -136,4 +145,8 @@ const StyleMonthsHeaders = styled.th`
 `
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
-  `
+`
+
+const StyledCell = styled.td`
+  text-align: center;
+`
