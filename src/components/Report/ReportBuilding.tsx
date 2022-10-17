@@ -57,16 +57,21 @@ export const ReportBuilding = () => {
     }
 
 
-  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, ])
+  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length])
 
   const buildUnits = async (months: string[]) => {
     let monthToChoose = await months[0]
     let units = [];
 
+    // let units = aggregate[buildingName][year][monthToChoose]['unitInfo'].filter((item) =>
+    //   item['Depto'] !== buildingName
+    // )
+
     aggregate[buildingName][year][monthToChoose]['unitInfo'].map((item) => {
       units.push(item['Depto'])
     })
     units.splice(units.length-1, 1)
+    console.log(units, 'units')
     setUnits(units)
   }
 
@@ -77,7 +82,7 @@ export const ReportBuilding = () => {
     months.forEach((month) =>{
       aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
         let tempUnit = units[index]
-        console.log(tempUnit, 'tempunit')
+
         if (index !== 0 && index !== aggregate[buildingName][year][month]['unitInfo'].length-1) {
 
           let tempArr;
@@ -101,6 +106,7 @@ export const ReportBuilding = () => {
 
     });
     console.log(blob, 'should be {[unit]: [...12 items that are rent costsfor given month, if not available put "-", ]}')
+
     setAnnualRent(() => blob)
   }
 
@@ -114,15 +120,14 @@ export const ReportBuilding = () => {
       <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
       )}
     </StyledHeaderContainer>
-      {annualRent ? Object.entries(annualRent[buildingName][year]['units']).map((item: [string, string[]]) =>
+      {annualRent ? units.map((unit, index) =>
         <tr>
-          <StyledCell>{item[0]}</StyledCell>
-          {item[1].map((item2) =>
+          <StyledCell>{unit !== buildingName ? unit : null}</StyledCell>
+          {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) =>
             <StyledCell>{item2}</StyledCell>
-          )}
+          ) :null}
         </tr>
       ) :null
-
     }
 
 
@@ -150,3 +155,15 @@ const StyledHeaderContainer = styled.tr`
 const StyledCell = styled.td`
   text-align: center;
 `
+
+
+// works but units are out of order
+// {annualRent ? Object.entries(annualRent[buildingName][year]['units']).map((item: [string, string[]]) =>
+//         <tr>
+//           <StyledCell>{item[0]}</StyledCell>
+//           {item[1].map((item2) =>
+//             <StyledCell>{item2}</StyledCell>
+//           )}
+//         </tr>
+//       ) :null
+//     }

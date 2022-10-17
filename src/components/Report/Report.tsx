@@ -22,7 +22,7 @@ useEffect(() => {
   return (
     <>
       <h1>Hello from Report!</h1>
-      <StyledTable>
+      {/* <StyledTable>
         <StyledHeaderContainer>
           <th></th>
           { months.map((item) =>
@@ -30,7 +30,7 @@ useEffect(() => {
           )}
         </StyledHeaderContainer>
 
-      </StyledTable>
+      </StyledTable> */}
       <ReportBuilding />
     </>
   )
