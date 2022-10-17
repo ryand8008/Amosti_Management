@@ -9,9 +9,9 @@ export const App = () => {
     <>
       <AggregateProvider>
 
-        <Upload />
-        <button onClick={() =>setShowReport(!showReport)}>show report</button>
         {showReport ? <Report /> : null }
+        <button onClick={() =>setShowReport(!showReport)}>show report</button>
+        <Upload />
       </AggregateProvider>
     </>
   )

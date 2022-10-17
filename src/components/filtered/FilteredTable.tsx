@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import { AggregateContext } from "../context/ProjectContext";
+import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 
 // interface FilteredTable {
@@ -8,9 +9,11 @@ import styled from "styled-components";
 
 export const FilteredTable = ({info}) => {
   const [filterInfo, setFilterInfo] = useState<any>(info)
+  const { aggregate } = useContext(AggregateContext)
 
   useEffect(() => {
     setFilterInfo(info)
+    // console.log(info, 'this is info')
 
   }, [info])
 
@@ -18,7 +21,15 @@ export const FilteredTable = ({info}) => {
   // console.log(info[1], 'building')
   const headers = filterInfo[1].map((item) => Object.keys(item))
   const values = filterInfo[1].map((item) => Object.values(item))
-// console.log(headers, values, 'headers | values')
+
+  const building = Object.keys(aggregate)
+  // console.log(building, 'this is grouped')
+// Object.values(aggregate).map((item, index) => {
+//     console.log(item)
+//   })
+
+
+
   return (
     <>
     <Container>

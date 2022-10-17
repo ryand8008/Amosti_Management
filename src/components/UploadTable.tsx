@@ -36,9 +36,7 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
   const [runningTotal, setRunningTotal] = useState<number>()
 
   // console.log(Object.values(testing), 'this is values of testing') // Should be array - [filename: {unitInfo: [], costs: []}]
-
   useEffect(() => {
-    // tempTotal +=
     // TODO: display subtotal for all!
     if (fileName === '') {
       const all = [] // remove subtotal for each workbook only for

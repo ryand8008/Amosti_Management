@@ -71,9 +71,8 @@ export const Upload = () => {
 
   // checking aggregate
   useEffect(() => {
-    console.log(aggregate, 'it do be here')
+    // console.log(aggregate, 'it do be here')
 
-    console.log(splitExcel, 'splitExcel')
   }, [aggregate, newExcel])
 
 
@@ -142,7 +141,7 @@ const findGastos = (json)=>{
             }
           }
           gatherInfo(holding2, buildingName, year)
-            // await mergeToAgg(buildingName, year, holding2,)
+
 
 
           // create two arrays, [units info] | [total costs] => refactor later****
@@ -168,62 +167,14 @@ const findGastos = (json)=>{
               holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
-          console.log(holding2, 'holding')
-          console.log(splitExcel)
+
             setSplitExcel({...splitExcel, ...holding})
-
-
-            // function to add data to aggregate context variable
-          //  await mergeToAgg(buildingName, year, holding2)
-
         };
         reader.readAsArrayBuffer(file);
       })
     }
-    // await mergeToAgg(buildingName, year, holding2)
   }
 
-  // const mergeToAgg = async (buildingName, year, month, holding2, aggregate) => {
-  //   console.log(aggregate)
-  //   if (!aggregate) {
-
-  //     await setNewExcel({...aggregate, ...holding2})
-  //   } else if (!aggregate[buildingName]) {
-
-  //       await setNewExcel({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
-  //         )
-  //   } else if (aggregate[buildingName][year]) {
-
-  //     setNewExcel(
-  //       {...newExcel[buildingName], ...holding2[buildingName]}
-  //     )
-      // await setNewExcel({
-      //   ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
-      //   })
-  //   }
-  // }
-
-
-  // const mergeToAgg = async (buildingName, year, month, holding2, aggregate) => {
-  //   console.log(aggregate)
-  //   if (!aggregate) {
-  //     await setAggregate({...aggregate, ...holding2})
-  //     await setNewExcel({...aggregate, ...holding2})
-  //   } else if (!aggregate[buildingName]) {
-  //     await setAggregate({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
-  //       )
-  //       await setNewExcel({...aggregate, ...{...aggregate = {[buildingName]: {[year]:{...holding2[buildingName][year]}}}}}
-  //         )
-  //   } else if (aggregate[buildingName][year]) {
-
-  //     await setAggregate({
-  //     ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
-  //     })
-  //     await setNewExcel({
-  //       ...aggregate, [buildingName]: {[year]: {...aggregate[buildingName][year], ...holding2[buildingName][year]}}
-  //       })
-  //   }
-  // }
 
   // handle clear fileList
   const handleClear = (e) => {
@@ -260,16 +211,6 @@ const findGastos = (json)=>{
 
         <StyledTitle>Insert Title Here (main)</StyledTitle>
 
-        {Object.entries(splitExcel).length > 0 ?
-        <>
-          {/* <button onClick={() => { setGenerateReport(!generateReport); } }>
-            {generateReport ? 'return' : 'generate report'}
-          </button> */}
-          <button onClick={(e) => handleClear(e)}>
-            clear files
-          </button>
-        </>
-         : null}
       <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input
           type='file'
@@ -280,6 +221,16 @@ const findGastos = (json)=>{
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
+        {Object.entries(splitExcel).length > 0 ?
+        <>
+          {/* <button onClick={() => { setGenerateReport(!generateReport); } }>
+            {generateReport ? 'return' : 'generate report'}
+          </button> */}
+          <button onClick={(e) => handleClear(e)}>
+            clear files
+          </button>
+        </>
+         : null}
       </form>
         {!generateReport ? files.length > 0 ?
           <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
@@ -298,7 +249,7 @@ const findGastos = (json)=>{
            filteredExcel ? <UploadTable exceldata={filteredExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts}/> : <UploadTable exceldata={newExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts} />
            : null}
 
-          <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button>
+          {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
           {/* {Object.values(splitExcel).length > 0 && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null} */}
           <Filtered  data={splitExcel}/>
       </Window>
@@ -321,14 +272,17 @@ const DragBox = styled.div`
   display: flex;
   margin: auto;
   border: 1px solid black;
-  height: 100px;
   min-width: 300px;
   width: fit-content;
   justify-content: center;
   align-items: center;
   border-radius: 3px;
+  flex-direction: column;
+  height: fit-content;
 `
 const listitem = styled.ul`
   margin: auto;
+  flex-direction: column;
+  height: fit-content;
 `
 
