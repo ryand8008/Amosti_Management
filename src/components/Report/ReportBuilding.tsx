@@ -16,7 +16,7 @@ export const ReportBuilding = () => {
 
   const [months, setMonths] = useState<string[]>()
   const [ units, setUnits] = useState<string[]>([])
-  const [globalObj, setGlobal] = useState<any>({})
+  const [annualRent, setAnnualRent] = useState<any>()
 
   // hard coded year
   const year = 2022;
@@ -28,7 +28,10 @@ export const ReportBuilding = () => {
   // console.log(aggregate[buildingName][year], 'this should have two months ')
 
   useEffect( () => {
-    // console.log(aggregate[buildingName][year], 'this should have two months ')
+
+    if (annualRent) {
+      console.log(annualRent, 'annual rent')
+    }
     const monthkeys = Object.keys(aggregate[buildingName][year])
     setMonths(monthkeys)
 
@@ -52,9 +55,9 @@ export const ReportBuilding = () => {
     }
 
 
-  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length])
+  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, annualRent])
 
-  const buildUnits = async (months) => {
+  const buildUnits = async (months: string[]) => {
     let monthToChoose = await months[0]
     let units = [];
 
@@ -66,33 +69,16 @@ export const ReportBuilding = () => {
   }
 
   const buildUnitArrays = () => {
-    // map months =>
-    // map unit: [...]
-    let monthUnitArray = ['-', 0, 11]
-
-    // general format of data
-    // {buildingName:
-    //   {year: {
-    //     units: {
-    //       unit1: [],
-    //       unit2: []
-    //     }}}}
-
-
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
 
     months.forEach((month) =>{
       aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
         let tempUnit = units[index]
-        console.log(units, 'here')
-        console.log(index, 'here: index')
-        console.log(units[index], 'unitIndex')
 
         if (index !== 0 && index !== aggregate[buildingName][year][month]['unitInfo'].length) {
 
           let tempArr;
-          let temp;
           if(!blob[buildingName][year]['units'][tempUnit])
           {
             tempArr = Array.from({length: 12})
@@ -104,29 +90,16 @@ export const ReportBuilding = () => {
           }
           let insertionPoint = hardCodeMonths.indexOf(month)
           tempArr[insertionPoint] = item['Renta'];
-//          temp = {[buildingName]: {[year]: {units: {[tempUnit]: tempArr}}}}
 
           blob[buildingName][year]['units'][tempUnit] = tempArr;
-//          console.log(temp, 'this is temp')
 
-          //const test = temp[buildingName][year]['units'][tempUnit][monthindex] = item['Renta'];
-          //test.splice(insertionPoint, 1, Number(item['Renta']) ? item['Renta'] : null )
-//          console.log(test, 'this is test, should be []')
-
-//          console.log(tempUnit, 'temp unit')
-          //blob[buildingName][year] = {...blob[buildingName][year], ...{[units[index]]: [...test]}}
-//          console.log(blob, 'after')
-          //  setGlobal((globalObj) => ({...globalObj[buildingName][year], ...{...globalObj[buildingName][year], ...{['units']: {[tempUnit]: [...test]}}}}))
-          //  console.log(globalObj, 'after')
         }
-        // console.log(temp[buildingName][year][month], 'could be undefined')
-        var a ;
-        a = 1;
+
       })
-      var b ;
-      b=1;
+
     });
     console.log(blob, 'should be {[unit]: [...12 items that are rent costsfor given month, if not available put "-", ]}')
+    setAnnualRent(() => blob)
   }
 
 
