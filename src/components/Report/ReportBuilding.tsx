@@ -1,6 +1,5 @@
 import { AggregateContext } from "../context/ProjectContext";
 import React, { useContext, useEffect, useState } from "react";
-import { ReportTable } from "./ReportTable";
 import styled from "styled-components";
 import { bindComplete } from "pg-protocol/dist/messages";
 
@@ -10,32 +9,24 @@ import { bindComplete } from "pg-protocol/dist/messages";
 
 // This function should receive a building's information, and only that.
 export const ReportBuilding = ({ buildingName }) => {
-  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'may', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
+  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
-  const [buildingNames, setBuildingNames] = useState<string[]>([])
-  const [headers, setHeaders ] = useState<string[]>([])
+  // const [buildingNames, setBuildingNames] = useState<string[]>([])
+  // const [headers, setHeaders ] = useState<string[]>([])
 
   const [months, setMonths] = useState<string[]>()
   const [ units, setUnits] = useState<string[]>([])
   const [annualRent, setAnnualRent] = useState<any>()
   const [annualUnitTotal, setAnnualUnitTotal] = useState<any>()
   const [totalTotal, setTotalTotal] = useState<number[]>()
+  const [totalAdmon, setTotalAdmon] = useState<number[]>()
   // hard coded year
   const year = 2022;
-
-  // hard coded building...for now.
-  // const buildingName = 'Dragón'
 
   // used to get the months
   // console.log(aggregate[buildingName][year], 'this should have two months ')
 
   useEffect( () => {
-
-    if (annualRent) {
-      console.log(annualRent, 'annual rent')
-      console.log(Object.entries(annualRent[buildingName][year]['units']), 'units')
-      // annualRent[buildingName][year]['units'].map((item) => console.log(item))
-    }
     const monthkeys = Object.keys(aggregate[buildingName][year])
     setMonths(monthkeys)
 
@@ -43,18 +34,10 @@ export const ReportBuilding = ({ buildingName }) => {
       buildUnits(months)
     }
 
-    const building = Object.keys(aggregate)
-    setBuildingNames(building)
-    if (buildingNames[0]) {
-
-      console.log(aggregate[buildingNames[0]][2022]['enero']['unitInfo'])
-    }
-
     // testing unit array
     if (months && units.length > 0) {
-      console.log(units)
       buildUnitArrays()
-      // getMonthRentTotal(months)
+      costs(months)
     }
 
     if (annualRent && units.length > 0) {
@@ -66,7 +49,7 @@ export const ReportBuilding = ({ buildingName }) => {
 
     }
 
-  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null])
+  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null])
 
   const buildUnits = async (months: string[]) => {
     let monthToChoose = await months[0]
@@ -76,7 +59,6 @@ export const ReportBuilding = ({ buildingName }) => {
       units.push(item['Depto'])
     })
     units.splice(units.length-1, 1)
-    console.log(units, 'units')
     setUnits(units)
   }
 
@@ -136,17 +118,20 @@ export const ReportBuilding = ({ buildingName }) => {
   }
 
   const getMonthRentTotal = (months: string[], annualUnitTotal:{unit: number}) => {
-    // create array of values
     // {total: [-,-,-,-,-,....]}
     let total:any[] = Array.from({length: 13}).fill('-',0, 13)
-    console.log(months, 'should be 4')
-    // iterate through the months and get the total
-    // find index for insertion point
+    let totalAdmon:any[] = Array.from({length: 13}).fill('-',0, 13)
+
     months.forEach((month) => {
       let fileToCheck = aggregate[buildingName][year][month]['unitInfo']
       let totalRent = fileToCheck[fileToCheck.length-1]['Renta']
+      let admonTotal = fileToCheck[fileToCheck.length-1]['Admon']
+      // or can iterate through files to add up independently
+
+
       let insertionPoint = hardCodeMonths.indexOf(month)
       total[insertionPoint] = totalRent
+      totalAdmon[insertionPoint] = admonTotal
 
     })
     if (annualUnitTotal) {
@@ -156,10 +141,17 @@ export const ReportBuilding = ({ buildingName }) => {
       })
       total[12] = unitTotal
     }
-    console.log(total, 'total')
     setTotalTotal(total)
+    setTotalAdmon(totalAdmon)
+  }
 
+  const costs = (months: string[]) => {
+    // find total of admon (400)
 
+    months.forEach((month) => {
+
+      console.log(aggregate[buildingName][year][month]['costs'], 'should be an array of costs')
+    })
   }
 
   return (
@@ -184,12 +176,43 @@ export const ReportBuilding = ({ buildingName }) => {
       ) :null
     }
     <StyledTotal>
-      <StyledCell>TOTAL</StyledCell>
+      <StyledCell>TOTAL RENTA</StyledCell>
       {totalTotal ? totalTotal.map((total) =>
         <StyledCell>{total}</StyledCell>
       ):null}
-
     </StyledTotal>
+    <tr>
+      <td> </td>
+    </tr>
+    <tr>
+      <StyledBold>egresos</StyledBold>
+    </tr>
+    <tr>
+      <StyledCell>corretaje</StyledCell>
+    </tr>
+    <tr>
+      <StyledCell>admon</StyledCell>
+      {totalAdmon ? totalAdmon.map((admon) =>
+        <StyledCell>{admon}</StyledCell>
+      ): null}
+    </tr>
+    <tr>
+      <StyledCell>gastos</StyledCell>
+    </tr>
+    <tr>
+      <StyledCell>devol</StyledCell>
+    </tr>
+    <tr>
+      <StyledCell>otros</StyledCell>
+    </tr>
+    <tr>
+      <StyledCell>total E</StyledCell>
+    </tr>
+    <tr><td> </td></tr>
+    <tr>
+      <StyledCell>total n</StyledCell>
+    </tr>
+
 
 
     </StyledTable>
@@ -202,6 +225,8 @@ export const ReportBuilding = ({ buildingName }) => {
 const StyledTable = styled.table`
   border: 1px solid red;
   margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `
 const StyleMonthsHeaders = styled.th`
   border: 1px solid black;
@@ -215,21 +240,23 @@ const StyledHeaderContainer = styled.tr`
 
 const StyledCell = styled.td`
   text-align: center;
-
 `
 
 const StyledTotal = styled.tr`
   border-top: 1px solid black;
 `
 
+const StyledBold = styled(StyledCell)`
+  font-weight: bold;
+  text-decoration: underline;
+`
 
-// works but units are out of order
-// {annualRent ? Object.entries(annualRent[buildingName][year]['units']).map((item: [string, string[]]) =>
-//         <tr>
-//           <StyledCell>{item[0]}</StyledCell>
-//           {item[1].map((item2) =>
-//             <StyledCell>{item2}</StyledCell>
-//           )}
-//         </tr>
-//       ) :null
-//     }
+// egresos <bold>
+// corretaje
+// admon
+// gastos
+// devol
+// otros
+// total expenses
+
+// total all
