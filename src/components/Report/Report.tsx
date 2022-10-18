@@ -9,29 +9,25 @@ const months = ['enero', 'febrero', 'marzo', 'abril', 'junio', 'julio', 'agosto'
 const { aggregate } = useContext(AggregateContext)
 
 // building name, year
-const [buildingNames, setBuildingNames] = useState<string[]>()
+const [buildingNames, setBuildingNames] = useState<string[]>([])
 const [year, setYear] = useState<number[]>()
 
 
 useEffect(() => {
-  // console.log(aggregate, 'dis agg')
+  console.log(aggregate, 'dis agg')
   const buildings = Object.keys(aggregate);
+
   setBuildingNames(buildings)
 
-}, [aggregate])
+
+}, [aggregate ? Object.keys(aggregate).length : null, buildingNames.length > 0])
   return (
     <>
       <h1>Hello from Report!</h1>
-      {/* <StyledTable>
-        <StyledHeaderContainer>
-          <th></th>
-          { months.map((item) =>
-          <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
-          )}
-        </StyledHeaderContainer>
 
-      </StyledTable> */}
-      <ReportBuilding />
+      {buildingNames.length > 0 ? buildingNames.map((building) =>
+        <ReportBuilding buildingName={building}/>)
+         : null}
     </>
   )
 }

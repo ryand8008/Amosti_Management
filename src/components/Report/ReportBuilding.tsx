@@ -9,7 +9,7 @@ import { bindComplete } from "pg-protocol/dist/messages";
 // expect to work from Object with 'months' as keys
 
 // This function should receive a building's information, and only that.
-export const ReportBuilding = () => {
+export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'may', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
   const [buildingNames, setBuildingNames] = useState<string[]>([])
@@ -19,11 +19,12 @@ export const ReportBuilding = () => {
   const [ units, setUnits] = useState<string[]>([])
   const [annualRent, setAnnualRent] = useState<any>()
   const [annualUnitTotal, setAnnualUnitTotal] = useState<any>()
+  const [totalTotal, setTotalTotal] = useState<number[]>()
   // hard coded year
   const year = 2022;
 
   // hard coded building...for now.
-  const buildingName = 'Dragón'
+  // const buildingName = 'Dragón'
 
   // used to get the months
   // console.log(aggregate[buildingName][year], 'this should have two months ')
@@ -40,8 +41,6 @@ export const ReportBuilding = () => {
 
     if (months) {
       buildUnits(months)
-
-      console.log(units)
     }
 
     const building = Object.keys(aggregate)
@@ -55,23 +54,23 @@ export const ReportBuilding = () => {
     if (months && units.length > 0) {
       console.log(units)
       buildUnitArrays()
+      // getMonthRentTotal(months)
     }
 
     if (annualRent && units.length > 0) {
       console.log('neter')
       getAnnualRentTotal()
     }
+    if (annualUnitTotal) {
+      getMonthRentTotal(months, annualUnitTotal)
 
+    }
 
-  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null])
+  }, [Object.keys(aggregate).length, buildingNames.length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null])
 
   const buildUnits = async (months: string[]) => {
     let monthToChoose = await months[0]
     let units = [];
-
-    // let units = aggregate[buildingName][year][monthToChoose]['unitInfo'].filter((item) =>
-    //   item['Depto'] !== buildingName
-    // )
 
     aggregate[buildingName][year][monthToChoose]['unitInfo'].map((item) => {
       units.push(item['Depto'])
@@ -103,7 +102,6 @@ export const ReportBuilding = () => {
             tempArr = blob[buildingName][year]['units'][tempUnit];
           }
           let insertionPoint = hardCodeMonths.indexOf(month)
-          console.log(typeof item['Renta'], item['Renta'], index)
           tempArr[insertionPoint] = Number(item['Renta']);
 
           blob[buildingName][year]['units'][tempUnit] = tempArr;
@@ -133,10 +131,35 @@ export const ReportBuilding = () => {
 
       }
     })
-
     // annual total should look like this => {[unit1]: NUMBER, [unit2]: NUMBER, ...}
-
     setAnnualUnitTotal(() => annualTotal)
+  }
+
+  const getMonthRentTotal = (months: string[], annualUnitTotal:{unit: number}) => {
+    // create array of values
+    // {total: [-,-,-,-,-,....]}
+    let total:any[] = Array.from({length: 13}).fill('-',0, 13)
+    console.log(months, 'should be 4')
+    // iterate through the months and get the total
+    // find index for insertion point
+    months.forEach((month) => {
+      let fileToCheck = aggregate[buildingName][year][month]['unitInfo']
+      let totalRent = fileToCheck[fileToCheck.length-1]['Renta']
+      let insertionPoint = hardCodeMonths.indexOf(month)
+      total[insertionPoint] = totalRent
+
+    })
+    if (annualUnitTotal) {
+      let unitTotal = 0
+      Object.values(annualUnitTotal).forEach((amount) => {
+        unitTotal += Number(amount)
+      })
+      total[12] = unitTotal
+    }
+    console.log(total, 'total')
+    setTotalTotal(total)
+
+
   }
 
   return (
@@ -160,6 +183,13 @@ export const ReportBuilding = () => {
         </tr>
       ) :null
     }
+    <StyledTotal>
+      <StyledCell>TOTAL</StyledCell>
+      {totalTotal ? totalTotal.map((total) =>
+        <StyledCell>{total}</StyledCell>
+      ):null}
+
+    </StyledTotal>
 
 
     </StyledTable>
@@ -185,6 +215,11 @@ const StyledHeaderContainer = styled.tr`
 
 const StyledCell = styled.td`
   text-align: center;
+
+`
+
+const StyledTotal = styled.tr`
+  border-top: 1px solid black;
 `
 
 
