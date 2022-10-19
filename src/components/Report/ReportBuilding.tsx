@@ -50,6 +50,9 @@ export const ReportBuilding = ({ buildingName }) => {
     if (annualUnitTotal) {
       getMonthCostsTotal(months, annualUnitTotal)
     }
+    if (totalTotal && totalExpenses) {
+      getTotalProfit(totalTotal, totalExpenses)
+    }
 
   }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh])
 
@@ -192,15 +195,10 @@ export const ReportBuilding = ({ buildingName }) => {
   }
 
   const getTotalExpenses = (totalAdmon: any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
-    console.log(totalGastos, 'total gastos should be an array')
 
-    // use all the totals of expenses, add each index position
     let totalExpensesArray = Array.from({length: 13}).fill('-', 0, 13)
     let totalExpenses = 0
-
-
-
-    for (let index = 0; index <= 12; index++) {
+    for (let index = 0; index < 12; index++) {
       let totalE = 0;
       totalAdmon[index] && !isNaN(Number(totalAdmon[index])) ? totalE += Number(totalAdmon[index]) : null
       totalGastos[index] && !isNaN(Number(totalGastos[index])) ? totalE += Number(totalGastos[index]) : null
@@ -209,9 +207,22 @@ export const ReportBuilding = ({ buildingName }) => {
       totalExpenses += totalE
       totalExpensesArray[index] = totalE > 0 ? totalE : '-'
     }
-
   totalExpensesArray[12] = totalExpenses;
   setTotalExpenses((totalExpenses) => totalExpensesArray)
+}
+
+const getTotalProfit = (totalTotal, totalExpenses) => {
+  let totalNet = Array.from({length: 13}).fill('-', 0, 13);
+  let total = 0;
+  for (let index = 0; index < 13; index++) {
+    if (totalTotal[index] !== '-' && totalExpenses[index] !== '-') {
+      totalNet[index] = totalTotal[index] - totalExpenses[index]
+    } else {
+      totalNet[index] = '-'
+    }
+  }
+
+  setTotalProfit(totalNet)
 }
 
   return (
@@ -336,3 +347,4 @@ const StyledBold = styled(StyledCell)`
 // total expenses
 
 // total all
+
