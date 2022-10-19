@@ -35,7 +35,6 @@ export const ReportBuilding = ({ buildingName }) => {
   // const year = 2022;
 
   useEffect( () => {
-
     if (!months) {
       let monthkeys = Object.keys(aggregate[buildingName][year])
       setMonths(monthkeys)
@@ -43,6 +42,7 @@ export const ReportBuilding = ({ buildingName }) => {
     }
     if (months) {
       if (units.length === 0) {
+        console.log(units)
        buildUnits()
       }
     }
@@ -62,11 +62,11 @@ export const ReportBuilding = ({ buildingName }) => {
     if (annualUnitTotal) {
       getMonthCostsTotal(months, annualUnitTotal)
     }
-    if (totalTotal && totalExpenses) {
+    if (totalTotal) {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
- }, [Object.keys(aggregate).length, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
+ }, [Object.keys(aggregate).length, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], totalExpenses[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
 
   const buildUnits = async () => {
     let units = [];
@@ -177,7 +177,7 @@ export const ReportBuilding = ({ buildingName }) => {
 
     // get total expenses
     if (totalAdmon && totalGastos) {
-      console.log('here')
+      console.log(' HERE')
       getTotalExpenses(totalAdmon, totalGastos, totalDevol, totalOtros)
     }
   }

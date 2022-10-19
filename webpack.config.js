@@ -15,7 +15,7 @@ module.exports = {
   // Where to compile the bundle
   // By default the output directory is `dist`
   output: {
-    filename: "bundle.js.gz",
+    filename: "bundle.js",
     path: path.resolve(__dirname, "dist")
   },
 
