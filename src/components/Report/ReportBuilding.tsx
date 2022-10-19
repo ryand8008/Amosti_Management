@@ -36,33 +36,27 @@ export const ReportBuilding = ({ buildingName }) => {
 
   useEffect( () => {
 
-    console.log(units, 'unitssss')
-    let monthkeys = Object.keys(aggregate[buildingName][year])
+    if (!months) {
+      let monthkeys = Object.keys(aggregate[buildingName][year])
+      setMonths(monthkeys)
 
-    console.log(monthkeys, 'monthkeys')
-    setMonths(() => monthkeys)
-
+    }
     if (months) {
-      console.log('im in')
       if (units.length === 0) {
        buildUnits()
-
       }
     }
 
-    // testing unit array
     if (months && units.length > 0) {
       try {
         buildUnitArrays()
       }
       catch {
-        console.log('error or something')
+        console.log('error or')
       }
     }
 
     if (annualRent && units.length > 0) {
-      console.log('neter')
-      console.log(annualRent, 'annual')
       getAnnualRentTotal()
     }
     if (annualUnitTotal) {
@@ -72,18 +66,9 @@ export const ReportBuilding = ({ buildingName }) => {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
- }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
-
-
-  // NEW
-  // }, [Object.keys(aggregate).length, months ? months.length : null, year, units, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12],  aggregate ? Object.keys(aggregate[buildingName]).length : null, annualRent ? annualRent[buildingName][year]['units'].length : null])
-
-  // works
-  // }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
-
+ }, [Object.keys(aggregate).length, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
 
   const buildUnits = async () => {
-    // let temp = await aggregate[buildingName][year][months[0]]['unitInfo']
     let units = [];
 
     aggregate[buildingName][year][months[0]]['unitInfo'].map((item) => {
@@ -91,16 +76,15 @@ export const ReportBuilding = ({ buildingName }) => {
     })
     units.splice(units.length-1, 1)
     setUnits(units)
-    // return units;
   }
 
   // build unit array - structure: {buildingname: {year: {units: {[unitname]: [...rent for each month]}}}}
   const buildUnitArrays = async () => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
+    let tempMonths = Object.keys(aggregate[buildingName][year])
 
-
-    await months.forEach( (month) =>{
+    tempMonths.forEach( (month: string) =>{
         aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
         let tempUnit = units[index]
 
@@ -132,7 +116,6 @@ export const ReportBuilding = ({ buildingName }) => {
   const getAnnualRentTotal = async () => {
     let annualTotal = {}
     let array = annualRent[buildingName][year]['units']
-    console.log(await units, 'this is units')
 
    units.forEach((unit:string, index) =>{
       if (index !== 0) {
@@ -155,8 +138,9 @@ export const ReportBuilding = ({ buildingName }) => {
     let totalAdmon:any[] = Array.from({length: 13}).fill('-',0, 13)
     let admonAnnual = 0;
     let testGastos:any[] = Array.from({length: 13}).fill('-',0, 13)
+    let tempMonths = Object.keys(aggregate[buildingName][year])
 
-    months.forEach((month) => {
+    tempMonths.forEach((month) => {
       let insertionPoint = hardCodeMonths.indexOf(month)
       let fileToCheck = aggregate[buildingName][year][month]['unitInfo']
       let totalRent = fileToCheck[fileToCheck.length-1]['Renta']
@@ -256,24 +240,19 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
 
 const changeYears = async (e, change: string, year: string) => {
   e.preventDefault()
-  console.log(years, 'this is years')
   let index = years.indexOf(year)
 
   if (change === 'decrease'){
+    setYear((year) => years[index -1])
     setAnnualRent(null)
     setAnnualUnitTotal(null)
-    // setUnits([])
-    setYear((year) => years[index -1])
-    console.log(year)
   }
 
   if (change === 'increase') {
+    setYear((year) => newYear)
     setAnnualRent(null)
     setAnnualUnitTotal(null)
-    // setUnits([])
-    setYear((year) => newYear)
     let newYear = years[index + 1]
-    console.log(newYear, 'should be 2023')
   }
 }
 
@@ -408,3 +387,36 @@ const StyledBold = styled(StyledCell)`
 
 // total all
 
+// works
+// const buildUnitArrays = async (months: string[]) => {
+
+//   let blob = {[buildingName]: {[year]: {'units': {}}}};
+//   console.log(months, year, 'months, years')
+
+//   months.forEach( (month: string) =>{
+//       aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
+//       let tempUnit = units[index]
+
+//       if (index !== 0 && index !== aggregate[buildingName][year][month]['unitInfo'].length-1) {
+
+//         let tempArr;
+//         if(!blob[buildingName][year]['units'][tempUnit])
+//         {
+//           tempArr = Array.from({length: 12})
+//           tempArr.fill('-', 0, tempArr.length)
+//         }
+//         else
+//         {
+//           tempArr = blob[buildingName][year]['units'][tempUnit];
+//         }
+//         let insertionPoint = hardCodeMonths.indexOf(month)
+//         tempArr[insertionPoint] = Number(item['Renta']);
+
+//         blob[buildingName][year]['units'][tempUnit] = tempArr;
+
+//       }
+
+//     })
+//   });
+//   setAnnualRent(() => blob)
+// }
