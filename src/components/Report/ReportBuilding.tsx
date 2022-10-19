@@ -1,5 +1,5 @@
 import { AggregateContext } from "../context/ProjectContext";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { bindComplete } from "pg-protocol/dist/messages";
 
@@ -11,11 +11,12 @@ import { bindComplete } from "pg-protocol/dist/messages";
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
-  const [years, setYears] = useState<string[]>()
-  // const [year, setYear] = useState<string>()
+  // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
+  const years = Object.keys(aggregate[buildingName])
+  const [year, setYear] = useState<string>(years[0])
 
   const [months, setMonths] = useState<string[]>()
-  const [ units, setUnits] = useState<string[]>([])
+  const [units, setUnits] = useState<string[] | any>([])
   const [annualRent, setAnnualRent] = useState<any>()
   const [annualUnitTotal, setAnnualUnitTotal] = useState<any>()
   // expenses
@@ -31,23 +32,32 @@ export const ReportBuilding = ({ buildingName }) => {
   // refreshbutton uses count to re render everything
   const [refresh, setRefresh] = useState<number>(0)
   // hard coded year
-  const year = 2022;
+  // const year = 2022;
 
   useEffect( () => {
-    const yearsAvailable = Object.keys(aggregate[buildingName])
-    setYears(yearsAvailable)
-    console.log(years, 'this is years')
 
-    const monthkeys = Object.keys(aggregate[buildingName][year])
-    setMonths(monthkeys)
+    console.log(units, 'unitssss')
+    let monthkeys = Object.keys(aggregate[buildingName][year])
+
+    console.log(monthkeys, 'monthkeys')
+    setMonths(() => monthkeys)
 
     if (months) {
-      buildUnits(months)
+      console.log('im in')
+      if (units.length === 0) {
+       buildUnits()
+
+      }
     }
 
     // testing unit array
     if (months && units.length > 0) {
-      buildUnitArrays()
+      try {
+        buildUnitArrays()
+      }
+      catch {
+        console.log('error or something')
+      }
     }
 
     if (annualRent && units.length > 0) {
@@ -62,26 +72,36 @@ export const ReportBuilding = ({ buildingName }) => {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
-  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year])
+ }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
 
-  const buildUnits = async (months: string[]) => {
-    let monthToChoose = months[0]
+
+  // NEW
+  // }, [Object.keys(aggregate).length, months ? months.length : null, year, units, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12],  aggregate ? Object.keys(aggregate[buildingName]).length : null, annualRent ? annualRent[buildingName][year]['units'].length : null])
+
+  // works
+  // }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
+
+
+  const buildUnits = async () => {
+    // let temp = await aggregate[buildingName][year][months[0]]['unitInfo']
     let units = [];
 
-    aggregate[buildingName][year][monthToChoose]['unitInfo'].map((item) => {
+    aggregate[buildingName][year][months[0]]['unitInfo'].map((item) => {
       units.push(item['Depto'])
     })
     units.splice(units.length-1, 1)
     setUnits(units)
+    // return units;
   }
 
   // build unit array - structure: {buildingname: {year: {units: {[unitname]: [...rent for each month]}}}}
-  const buildUnitArrays = () => {
+  const buildUnitArrays = async () => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
 
-    months.forEach((month) =>{
-      aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
+
+    await months.forEach( (month) =>{
+        aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
         let tempUnit = units[index]
 
         if (index !== 0 && index !== aggregate[buildingName][year][month]['unitInfo'].length-1) {
@@ -104,16 +124,17 @@ export const ReportBuilding = ({ buildingName }) => {
         }
 
       })
-
     });
     setAnnualRent(() => blob)
   }
 
   // annual total for a specific unit
-  const getAnnualRentTotal = () => {
+  const getAnnualRentTotal = async () => {
     let annualTotal = {}
     let array = annualRent[buildingName][year]['units']
-    units.forEach((unit, index) =>{
+    console.log(await units, 'this is units')
+
+   units.forEach((unit:string, index) =>{
       if (index !== 0) {
         annualTotal[unit] = 0
         array[unit].forEach((item:any) => {
@@ -233,10 +254,37 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
   setTotalProfit(totalNet)
 }
 
+const changeYears = async (e, change: string, year: string) => {
+  e.preventDefault()
+  console.log(years, 'this is years')
+  let index = years.indexOf(year)
+
+  if (change === 'decrease'){
+    setAnnualRent(null)
+    setAnnualUnitTotal(null)
+    // setUnits([])
+    setYear((year) => years[index -1])
+    console.log(year)
+  }
+
+  if (change === 'increase') {
+    setAnnualRent(null)
+    setAnnualUnitTotal(null)
+    // setUnits([])
+    setYear((year) => newYear)
+    let newYear = years[index + 1]
+    console.log(newYear, 'should be 2023')
+  }
+}
+
   return (
     <>
     <h1>{buildingName}: {year}</h1>
-
+    <div>
+      {years.indexOf(year) !== 0 ? <button onClick={(e) => changeYears(e,'decrease', year)}>{'<'}</button> : null}
+      <span>{year}</span>
+      {years.indexOf(year) !== years.length -1 ? <button onClick={(e) => {e.preventDefault(); changeYears(e,'increase', year)}}>{'>'}</button> : null}
+    </div>
    <StyledTable>
     <StyledHeaderContainer>
       <th>Depto</th>
@@ -245,7 +293,7 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
       )}
       <StyleMonthsHeaders>annual</StyleMonthsHeaders>
     </StyledHeaderContainer>
-      {annualRent ? units.map((unit, index) =>
+      {annualRent  ? units.map((unit, index) =>
         <tr>
           <StyledCell>{unit !== buildingName ? unit : null}</StyledCell>
           {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) =>

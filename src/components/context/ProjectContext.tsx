@@ -39,7 +39,6 @@ const AggregateProvider = ({children}) => {
 
 
   const gatherInfo = async (holding2) => {
-    console.log(holding2, 'holding2')
     setContainer((container) => [...container, {...holding2}])
   }
 
