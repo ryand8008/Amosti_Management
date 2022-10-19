@@ -11,20 +11,24 @@ import { bindComplete } from "pg-protocol/dist/messages";
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
-  // const [buildingNames, setBuildingNames] = useState<string[]>([])
-  // const [headers, setHeaders ] = useState<string[]>([])
 
   const [months, setMonths] = useState<string[]>()
   const [ units, setUnits] = useState<string[]>([])
   const [annualRent, setAnnualRent] = useState<any>()
   const [annualUnitTotal, setAnnualUnitTotal] = useState<any>()
+  // expenses
   const [totalTotal, setTotalTotal] = useState<number[]>()
-  const [totalAdmon, setTotalAdmon] = useState<number[]>()
+  const [totalAdmon, setTotalAdmon] = useState<number[] | any[]>()
+  const [totalGastos, setTotalGastos] = useState<number[] | any[]>()
+  let gastosTotal;
+  const [totalDevol, setTotalDevol] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
+  const [totalOtros, setTotalOtros] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
+  const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
+  const [totalProfit, setTotalProfit] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
+
+  let something;
   // hard coded year
   const year = 2022;
-
-  // used to get the months
-  // console.log(aggregate[buildingName][year], 'this should have two months ')
 
   useEffect( () => {
     const monthkeys = Object.keys(aggregate[buildingName][year])
@@ -37,7 +41,6 @@ export const ReportBuilding = ({ buildingName }) => {
     // testing unit array
     if (months && units.length > 0) {
       buildUnitArrays()
-      costs(months)
     }
 
     if (annualRent && units.length > 0) {
@@ -45,14 +48,19 @@ export const ReportBuilding = ({ buildingName }) => {
       getAnnualRentTotal()
     }
     if (annualUnitTotal) {
-      getMonthRentTotal(months, annualUnitTotal)
-
+      getMonthCostsTotal(months, annualUnitTotal)
     }
 
-  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null])
+    // if (totalAdmon) {
+    //   getTotalExpenses(totalAdmon, totalGastos, totalDevol, totalOtros)
+    //   console.log(gastosTotal, 'gastostotal')
+    // }
+
+
+  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, gastosTotal])
 
   const buildUnits = async (months: string[]) => {
-    let monthToChoose = await months[0]
+    let monthToChoose = months[0]
     let units = [];
 
     aggregate[buildingName][year][monthToChoose]['unitInfo'].map((item) => {
@@ -93,7 +101,7 @@ export const ReportBuilding = ({ buildingName }) => {
       })
 
     });
-    console.log(blob, 'should be {[unit]: [...12 items that are rent costsfor given month, if not available put "-", ]}')
+    // console.log(blob, 'should be {[unit]: [...12 items that are rent costsfor given month, if not available put "-", ]}')
 
     setAnnualRent(() => blob)
   }
@@ -117,23 +125,31 @@ export const ReportBuilding = ({ buildingName }) => {
     setAnnualUnitTotal(() => annualTotal)
   }
 
-  const getMonthRentTotal = (months: string[], annualUnitTotal:{unit: number}) => {
+  const getMonthCostsTotal = async (months: string[], annualUnitTotal:{unit: number}) => {
     // {total: [-,-,-,-,-,....]}
     let total:any[] = Array.from({length: 13}).fill('-',0, 13)
     let totalAdmon:any[] = Array.from({length: 13}).fill('-',0, 13)
+    let admonAnnual = 0;
+    let testGastos:any[] = Array.from({length: 13}).fill('-',0, 13)
 
     months.forEach((month) => {
+      let insertionPoint = hardCodeMonths.indexOf(month)
       let fileToCheck = aggregate[buildingName][year][month]['unitInfo']
       let totalRent = fileToCheck[fileToCheck.length-1]['Renta']
+      let gastos = aggregate[buildingName][year][month]['costs']
+
       let admonTotal = fileToCheck[fileToCheck.length-1]['Admon']
       // or can iterate through files to add up independently
+      admonAnnual += Number(admonTotal)
 
-
-      let insertionPoint = hardCodeMonths.indexOf(month)
+      // insert value with corresponding month index
       total[insertionPoint] = totalRent
       totalAdmon[insertionPoint] = admonTotal
+      // totalGastos[insertionPoint] = gastos;
+      testGastos = getGastosInformation(gastos, insertionPoint, testGastos)
 
     })
+
     if (annualUnitTotal) {
       let unitTotal = 0
       Object.values(annualUnitTotal).forEach((amount) => {
@@ -142,23 +158,79 @@ export const ReportBuilding = ({ buildingName }) => {
       total[12] = unitTotal
     }
     setTotalTotal(total)
+
+    // set last index position as admonAnnual
+    totalAdmon[12] = admonAnnual
     setTotalAdmon(totalAdmon)
+
+    // gastos
+    let gastosAnnual = await findGastosTotal(testGastos)
+    setTotalGastos(await gastosAnnual)
+
+    // get total expenses
+    if (totalAdmon && totalGastos) {
+      console.log('here')
+      getTotalExpenses(totalAdmon, totalGastos, totalDevol, totalOtros)
+    }
   }
 
-  const costs = (months: string[]) => {
-    // find total of admon (400)
-
-    months.forEach((month) => {
-
-      console.log(aggregate[buildingName][year][month]['costs'], 'should be an array of costs')
+  const getGastosInformation = (gastos, insertionPoint, testGastos) => {
+    let gastosTotal = 0;
+    gastos.forEach((item, index) => {
+      if (index !== 0) {
+        if (item['Gastos'] !== '') {
+          gastosTotal += Number(item['Cost'])
+        }
+      }
     })
+    testGastos[insertionPoint] = gastosTotal
+    return testGastos;
   }
+
+  const findGastosTotal = (testGastos) => {
+    let annualGastos = 0
+    testGastos.forEach((value) => {
+      if (!isNaN(value)) {
+        annualGastos += Number(value)
+      }
+    })
+    testGastos[12] = annualGastos
+    return testGastos
+
+  }
+
+  const getTotalExpenses = (totalAdmon: any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
+    console.log(totalGastos, 'total gastos should be an array')
+
+    // use all the totals of expenses, add each index position
+    let totalExpensesArray = Array.from({length: 13}).fill('-', 0, 13)
+    let totalExpenses = 0
+
+
+
+    for (let index = 0; index <= 12; index++) {
+      let totalE = 0;
+      console.log(totalGastos[index])
+      totalAdmon[index] && !isNaN(Number(totalAdmon[index])) ? totalE += Number(totalAdmon[index]) : null
+      totalGastos[index] && !isNaN(Number(totalGastos[index])) ? totalE += Number(totalGastos[index]) : null
+      totalDevol[index] && !isNaN(Number(totalDevol[index])) ? totalE += Number(totalDevol[index]) : null
+      totalOtros[index] && !isNaN(Number(totalOtros[index])) ? totalE += Number(totalOtros[index]) : null
+      totalExpenses += totalE
+      totalExpensesArray[index] = totalE > 0 ? totalE : '-'
+    }
+
+  totalExpensesArray[12] = totalExpenses;
+  console.log(totalExpensesArray, 'should be an array [number, number....]')
+  setTotalExpenses((totalExpenses) => totalExpensesArray)
+  something = totalExpenses
+}
 
   return (
     <>
+    <h1>{buildingName}</h1>
    <StyledTable>
     <StyledHeaderContainer>
-      <th>{buildingName}</th>
+      <th>Depto</th>
       { hardCodeMonths.map((item) =>
       <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
       )}
@@ -198,19 +270,34 @@ export const ReportBuilding = ({ buildingName }) => {
     </tr>
     <tr>
       <StyledCell>gastos</StyledCell>
+      {totalGastos ? totalGastos.map((item) =>
+        <StyledCell>{item}</StyledCell>
+      ) : null}
     </tr>
     <tr>
       <StyledCell>devol</StyledCell>
+      {totalDevol ? totalDevol.map((item) =>
+        <StyledCell>{item}</StyledCell>
+      ) : null}
     </tr>
     <tr>
       <StyledCell>otros</StyledCell>
+      {totalOtros ? totalOtros.map((item) =>
+        <StyledCell>{item}</StyledCell>
+      ) : null}
     </tr>
     <tr>
-      <StyledCell>total E</StyledCell>
+      <StyledBold>total E</StyledBold>
+      {totalExpenses ? totalExpenses.map((item) =>
+        <StyledCell>{item}</StyledCell>
+      ) : null}
     </tr>
     <tr><td> </td></tr>
     <tr>
-      <StyledCell>total n</StyledCell>
+      <StyledBold>total n</StyledBold>
+      {totalProfit ? totalProfit.map((item) =>
+        <StyledCell>{item}</StyledCell>
+      ) : null}
     </tr>
 
 
