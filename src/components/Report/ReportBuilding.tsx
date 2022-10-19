@@ -19,14 +19,14 @@ export const ReportBuilding = ({ buildingName }) => {
   // expenses
   const [totalTotal, setTotalTotal] = useState<number[]>()
   const [totalAdmon, setTotalAdmon] = useState<number[] | any[]>()
-  const [totalGastos, setTotalGastos] = useState<number[] | any[]>()
-  let gastosTotal;
+  const [totalGastos, setTotalGastos] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalDevol, setTotalDevol] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalOtros, setTotalOtros] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalProfit, setTotalProfit] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
 
-  let something;
+  // refreshbutton uses count to re render everything
+  const [refresh, setRefresh] = useState<number>(0)
   // hard coded year
   const year = 2022;
 
@@ -51,13 +51,7 @@ export const ReportBuilding = ({ buildingName }) => {
       getMonthCostsTotal(months, annualUnitTotal)
     }
 
-    // if (totalAdmon) {
-    //   getTotalExpenses(totalAdmon, totalGastos, totalDevol, totalOtros)
-    //   console.log(gastosTotal, 'gastostotal')
-    // }
-
-
-  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, gastosTotal])
+  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh])
 
   const buildUnits = async (months: string[]) => {
     let monthToChoose = months[0]
@@ -101,8 +95,6 @@ export const ReportBuilding = ({ buildingName }) => {
       })
 
     });
-    // console.log(blob, 'should be {[unit]: [...12 items that are rent costsfor given month, if not available put "-", ]}')
-
     setAnnualRent(() => blob)
   }
 
@@ -210,7 +202,6 @@ export const ReportBuilding = ({ buildingName }) => {
 
     for (let index = 0; index <= 12; index++) {
       let totalE = 0;
-      console.log(totalGastos[index])
       totalAdmon[index] && !isNaN(Number(totalAdmon[index])) ? totalE += Number(totalAdmon[index]) : null
       totalGastos[index] && !isNaN(Number(totalGastos[index])) ? totalE += Number(totalGastos[index]) : null
       totalDevol[index] && !isNaN(Number(totalDevol[index])) ? totalE += Number(totalDevol[index]) : null
@@ -220,9 +211,7 @@ export const ReportBuilding = ({ buildingName }) => {
     }
 
   totalExpensesArray[12] = totalExpenses;
-  console.log(totalExpensesArray, 'should be an array [number, number....]')
   setTotalExpenses((totalExpenses) => totalExpensesArray)
-  something = totalExpenses
 }
 
   return (
@@ -303,7 +292,7 @@ export const ReportBuilding = ({ buildingName }) => {
 
 
     </StyledTable>
-
+        <button onClick={() => setRefresh(refresh + 1)}>refresh data</button>
     </>
 
   )
