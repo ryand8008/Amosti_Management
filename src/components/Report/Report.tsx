@@ -5,7 +5,7 @@ import { ReportBuilding } from "./ReportBuilding";
 
 // GET BUILDING NAMES with Object.keys(aggregate), then iterate through
 export const Report = () => {
-const months = ['enero', 'febrero', 'marzo', 'abril', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
+const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
 const { aggregate } = useContext(AggregateContext)
 
 // building name, year
@@ -21,10 +21,12 @@ useEffect(() => {
 
 
 }, [aggregate ? Object.keys(aggregate).length : null, buildingNames.length > 0])
+
+
   return (
     <>
       <h1>Hello from Report!</h1>
-
+      <div></div>
       {buildingNames.length > 0 ? buildingNames.map((building) =>
         <ReportBuilding buildingName={building}/>)
          : null}

@@ -39,6 +39,7 @@ const AggregateProvider = ({children}) => {
 
 
   const gatherInfo = async (holding2) => {
+    console.log(holding2, 'holding2')
     setContainer((container) => [...container, {...holding2}])
   }
 
@@ -49,7 +50,14 @@ const AggregateProvider = ({children}) => {
     try {
       if (aggregate[buildingName]) {
 
-        setAggregate( (aggregate) => ({...aggregate, ...{[buildingName]: {[year]: {...aggregate[buildingName][year], ...{...aggregate[buildingName][year], ...item[buildingName][year]}}}}}))
+        if (aggregate[buildingName][year]) {
+          aggregate[buildingName][year] = {...aggregate[buildingName][year], ...item[buildingName][year]}
+        } else {
+          aggregate[buildingName][year] = item[buildingName][year]
+
+        }
+
+        // setAggregate( (aggregate) => ({...aggregate, ...{[buildingName]: {[year]: {...aggregate[buildingName][year], ...{...aggregate[buildingName][year], ...item[buildingName][year]}}}}}))
       }
       else {
         setAggregate((aggregate) => ({...aggregate,[buildingName]: {...item[buildingName]}}))

@@ -11,6 +11,8 @@ import { bindComplete } from "pg-protocol/dist/messages";
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
+  const [years, setYears] = useState<string[]>()
+  // const [year, setYear] = useState<string>()
 
   const [months, setMonths] = useState<string[]>()
   const [ units, setUnits] = useState<string[]>([])
@@ -19,6 +21,7 @@ export const ReportBuilding = ({ buildingName }) => {
   // expenses
   const [totalTotal, setTotalTotal] = useState<number[]>()
   const [totalAdmon, setTotalAdmon] = useState<number[] | any[]>()
+  const [totalCorretaje, setTotalCorretaje] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalGastos, setTotalGastos] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalDevol, setTotalDevol] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalOtros, setTotalOtros] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
@@ -31,6 +34,10 @@ export const ReportBuilding = ({ buildingName }) => {
   const year = 2022;
 
   useEffect( () => {
+    const yearsAvailable = Object.keys(aggregate[buildingName])
+    setYears(yearsAvailable)
+    console.log(years, 'this is years')
+
     const monthkeys = Object.keys(aggregate[buildingName][year])
     setMonths(monthkeys)
 
@@ -45,6 +52,7 @@ export const ReportBuilding = ({ buildingName }) => {
 
     if (annualRent && units.length > 0) {
       console.log('neter')
+      console.log(annualRent, 'annual')
       getAnnualRentTotal()
     }
     if (annualUnitTotal) {
@@ -54,7 +62,7 @@ export const ReportBuilding = ({ buildingName }) => {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
-  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh])
+  }, [Object.keys(aggregate).length, months ? months.length: null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], year])
 
   const buildUnits = async (months: string[]) => {
     let monthToChoose = months[0]
@@ -227,7 +235,8 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
 
   return (
     <>
-    <h1>{buildingName}</h1>
+    <h1>{buildingName}: {year}</h1>
+
    <StyledTable>
     <StyledHeaderContainer>
       <th>Depto</th>
@@ -248,7 +257,7 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
       ) :null
     }
     <StyledTotal>
-      <StyledCell>TOTAL RENTA</StyledCell>
+      <StyledCell>TOTAL R</StyledCell>
       {totalTotal ? totalTotal.map((total) =>
         <StyledCell>{total}</StyledCell>
       ):null}
@@ -261,6 +270,9 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
     </tr>
     <tr>
       <StyledCell>corretaje</StyledCell>
+      {totalCorretaje ? totalCorretaje.map((admon) =>
+        <StyledCell>{admon}</StyledCell>
+      ): null}
     </tr>
     <tr>
       <StyledCell>admon</StyledCell>

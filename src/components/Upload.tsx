@@ -71,7 +71,7 @@ export const Upload = () => {
 
   // checking aggregate
   useEffect(() => {
-    // console.log(aggregate, 'it do be here')
+    console.log(aggregate, 'it do be here')
 
   }, [aggregate, newExcel])
 
