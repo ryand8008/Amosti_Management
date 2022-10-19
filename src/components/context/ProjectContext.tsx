@@ -31,7 +31,6 @@ const AggregateProvider = ({children}) => {
         }
       }
       )
-      console.log(aggregate, 'effect ag')
     }
 
 

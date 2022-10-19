@@ -1,6 +1,7 @@
 "use strict";
 
 const path = require("path");
+const CompressionPlugin = require("compression-webpack-plugin");
 
 module.exports = {
   mode: 'production',
@@ -14,7 +15,7 @@ module.exports = {
   // Where to compile the bundle
   // By default the output directory is `dist`
   output: {
-    filename: "bundle.js",
+    filename: "bundle.js.gz",
     path: path.resolve(__dirname, "dist")
   },
 
@@ -27,10 +28,11 @@ module.exports = {
       }
     ]
   },
+  plugins: [new CompressionPlugin()],
 
   // File extensions to support resolving
   resolve: {
-    extensions: [".ts", ".tsx", ".js"],
+    extensions: [".ts", ".tsx", ".js", ".gz"],
     // fallback: {
     //   "fs": false,
     //   "tls": false,

@@ -387,36 +387,3 @@ const StyledBold = styled(StyledCell)`
 
 // total all
 
-// works
-// const buildUnitArrays = async (months: string[]) => {
-
-//   let blob = {[buildingName]: {[year]: {'units': {}}}};
-//   console.log(months, year, 'months, years')
-
-//   months.forEach( (month: string) =>{
-//       aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
-//       let tempUnit = units[index]
-
-//       if (index !== 0 && index !== aggregate[buildingName][year][month]['unitInfo'].length-1) {
-
-//         let tempArr;
-//         if(!blob[buildingName][year]['units'][tempUnit])
-//         {
-//           tempArr = Array.from({length: 12})
-//           tempArr.fill('-', 0, tempArr.length)
-//         }
-//         else
-//         {
-//           tempArr = blob[buildingName][year]['units'][tempUnit];
-//         }
-//         let insertionPoint = hardCodeMonths.indexOf(month)
-//         tempArr[insertionPoint] = Number(item['Renta']);
-
-//         blob[buildingName][year]['units'][tempUnit] = tempArr;
-
-//       }
-
-//     })
-//   });
-//   setAnnualRent(() => blob)
-// }
