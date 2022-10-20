@@ -35,6 +35,9 @@ export const ReportBuilding = ({ buildingName }) => {
   // const year = 2022;
 
   useEffect( () => {
+
+    //check annual rent
+    // console.log(Object.values(annualRent[buildingName][year]['units']))
     if (!months) {
       let monthkeys = Object.keys(aggregate[buildingName][year])
       setMonths(monthkeys)
@@ -57,16 +60,22 @@ export const ReportBuilding = ({ buildingName }) => {
     }
 
     if (annualRent && units.length > 0) {
-      getAnnualRentTotal()
+      if (annualRent[buildingName][year]) {
+        getAnnualRentTotal()
+        // console.log(Object.values(annualRent[buildingName][year]['units']))
+
+      }
+
     }
     if (annualUnitTotal) {
       getMonthCostsTotal(months, annualUnitTotal)
+      // console.log(Object.keys(annualUnitTotal))
     }
     if (totalTotal) {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
- }, [Object.keys(aggregate).length, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.values(annualUnitTotal).length : null, totalGastos[12], refresh, totalProfit[12], totalExpenses[12], year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
+ }, [Object.keys(aggregate).length, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, totalGastos[12], refresh, JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
 
   const buildUnits = async () => {
     let units = [];

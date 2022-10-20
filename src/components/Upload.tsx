@@ -71,7 +71,7 @@ export const Upload = () => {
 
   // checking aggregate
   useEffect(() => {
-    console.log(aggregate, 'it do be here')
+
 
   }, [aggregate, newExcel])
 
@@ -251,7 +251,7 @@ const findGastos = (json)=>{
 
           {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
           {/* {Object.values(splitExcel).length > 0 && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null} */}
-          <Filtered  data={splitExcel}/>
+          {/* <Filtered  data={splitExcel}/> */}
       </Window>
     </>
   )
