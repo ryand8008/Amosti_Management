@@ -6,18 +6,13 @@ import { UploadTable } from "./UploadTable";
 
 var xlsx = require("xlsx");
 
-// interface Sheet {
-//   filter(arg0: (item: any) => void): unknown;
-//   corredora: string
-//   tenant_name: string
-//   building: string
-//   month: string
-//   amount: number
-//   date_paid: Date
-//   apartment: string
-//   paid: boolean
-// }
-
+declare module 'react' {
+  interface InputHTMLAttributes<T> extends HTMLAttributes<T> {
+    // extends React's HTMLAttributes
+    directory?: boolean | undefined
+    webkitdirectory?: string;
+  }
+}
 interface newSheet {
   Depto: string
   Nombre: string
@@ -214,6 +209,7 @@ const findGastos = (json)=>{
           name='uploads'
           id='uploads'
           onChange={readUploadFile}
+          // webkitdirectory="" // will allow file upload, but not single files
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
