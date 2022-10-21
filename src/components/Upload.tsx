@@ -6,17 +6,17 @@ import { UploadTable } from "./UploadTable";
 
 var xlsx = require("xlsx");
 
-interface Sheet {
-  filter(arg0: (item: any) => void): unknown;
-  corredora: string
-  tenant_name: string
-  building: string
-  month: string
-  amount: number
-  date_paid: Date
-  apartment: string
-  paid: boolean
-}
+// interface Sheet {
+//   filter(arg0: (item: any) => void): unknown;
+//   corredora: string
+//   tenant_name: string
+//   building: string
+//   month: string
+//   amount: number
+//   date_paid: Date
+//   apartment: string
+//   paid: boolean
+// }
 
 interface newSheet {
   Depto: string
@@ -42,7 +42,7 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
-  const { aggregate, setAggregate, mergeToAgg, gatherInfo } = useContext(AggregateContext)
+  const { aggregate, setAggregate, gatherInfo } = useContext(AggregateContext)
 
   const [excel, setExcel] = useState<newSheet[]>()
 
@@ -55,7 +55,6 @@ export const Upload = () => {
   const [showCosts, setShowCosts] = useState<boolean>(false)
 
   const [filterBy, setFilterBy] = useState<string>('')
-  // const [filterValue, setFilterValue] = useState<string>('')
 
   //testing filtered excel
   const [filteredExcel, setFilteredExcel] = useState()
@@ -91,14 +90,11 @@ const findGastos = (json)=>{
 
 }
 
-
-
   // TODO: handle multiple file upload
 // TODO: need to figure out how to access fileList and update synchonously ***
   const readUploadFile = async (e) => {
     e.preventDefault();
 
-    let arrayyyy = [];
 
     // test newSheet array
     let holding: any = {}
@@ -223,9 +219,6 @@ const findGastos = (json)=>{
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
         {Object.entries(splitExcel).length > 0 ?
         <>
-          {/* <button onClick={() => { setGenerateReport(!generateReport); } }>
-            {generateReport ? 'return' : 'generate report'}
-          </button> */}
           <button onClick={(e) => handleClear(e)}>
             clear files
           </button>
@@ -244,14 +237,11 @@ const findGastos = (json)=>{
           : null
           : null
         }
-          {/* {!generateReport && splitExcel && filterBy !== '' ? */}
           {!generateReport &&  Object.values(splitExcel).length > 0?
            filteredExcel ? <UploadTable exceldata={filteredExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts}/> : <UploadTable exceldata={newExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts} />
            : null}
 
           {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
-          {/* {Object.values(splitExcel).length > 0 && filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null} */}
-          {/* <Filtered  data={splitExcel}/> */}
       </Window>
     </>
   )

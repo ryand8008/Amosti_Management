@@ -1,17 +1,13 @@
 import { AggregateContext } from "../context/ProjectContext";
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
-import { bindComplete } from "pg-protocol/dist/messages";
 
-
-// potentially receive 'buildingName' and 'Year'
-// expect to work from Object with 'months' as keys
 
 // This function should receive a building's information, and only that.
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
-  // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
+
   const years = Object.keys(aggregate[buildingName])
   const [year, setYear] = useState<string>(years[0])
 
@@ -29,15 +25,7 @@ export const ReportBuilding = ({ buildingName }) => {
   const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
   const [totalProfit, setTotalProfit] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
 
-  // refreshbutton uses count to re render everything
-  const [refresh, setRefresh] = useState<number>(0)
-  // hard coded year
-  // const year = 2022;
-
   useEffect( () => {
-
-    //check annual rent
-    // console.log(Object.values(annualRent[buildingName][year]['units']))
     if (!months) {
       let monthkeys = Object.keys(aggregate[buildingName][year])
       setMonths(monthkeys)
@@ -47,6 +35,7 @@ export const ReportBuilding = ({ buildingName }) => {
       if (units.length === 0) {
         console.log(units)
        buildUnits()
+       console.log(units, 'after? ')
       }
     }
 
@@ -68,14 +57,14 @@ export const ReportBuilding = ({ buildingName }) => {
 
     }
     if (annualUnitTotal) {
-      getMonthCostsTotal(months, annualUnitTotal)
+      getMonthCostsTotal(annualUnitTotal)
       // console.log(Object.keys(annualUnitTotal))
     }
     if (totalTotal) {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
- }, [Object.keys(aggregate).length, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, totalGastos[12], refresh, JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year, aggregate ? Object.keys(aggregate[buildingName]).length : null])
+ }, [JSON.stringify(aggregate), months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year])
 
   const buildUnits = async () => {
     let units = [];
@@ -141,8 +130,7 @@ export const ReportBuilding = ({ buildingName }) => {
     setAnnualUnitTotal(() => annualTotal)
   }
 
-  const getMonthCostsTotal = async (months: string[], annualUnitTotal:{unit: number}) => {
-    // {total: [-,-,-,-,-,....]}
+  const getMonthCostsTotal = async (annualUnitTotal:{unit: number}) => {
     let total:any[] = Array.from({length: 13}).fill('-',0, 13)
     let totalAdmon:any[] = Array.from({length: 13}).fill('-',0, 13)
     let admonAnnual = 0;
@@ -267,12 +255,13 @@ const changeYears = async (e, change: string, year: string) => {
 
   return (
     <>
-    <h1>{buildingName}: {year}</h1>
-    <div>
-      {years.indexOf(year) !== 0 ? <button onClick={(e) => changeYears(e,'decrease', year)}>{'<'}</button> : null}
-      <span>{year}</span>
-      {years.indexOf(year) !== years.length -1 ? <button onClick={(e) => {e.preventDefault(); changeYears(e,'increase', year)}}>{'>'}</button> : null}
-    </div>
+    <StyledTop>
+      {years.indexOf(year) !== 0 ? <StyledYearArrows onClick={(e) =>  {e.preventDefault(); changeYears(e,'decrease', year)}}>{'<'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
+      <StyledTitle>
+          <h1>{buildingName}: {year}</h1>
+      </StyledTitle>
+      {years.indexOf(year) !== years.length -1 ? <StyledYearArrows onClick={(e) => {e.preventDefault(); changeYears(e,'increase', year)}}>{'>'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
+    </StyledTop>
    <StyledTable>
     <StyledHeaderContainer>
       <th>Depto</th>
@@ -348,14 +337,40 @@ const changeYears = async (e, change: string, year: string) => {
       ) : null}
     </tr>
 
-
-
     </StyledTable>
-        <button onClick={() => setRefresh(refresh + 1)}>refresh data</button>
-    </>
 
+    </>
   )
 }
+
+const StyledTitle = styled.div`
+  // display: flex;
+  // justify-content: center;
+`
+
+const StyledTop = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+const StyledYearArrows = styled.button`
+  // font-weight: bold;
+  font-size: 20px;
+  background-color: transparent;
+  border-radius: 60px;
+  height: fit-content;
+  // margin-top: 20px;
+  justify-content: center;
+`
+const StyledInvisible = styled.button`
+  font-size: 20px;
+  background-color: transparent;
+  border: none;
+  // border-radius: 60px;
+  height: fit-content;
+  // margin-top: 20px;
+
+`
 
 const StyledTable = styled.table`
   border: 1px solid red;
