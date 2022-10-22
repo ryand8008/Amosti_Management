@@ -25,7 +25,6 @@ useEffect(() => {
   return (
     <>
       <StyledReportTitle>Report</StyledReportTitle>
-      <div></div>
       {buildingNames.length > 0 ? buildingNames.map((building) =>
         <ReportBuilding buildingName={building}/>)
          : null}

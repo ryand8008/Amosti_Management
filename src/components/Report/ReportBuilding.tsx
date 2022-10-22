@@ -271,14 +271,14 @@ const changeYears = async (e, change: string, year: string) => {
       <StyleMonthsHeaders>annual</StyleMonthsHeaders>
     </StyledHeaderContainer>
       {annualRent  ? units.map((unit, index) =>
-        <tr>
+        <StyledRowUnit>
           <StyledCell>{unit !== buildingName ? unit : null}</StyledCell>
           {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) =>
             <StyledCell>{item2}</StyledCell>
           )
           :null}
           <StyledCell>{annualUnitTotal && unit !== buildingName ? annualUnitTotal[unit] : null}</StyledCell>
-        </tr>
+        </StyledRowUnit>
       ) :null
     }
     <StyledTotal>
@@ -287,49 +287,49 @@ const changeYears = async (e, change: string, year: string) => {
         <StyledCell>{total}</StyledCell>
       ):null}
     </StyledTotal>
-    <tr>
+    {/* <tr>
       <td> </td>
-    </tr>
+    </tr> */}
     <tr>
       <StyledBold>egresos</StyledBold>
     </tr>
-    <tr>
+    <StyledRowE>
       <StyledCell>corretaje</StyledCell>
       {totalCorretaje ? totalCorretaje.map((admon) =>
         <StyledCell>{admon}</StyledCell>
       ): null}
-    </tr>
-    <tr>
+    </StyledRowE>
+    <StyledRowE>
       <StyledCell>admon</StyledCell>
       {totalAdmon ? totalAdmon.map((admon) =>
         <StyledCell>{admon}</StyledCell>
       ): null}
-    </tr>
-    <tr>
+    </StyledRowE>
+    <StyledRowE>
       <StyledCell>gastos</StyledCell>
       {totalGastos ? totalGastos.map((item) =>
         <StyledCell>{item}</StyledCell>
       ) : null}
-    </tr>
-    <tr>
+    </StyledRowE>
+    <StyledRowE>
       <StyledCell>devol</StyledCell>
       {totalDevol ? totalDevol.map((item) =>
         <StyledCell>{item}</StyledCell>
       ) : null}
-    </tr>
-    <tr>
+    </StyledRowE>
+    <StyledRowE>
       <StyledCell>otros</StyledCell>
       {totalOtros ? totalOtros.map((item) =>
         <StyledCell>{item}</StyledCell>
       ) : null}
-    </tr>
-    <tr>
+    </StyledRowE>
+    <StyledRowE>
       <StyledBold>total E</StyledBold>
       {totalExpenses ? totalExpenses.map((item) =>
         <StyledCell>{item}</StyledCell>
       ) : null}
-    </tr>
-    <tr><td> </td></tr>
+    </StyledRowE>
+
     <tr>
       <StyledBold>total n</StyledBold>
       {totalProfit ? totalProfit.map((item) =>
@@ -369,14 +369,27 @@ const StyledInvisible = styled.button`
   // border-radius: 60px;
   height: fit-content;
   // margin-top: 20px;
+`
+const StyledRowE = styled.tr`
+`
+const StyledRowUnit = styled.tr`
 
 `
-
+const StyledCell = styled.td`
+  text-align: center;
+`
 const StyledTable = styled.table`
-  border: 1px solid red;
+  border: 1px solid black;
+  border-radius: 5px
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
+  ${StyledRowE}:nth-child(even) {
+    background: lightgrey;
+  }
+  ${StyledRowUnit}:nth-child(even) {
+    background: lightgrey;
+  }
 `
 const StyleMonthsHeaders = styled.th`
   border: 1px solid black;
@@ -388,9 +401,6 @@ const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
 `
 
-const StyledCell = styled.td`
-  text-align: center;
-`
 
 const StyledTotal = styled.tr`
   border-top: 1px solid black;
