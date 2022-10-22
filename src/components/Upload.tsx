@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AggregateContext } from "./context/ProjectContext";
 import { Filtered } from "./filtered/Filtered";
+import { Report } from "./Report/Report";
 import { UploadTable } from "./UploadTable";
 
 var xlsx = require("xlsx");
@@ -86,7 +87,6 @@ const findGastos = (json)=>{
 }
 
   // TODO: handle multiple file upload
-// TODO: need to figure out how to access fileList and update synchonously ***
   const readUploadFile = async (e) => {
     e.preventDefault();
 
@@ -221,7 +221,14 @@ const findGastos = (json)=>{
         </>
          : null}
       </form>
-        {!generateReport ? files.length > 0 ?
+      {aggregate ? <Report /> : null}
+      {aggregate ?
+        <>
+          <button onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</button>
+        </>
+          : null}
+      {generateReport ? <div>
+        { files.length > 0 ?
           <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
             <option value=''>{filterBy !== '' ? 'show all files' : 'select a file'}</option>
             {files.length > 0 ? files.map((file) =>
@@ -231,13 +238,14 @@ const findGastos = (json)=>{
           }
           </select>
           : null
-          : null
         }
-          {!generateReport &&  Object.values(splitExcel).length > 0?
+          {Object.values(splitExcel).length > 0?
            filteredExcel ? <UploadTable exceldata={filteredExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts}/> : <UploadTable exceldata={newExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts} />
            : null}
 
           {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
+
+          </div> : null}
       </Window>
     </>
   )

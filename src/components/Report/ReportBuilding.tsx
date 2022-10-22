@@ -282,7 +282,7 @@ const changeYears = async (e, change: string, year: string) => {
       ) :null
     }
     <StyledTotal>
-      <StyledCell>TOTAL R</StyledCell>
+      <StyledBold>total r</StyledBold>
       {totalTotal ? totalTotal.map((total) =>
         <StyledCell>{total}</StyledCell>
       ):null}

@@ -8,10 +8,9 @@ export const Report = () => {
 const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
 const { aggregate } = useContext(AggregateContext)
 
-// building name, year
+// building name
 const [buildingNames, setBuildingNames] = useState<string[]>([])
-const [year, setYear] = useState<number[]>()
-
+const [showReport, setShowReport] = useState<boolean>(false)
 
 useEffect(() => {
   console.log(aggregate, 'dis agg')
@@ -25,7 +24,7 @@ useEffect(() => {
 
   return (
     <>
-      <h1>Hello from Report!</h1>
+      <StyledReportTitle>Report</StyledReportTitle>
       <div></div>
       {buildingNames.length > 0 ? buildingNames.map((building) =>
         <ReportBuilding buildingName={building}/>)
@@ -34,6 +33,10 @@ useEffect(() => {
   )
 }
 
+const StyledReportTitle = styled.h1`
+  display: flex;
+  justify-content: center;
+`
 const StyledTable = styled.table`
   border: 1px solid red;
   margin: auto;
