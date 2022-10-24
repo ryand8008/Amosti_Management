@@ -17,14 +17,15 @@ export const ReportBuilding = ({ buildingName }) => {
   const [annualRent, setAnnualRent] = useState<any>()
   const [annualUnitTotal, setAnnualUnitTotal] = useState<any>()
   // expenses
+  const defaultReportRow = ['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-']
   const [totalTotal, setTotalTotal] = useState<number[]>()
   const [totalAdmon, setTotalAdmon] = useState<number[] | any[]>()
-  const [totalCorretaje, setTotalCorretaje] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
-  const [totalGastos, setTotalGastos] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
-  const [totalDevol, setTotalDevol] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
-  const [totalOtros, setTotalOtros] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
-  const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
-  const [totalProfit, setTotalProfit] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
+  const [totalCorretaje, setTotalCorretaje] = useState<number[] | any[]>(defaultReportRow)
+  const [totalGastos, setTotalGastos] = useState<number[] | any[]>(defaultReportRow)
+  const [totalDevol, setTotalDevol] = useState<number[] | any[]>(defaultReportRow)
+  const [totalOtros, setTotalOtros] = useState<number[] | any[]>(defaultReportRow)
+  const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(defaultReportRow)
+  const [totalProfit, setTotalProfit] = useState<number[] | any[]>(defaultReportRow)
 
   useEffect( () => {
     years = Object.keys(aggregate[buildingName])
@@ -85,8 +86,6 @@ export const ReportBuilding = ({ buildingName }) => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
     let tempMonths = Object.keys(aggregate[buildingName][year])
-    console.log(tempMonths, 'this is tempmonths')
-    console.log(months, 'this is months')
 
     tempMonths.forEach( (month: string) =>{
         aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {

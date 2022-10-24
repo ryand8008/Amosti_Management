@@ -22,8 +22,6 @@ const AggregateProvider = ({children}) => {
   // container to hold
   const [container, setContainer] = useState<any[]>([])
 
-  // testing
-  console.log(aggregate, 'in context')
   useEffect(() => {
 
     if (container.length > 0) {
