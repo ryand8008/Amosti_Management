@@ -21,6 +21,9 @@ const AggregateProvider = ({children}) => {
 
   // container to hold
   const [container, setContainer] = useState<any[]>([])
+
+  // testing
+  console.log(aggregate, 'in context')
   useEffect(() => {
 
     if (container.length > 0) {
@@ -35,7 +38,7 @@ const AggregateProvider = ({children}) => {
       )
     }
 
-  }, [aggregate ? Object.keys(aggregate).length : aggregate, checkCount, container.length])
+  }, [JSON.stringify(aggregate), checkCount, container.length])
 
 
   const gatherInfo = async (holding2) => {
@@ -67,7 +70,6 @@ const AggregateProvider = ({children}) => {
       console.log('...loading')
     }
   }
-
 
   return (
     <AggregateContext.Provider value={{aggregate, setAggregate, mergeToAgg, gatherInfo, reportInfo}}>

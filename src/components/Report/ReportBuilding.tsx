@@ -7,8 +7,9 @@ import styled from "styled-components";
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate } = useContext(AggregateContext)
+  // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
 
-  const years = Object.keys(aggregate[buildingName])
+  let years = Object.keys(aggregate[buildingName])
   const [year, setYear] = useState<string>(years[0])
 
   const [months, setMonths] = useState<string[]>()
@@ -26,6 +27,9 @@ export const ReportBuilding = ({ buildingName }) => {
   const [totalProfit, setTotalProfit] = useState<number[] | any[]>(['-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-', '-'])
 
   useEffect( () => {
+    years = Object.keys(aggregate[buildingName])
+
+
     if (!months) {
       let monthkeys = Object.keys(aggregate[buildingName][year])
       setMonths(monthkeys)
@@ -64,7 +68,7 @@ export const ReportBuilding = ({ buildingName }) => {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
- }, [JSON.stringify(aggregate), months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year])
+ }, [aggregate, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year, years.length])
 
   const buildUnits = async () => {
     let units = [];
@@ -235,7 +239,7 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
   setTotalProfit(totalNet)
 }
 
-const changeYears = async (e, change: string, year: string) => {
+const changeYears = (e, change: string, year: string) => {
   e.preventDefault()
   let index = years.indexOf(year)
 
@@ -256,11 +260,11 @@ const changeYears = async (e, change: string, year: string) => {
   return (
     <>
     <StyledTop>
-      {years.indexOf(year) !== 0 ? <StyledYearArrows onClick={(e) =>  {e.preventDefault(); changeYears(e,'decrease', year)}}>{'<'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
+      {years.length > 1 && years.indexOf(year) !== 0 ? <StyledYearArrows onClick={(e) =>  {e.preventDefault(); changeYears(e,'decrease', year)}}>{'<'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
       <StyledTitle>
           <h1>{buildingName}: {year}</h1>
       </StyledTitle>
-      {years.indexOf(year) !== years.length -1 ? <StyledYearArrows onClick={(e) => {e.preventDefault(); changeYears(e,'increase', year)}}>{'>'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
+      {years.length > 1 && years.indexOf(year) !== years.length -1 ? <StyledYearArrows onClick={(e) => {e.preventDefault(); changeYears(e,'increase', year)}}>{'>'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
     </StyledTop>
    <StyledTable>
     <StyledHeaderContainer>

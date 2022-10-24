@@ -8,29 +8,22 @@ import { ReportBuilding } from "./ReportBuilding";
 export const Report = () => {
 const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
 const { aggregate } = useContext(AggregateContext)
-
 // building name
 const [buildingNames, setBuildingNames] = useState<string[]>([])
 const [showReport, setShowReport] = useState<boolean>(false)
 
 // to print things
 const componentToPrint = useRef(null)
-console.log(ReactToPrint, 'print')
 
 
 useEffect(() => {
-  console.log(aggregate, 'dis agg')
   const buildings = Object.keys(aggregate);
-
   setBuildingNames(buildings)
-
-
-}, [aggregate ? Object.keys(aggregate).length : null, buildingNames.length > 0])
+}, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null])
 
 const handlePrint = useReactToPrint({
   content: () => componentToPrint.current,
 });
-
 
   return (
     <>

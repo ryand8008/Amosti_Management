@@ -64,11 +64,10 @@ export const Upload = () => {
   // display file names
   const [files, setFiles] = useState<string[]>([])
 
-  // checking aggregate
-  useEffect(() => {
+  // // checking aggregate
+  // useEffect(() => {
 
-
-  }, [aggregate, newExcel])
+  // }, [JSON.stringify(aggregate), newExcel])
 
 
 
@@ -131,7 +130,6 @@ const findGastos = (json)=>{
               }
             }
           }
-          console.log(holding2, 'holding 2')
           gatherInfo(holding2, buildingName, year)
 
 
