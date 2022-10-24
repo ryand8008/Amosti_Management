@@ -1,6 +1,7 @@
 import { AggregateContext } from "../context/ProjectContext";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { ReportBuilding } from "./ReportBuilding";
 
 // GET BUILDING NAMES with Object.keys(aggregate), then iterate through
@@ -12,6 +13,11 @@ const { aggregate } = useContext(AggregateContext)
 const [buildingNames, setBuildingNames] = useState<string[]>([])
 const [showReport, setShowReport] = useState<boolean>(false)
 
+// to print things
+const componentToPrint = useRef(null)
+console.log(ReactToPrint, 'print')
+
+
 useEffect(() => {
   console.log(aggregate, 'dis agg')
   const buildings = Object.keys(aggregate);
@@ -21,12 +27,21 @@ useEffect(() => {
 
 }, [aggregate ? Object.keys(aggregate).length : null, buildingNames.length > 0])
 
+const handlePrint = useReactToPrint({
+  content: () => componentToPrint.current,
+});
+
 
   return (
     <>
       <StyledReportTitle>Report</StyledReportTitle>
       {buildingNames.length > 0 ? buildingNames.map((building) =>
-        <ReportBuilding buildingName={building}/>)
+        <><div ref={componentToPrint}>
+          <ReportBuilding buildingName={building} />
+        </div>
+          <button onClick={handlePrint}>{`print building: ${building}`}</button>
+        </>
+        )
          : null}
     </>
   )

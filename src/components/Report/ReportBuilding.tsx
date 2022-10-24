@@ -1,5 +1,5 @@
 import { AggregateContext } from "../context/ProjectContext";
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 
@@ -183,7 +183,7 @@ export const ReportBuilding = ({ buildingName }) => {
     let gastosTotal = 0;
     gastos.forEach((item, index) => {
       if (index !== 0) {
-        if (item['Gastos'] !== '') {
+        if (item['Gastos'] !== '' && item['Gastos'] !== 'TOTAL') {
           gastosTotal += Number(item['Cost'])
         }
       }
@@ -204,7 +204,7 @@ export const ReportBuilding = ({ buildingName }) => {
 
   }
 
-  const getTotalExpenses = (totalAdmon: any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
+  const getTotalExpenses = (totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
 
     let totalExpensesArray = Array.from({length: 13}).fill('-', 0, 13)
     let totalExpenses = 0
@@ -272,7 +272,7 @@ const changeYears = async (e, change: string, year: string) => {
     </StyledHeaderContainer>
       {annualRent  ? units.map((unit, index) =>
         <StyledRowUnit>
-          <StyledCell>{unit !== buildingName ? unit : null}</StyledCell>
+          {unit !== buildingName ? <StyledCell>{unit} </StyledCell>: null}
           {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) =>
             <StyledCell>{item2}</StyledCell>
           )
@@ -287,9 +287,11 @@ const changeYears = async (e, change: string, year: string) => {
         <StyledCell>{total}</StyledCell>
       ):null}
     </StyledTotal>
-    {/* <tr>
-      <td> </td>
-    </tr> */}
+    <tr><td></td>
+    </tr>
+    <tr>
+        <td></td>
+    </tr>
     <tr>
       <StyledBold>egresos</StyledBold>
     </tr>
@@ -379,7 +381,7 @@ const StyledCell = styled.td`
   text-align: center;
 `
 const StyledTable = styled.table`
-  border: 1px solid black;
+  border: thin solid black;
   border-radius: 5px
   margin: auto;
   margin-top: 10px;
@@ -396,11 +398,11 @@ const StyleMonthsHeaders = styled.th`
   text-align: center;
   width: 80px;
   padding: 5px;
+  background: #82b0f5;
 `
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
 `
-
 
 const StyledTotal = styled.tr`
   border-top: 1px solid black;

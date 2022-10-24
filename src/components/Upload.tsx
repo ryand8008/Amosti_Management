@@ -77,7 +77,7 @@ const findGastos = (json)=>{
   let gastosIndex;
 
   json.map((item,index)=>{
-      if (item.Year === 'Gastos') {
+      if (item['Año'] === 'Gastos') {
           gastosIndex = index
       }
   }
@@ -118,7 +118,7 @@ const findGastos = (json)=>{
           // raw data sheet
           const jsonMaster = xlsx.utils.sheet_to_json((worksheet));
           // if entry doesn't exist make it using aggregate for use context
-          [year, month ,buildingName] =  [jsonMaster[0]['Year'], jsonMaster[0]['Month'], jsonMaster[0]['Depto']]
+          [year, month ,buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'], jsonMaster[0]['Depto']]
 
           holding2 = {
             [buildingName]: {
@@ -131,6 +131,7 @@ const findGastos = (json)=>{
               }
             }
           }
+          console.log(holding2, 'holding 2')
           gatherInfo(holding2, buildingName, year)
 
 
@@ -152,7 +153,7 @@ const findGastos = (json)=>{
               range.s.r = findGastos(jsonMaster)+1;
               range.e.r = jsonMaster.length+1;
               var newRange = xlsx.utils.encode_range(range);
-              const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, header: ['Gastos', 'Cost', 'Banknotes', 'Count', 'Totals', 'Amount']});
+              const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, header: ['Gastos', 'Cost', 'Notas', 'Billetes o Moneda', 'Cantidad', 'TOTALS']});
               let newJson = json.slice(1, json.length)
               holding[fileName].costs.push(...newJson)
               holding2[buildingName][year][month]['costs'].push(...newJson)

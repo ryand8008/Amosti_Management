@@ -2,23 +2,25 @@ import React, { useEffect, useState } from "react";
 
 
 interface ReportType {
-  hello: string
   aggregate: any
   setAggregate: (newInformation) => void;
   mergeToAgg: (buildingName: string, year: string, holding2: any) => any;
   gatherInfo: (holding2: any, buildingName: string, year: string) => any;
+  reportInfo: {'buildingName': any[]}
 }
-
+// reportInfo = {
+//   buildingName = {}
+// }
 
 export const AggregateContext = React.createContext<ReportType | null>(null)
 
 const AggregateProvider = ({children}) => {
   const [aggregate, setAggregate] = useState<any>()
   const [checkCount, setCheckCount] = useState<number>(1)
+  const [reportInfo, setReportInfo] = useState({'buildingName': []})
 
   // container to hold
   const [container, setContainer] = useState<any[]>([])
-  const hello = 'world!'
   useEffect(() => {
 
     if (container.length > 0) {
@@ -32,7 +34,6 @@ const AggregateProvider = ({children}) => {
       }
       )
     }
-
 
   }, [aggregate ? Object.keys(aggregate).length : aggregate, checkCount, container.length])
 
@@ -69,7 +70,7 @@ const AggregateProvider = ({children}) => {
 
 
   return (
-    <AggregateContext.Provider value={{hello, aggregate, setAggregate, mergeToAgg, gatherInfo}}>
+    <AggregateContext.Provider value={{aggregate, setAggregate, mergeToAgg, gatherInfo, reportInfo}}>
       {children}
     </AggregateContext.Provider>
   )
