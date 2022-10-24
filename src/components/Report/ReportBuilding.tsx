@@ -33,8 +33,8 @@ export const ReportBuilding = ({ buildingName }) => {
     if (!months) {
       let monthkeys = Object.keys(aggregate[buildingName][year])
       setMonths(monthkeys)
-
     }
+
     if (months) {
       if (units.length === 0) {
         console.log(units)
@@ -68,7 +68,7 @@ export const ReportBuilding = ({ buildingName }) => {
       getTotalProfit(totalTotal, totalExpenses)
     }
 
- }, [aggregate, months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year, years.length])
+ }, [aggregate, aggregate[buildingName][year], months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year, years.length])
 
   const buildUnits = async () => {
     let units = [];
@@ -85,6 +85,8 @@ export const ReportBuilding = ({ buildingName }) => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
     let tempMonths = Object.keys(aggregate[buildingName][year])
+    console.log(tempMonths, 'this is tempmonths')
+    console.log(months, 'this is months')
 
     tempMonths.forEach( (month: string) =>{
         aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
