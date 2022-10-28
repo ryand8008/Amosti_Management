@@ -28,14 +28,14 @@ const handlePrint = useReactToPrint({
   return (
     <>
       <StyledReportTitle>Report</StyledReportTitle>
-      {buildingNames.length > 0 ? buildingNames.map((building) =>
+      {/* {buildingNames.length > 0 ? buildingNames.map((building) =>
         <><div ref={componentToPrint}>
           <ReportBuilding buildingName={building} />
         </div>
           <button onClick={handlePrint}>{`print building: ${building}`}</button>
         </>
         )
-         : null}
+         : null} */}
     </>
   )
 }

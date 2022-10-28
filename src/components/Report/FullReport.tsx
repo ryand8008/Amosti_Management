@@ -11,22 +11,31 @@ import styled from "styled-components";
 
 export const FullReport = () => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
-  const { aggregate } = useContext(AggregateContext)
+  const { aggregate, reportInfo, yearsAvailable } = useContext(AggregateContext)
   const [buildings, setBuildings] = useState<string[]>([])
+  const [buildingYear, setBuildingYear] = useState<string>('')
 
   useEffect(() => {
     if (aggregate) {
       let tempBuilding = Object.keys(aggregate)
       setBuildings(tempBuilding)
     }
-    console.log(buildings, 'this is buildings')
-  }, [aggregate, JSON.stringify(buildings)])
+    console.log(aggregate, 'agg')
+    console.log(buildingYear, 'building year')
+  }, [aggregate, buildings.length, buildingYear, reportInfo])
+
 
   return (
     <>
       <h1>Full Report</h1>
-
-      <StyledTable>
+      <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setBuildingYear(e.target.value)}>
+        <option>select a year</option>
+        {yearsAvailable.map((item) =>
+          <option>{item}</option>
+        )}
+        </select>
+      { buildingYear !== '' ?
+       <StyledTable>
         <StyledHeaderContainer>
         <th>Depto</th>
         { hardCodeMonths.map((item) =>
@@ -35,12 +44,20 @@ export const FullReport = () => {
         <StyleMonthsHeaders>annual</StyleMonthsHeaders>
 
         </StyledHeaderContainer>
+
           {buildings.length > 0 ? buildings.map((item) =>
         <StyledRowUnit>
-          <StyledCell>{item}</StyledCell>
+          <StyledCell>{reportInfo[item][buildingYear] ? item : null}</StyledCell>
+          {reportInfo[item][buildingYear] ? reportInfo[item][buildingYear].map((item2) =>
+          <>
+            <StyledCell>{item2}</StyledCell>
+          </>
+          ) : null}
         </StyledRowUnit>
           ): null}
+
       </StyledTable>
+       : null}
     </>
   )
 }
