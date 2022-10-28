@@ -22,48 +22,28 @@ const AggregateProvider = ({children}) => {
   // report information
   const [reportInfo, setReportInfo] = useState<any>({})
   const [yearsAvailable, setYearsAvailable] = useState<string[]>([])
+  let yearsStringified = JSON.stringify(yearsAvailable)
+
   const [buildings, setBuildings] = useState<string[]>([])
+
+  let buildingsStringified = JSON.stringify(buildings)
+
+  const [monthsAvailable, setMonthsAvailable] = useState<string[]>([])
+  let monthsStringified = JSON.stringify(monthsAvailable)
+
   console.log(reportInfo, 'report info')
 
-  // report logic*****
-    //find years
-  const findYearsAvailable = () => {
-    buildings.forEach((buildingName) => {
-      let years = Object.keys(aggregate[buildingName])
-      years.forEach((year) => {
-        if (!yearsAvailable.includes(year)) {
-          yearsAvailable.push(year)
-        }
-      })
-    })
-  }
-
-  const createReportInfoBlank = () => {
-    buildings.forEach((buildingName) => {
-      if (!reportInfo[buildingName]) {
-        reportInfo[buildingName] = {}
-      }
-      yearsAvailable.forEach((year) => {
-        if (aggregate[buildingName][year]) {
-          let temp = {[year]: {}}
-          reportInfo[buildingName] = {...reportInfo[buildingName], ...temp}
-        }
-      })
-    })
-  }
-
-
-
-
-  // container to hold
-  const [container, setContainer] = useState<any[]>([])
+   // container to hold
+   const [container, setContainer] = useState<any[]>([])
 
   useEffect(() => {
-    console.log(aggregateStringified, 'string')
     if (aggregate) {
-      setBuildings(Object.keys(aggregate))
+      let builds = Object.keys(aggregate)
+      setBuildings(builds)
       findYearsAvailable()
       createReportInfoBlank()
+      getMonths()
+      console.log(monthsAvailable, 'how many?')
     }
 
     // DO NOT TOUCH
@@ -77,8 +57,75 @@ const AggregateProvider = ({children}) => {
         }
       })
     }
+    // DO NOT TOUCH
 
-  }, [ aggregateStringified, buildings.length, reportInfo, yearsAvailable.length, container.length])
+  }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, container.length])
+
+
+
+  // report logic*****
+    //find years
+  const findYearsAvailable = () => {
+    buildings.forEach((buildingName) => {
+      let years = Object.keys(aggregate[buildingName])
+      years.forEach((year) => {
+        if (!yearsAvailable.includes(year)) {
+          setYearsAvailable((yearsAvailable) => [...yearsAvailable, year])
+          // yearsAvailable.push(year)
+        }
+      })
+    })
+  }
+
+  const createReportInfoBlank = () => {
+    buildings.forEach((buildingName) => {
+      if (!reportInfo[buildingName]) {
+        reportInfo[buildingName] = {}
+        // setReportInfo((reportInfo) => ({...reportInfo, ...{[buildingName]: {}}}))
+      }
+      yearsAvailable.forEach(async (year) => {
+        let tempAgg = aggregate[buildingName][year]
+        if (await tempAgg) {
+          let temp = {[year]: {}}
+          reportInfo[buildingName] = {...reportInfo[buildingName], ...temp}
+          // setReportInfo((reportInfo) => {reportInfo[buildingName], {...reportInfo[buildingName], ...temp}})
+        }
+      })
+    })
+  }
+
+  // create months
+  const getMonths = async () => {
+    let tempMonths = []
+    buildings.forEach(async (buildingName) => {
+      yearsAvailable?.forEach(async (year) => {
+        let tempAgg = aggregate[buildingName][year]
+        if (await tempAgg) {
+          let months = Object.keys(await aggregate[buildingName][year])
+          try {
+          months.forEach(async (month) => {
+            let temp = {[month]: {}}
+            reportInfo[buildingName][year] = {...reportInfo[buildingName][year], ...temp }
+            if (!tempMonths.includes(month)) {
+              // setMonthsAvailable((monthsAvailable) => [...monthsAvailable, month])
+              setMonthsAvailable(tempMonths)
+              tempMonths.push(month)
+            }
+          })
+        }
+        catch {
+          console.log('err')
+        }
+        }
+      })
+    })
+    // setMonthsAvailable(tempMonths)
+  }
+
+
+
+
+
 
 
 
