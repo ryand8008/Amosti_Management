@@ -107,27 +107,37 @@ export const FullReport = () => {
 
   return (
     <>
-      <h1>Full Report</h1>
-      <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {e.preventDefault(), setYearPicked(e.target.value)}}>
-        <option>select a year</option>
-        {yearsAvailable.map((item) =>
-          <option>{item}</option>
-        )}
+      {aggregate ? <StyledDiv>
+        <div>generate a report </div>
+        <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { e.preventDefault(), setYearPicked(e.target.value); } }>
+          <option>select a year</option>
+          {yearsAvailable.map((item) => <option>{item}</option>
+          )}
         </select>
-    <div ref={componentToPrint}>
-      { buildingYear !== '' ?
-       <StyledTable>
-        <StyledHeaderContainer>
-        <th>Depto</th>
-        { hardCodeMonths.map((item) =>
-        <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
-        )}
-        <StyleMonthsHeaders>annual</StyleMonthsHeaders>
+        </StyledDiv> : null}
 
-        </StyledHeaderContainer>
+        {/* {aggregate ? <StyledDiv>
+        <StyledPrintButton onClick={(e) => {e.preventDefault(), setBuildingYear('2022'); }}>generate a report </StyledPrintButton>
+        </StyledDiv>
 
-          {buildings.length > 0 ? buildings.map((item) =>
-        <><StyledRowUnit>
+         : null} */}
+
+          <StyledTitle>Full Report: {buildingYear}</StyledTitle>
+        <StyledSomething ref={componentToPrint}>
+      {buildingYear !== '' ?
+        <>
+        {/* <StyledTitle>Full Report</StyledTitle> */}
+
+          <StyledTable>
+            <StyledHeaderContainer>
+              <th>Depto</th>
+              {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
+              )}
+              <StyleMonthsHeaders>annual</StyleMonthsHeaders>
+
+            </StyledHeaderContainer>
+
+            {buildings.length > 0 ? buildings.map((item) => <><StyledRowUnit>
               <StyledCell>{reportInfo[item][buildingYear] ? item : null}</StyledCell>
               {reportInfo[item][buildingYear]['profit'] ? reportInfo[item][buildingYear]['profit'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
@@ -135,62 +145,59 @@ export const FullReport = () => {
               ) : null}
             </StyledRowUnit>
             </>
-            ): null}
+            ) : null}
 
             <StyledRowUnit></StyledRowUnit>
-            <StyledRowUnit>egresos</StyledRowUnit>
+            <StyledBold>egresos</StyledBold>
 
             <StyledRowUnit>
-            <StyledCell>admon</StyledCell>
-            {reportInfo[buildingYear]['admon'] ? reportInfo[buildingYear]['admon'].map((item2) => <>
-            <StyledCell>{item2}</StyledCell>
-          </>
-            ) : null}
+              <StyledCell>admon</StyledCell>
+              {reportInfo[buildingYear]['admon'] ? reportInfo[buildingYear]['admon'].map((item2) => <>
+                <StyledCell>{item2}</StyledCell>
+              </>
+              ) : null}
             </StyledRowUnit>
 
             <StyledRowUnit>
-            <StyledCell>gastos</StyledCell>
-            {reportInfo[buildingYear]['gastos'] ? reportInfo[buildingYear]['gastos'].map((item2) => <>
-            <StyledCell>{item2}</StyledCell>
-          </>
-            ) : null}
+              <StyledCell>gastos</StyledCell>
+              {reportInfo[buildingYear]['gastos'] ? reportInfo[buildingYear]['gastos'].map((item2) => <>
+                <StyledCell>{item2}</StyledCell>
+              </>
+              ) : null}
             </StyledRowUnit>
 
             <StyledRowUnit>
-            <StyledCell>devol</StyledCell>
-            {reportInfo[buildingYear]['devol'] ? reportInfo[buildingYear]['devol'].map((item2) => <>
-            <StyledCell>{item2}</StyledCell>
-          </>
-            ) : null}
+              <StyledCell>devol</StyledCell>
+              {reportInfo[buildingYear]['devol'] ? reportInfo[buildingYear]['devol'].map((item2) => <>
+                <StyledCell>{item2}</StyledCell>
+              </>
+              ) : null}
             </StyledRowUnit>
 
             <StyledRowUnit>
-            <StyledCell>otros</StyledCell>
-            {reportInfo[buildingYear]['otros'] ? reportInfo[buildingYear]['otros'].map((item2) => <>
-            <StyledCell>{item2}</StyledCell>
-          </>
-            ) : null}
+              <StyledCell>otros</StyledCell>
+              {reportInfo[buildingYear]['otros'] ? reportInfo[buildingYear]['otros'].map((item2) => <>
+                <StyledCell>{item2}</StyledCell>
+              </>
+              ) : null}
             </StyledRowUnit>
 
             <StyledRowUnit>
-            <StyledCell>Total E</StyledCell>
-            {reportInfo[buildingYear]['totalE'] ? reportInfo[buildingYear]['totalE'].map((item2) => <>
-            <StyledCell>{item2}</StyledCell>
-          </>
-            ) : null}
+              <StyledCell>Total E</StyledCell>
+              {reportInfo[buildingYear]['totalE'] ? reportInfo[buildingYear]['totalE'].map((item2) => <>
+                <StyledCell>{item2}</StyledCell>
+              </>
+              ) : null}
             </StyledRowUnit>
 
+          </StyledTable></>
+        : null}
+        </StyledSomething>
+         <StyledDiv>
+          {buildingYear !== '' ? <StyledPrintButton onClick={handlePrint}>{`print report`}</StyledPrintButton> : null}
 
+         </StyledDiv>
 
-
-
-
-
-
-      </StyledTable>
-       : null}
-       </div>
-       <button onClick={handlePrint}>{`print report`}</button>
     </>
   )
 }
@@ -208,13 +215,15 @@ const StyledTable = styled.table`
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
-  // ${StyledRowE}:nth-child(even) {
-  //   background: lightgrey;
-  // }
-  // ${StyledRowUnit}:nth-child(even) {
-  //   background: lightgrey;
-  // }
-  margin: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+  ${StyledRowE}:nth-child(odd) {
+    background: lightgrey;
+  }
+  ${StyledRowUnit}:nth-child(odd) {
+    background: lightgrey;
+  }
+
 `
 const StyleMonthsHeaders = styled.th`
   border: 1px solid black;
@@ -224,4 +233,29 @@ const StyleMonthsHeaders = styled.th`
 `
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
+`
+const StyledBold = styled(StyledCell)`
+  font-weight: bold;
+  text-decoration: underline;
+`
+
+const StyledTitle = styled.h1`
+  text-align: center;
+`
+
+const StyledDiv = styled.div`
+  display: flex;
+  justify-content: center;
+  margin: auto;
+`
+
+const StyledSomething = styled.div`
+display: flex;
+justify-content: center
+`
+
+const StyledPrintButton = styled.button`
+  display: flex;
+  justify-content: center;
+
 `
