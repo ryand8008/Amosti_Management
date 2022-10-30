@@ -113,7 +113,6 @@ export const FullReport = () => {
           if (reportInfo[buildingYear]['totalProfit'][index] === '-') {
             let tempVal = item - reportInfo[buildingYear]['totalE'][index]
             reportInfo[buildingYear]['totalProfit'][index] = tempVal
-
           }
           if (index === 12) {
             annual += item
@@ -125,7 +124,7 @@ export const FullReport = () => {
     })
     reportInfo[buildingYear]['totalProfit'][12] = annual - reportInfo[buildingYear]['totalE'][12]
   }
-
+console.log(reportInfo, 'reportInfo')
   return (
     <>
       {aggregate ? <StyledDiv>
@@ -143,11 +142,11 @@ export const FullReport = () => {
 
          : null} */}
 
-          <StyledTitle>Full Report: {buildingYear}</StyledTitle>
         <StyledSomething ref={componentToPrint}>
       {buildingYear !== '' ?
         <>
         {/* <StyledTitle>Full Report</StyledTitle> */}
+        <h1>Full Report: {buildingYear}</h1>
 
           <StyledTable>
             <StyledHeaderContainer>
@@ -282,7 +281,8 @@ const StyledDiv = styled.div`
 
 const StyledSomething = styled.div`
 display: flex;
-justify-content: center
+flex-direction: column;
+align-items: center;
 `
 
 const StyledPrintButton = styled.button`
