@@ -34,7 +34,6 @@ const AggregateProvider = ({children}) => {
   const [monthsAvailable, setMonthsAvailable] = useState<string[]>([])
   let monthsStringified = JSON.stringify(monthsAvailable)
 
-  console.log(reportInfo, 'report info')
 
    // container to hold
    const [container, setContainer] = useState<any[]>([])

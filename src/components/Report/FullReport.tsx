@@ -33,9 +33,8 @@ export const FullReport = () => {
       getTotalDevol()
       getTotalOtros()
       getTotalE()
+      getTotalProfit()
     }
-    console.log(aggregate, 'agg')
-    console.log(buildingYear, 'building year')
   }, [aggregate, buildings.length, buildingYear, reportInfo, yearPicked])
 
   const handlePrint = useReactToPrint({
@@ -105,6 +104,28 @@ export const FullReport = () => {
 
   }
 
+  const getTotalProfit = () => {
+    let total = 0
+    let annual = 0
+    buildings.forEach((building) => {
+      reportInfo[building][buildingYear]['revenue'].forEach((item, index) => {
+        if (typeof item === 'number') {
+          if (reportInfo[buildingYear]['totalProfit'][index] === '-') {
+            let tempVal = item - reportInfo[buildingYear]['totalE'][index]
+            reportInfo[buildingYear]['totalProfit'][index] = tempVal
+
+          }
+          if (index === 12) {
+            annual += item
+          } else {
+            total += item
+           }
+        }
+      })
+    })
+    reportInfo[buildingYear]['totalProfit'][12] = annual - reportInfo[buildingYear]['totalE'][12]
+  }
+
   return (
     <>
       {aggregate ? <StyledDiv>
@@ -139,7 +160,7 @@ export const FullReport = () => {
 
             {buildings.length > 0 ? buildings.map((item) => <><StyledRowUnit>
               <StyledCell>{reportInfo[item][buildingYear] ? item : null}</StyledCell>
-              {reportInfo[item][buildingYear]['profit'] ? reportInfo[item][buildingYear]['profit'].map((item2) => <>
+              {reportInfo[item][buildingYear]['revenue'] ? reportInfo[item][buildingYear]['revenue'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
               ) : null}
@@ -190,9 +211,19 @@ export const FullReport = () => {
               ) : null}
             </StyledRowUnit>
 
+            <StyledRowUnit>
+              <StyledCell>Total net</StyledCell>
+              {reportInfo[buildingYear]['totalProfit'] ? reportInfo[buildingYear]['totalProfit'].map((item2) => <>
+                <StyledCell>{item2}</StyledCell>
+              </>
+              ) : null}
+            </StyledRowUnit>
+
           </StyledTable></>
         : null}
         </StyledSomething>
+
+
          <StyledDiv>
           {buildingYear !== '' ? <StyledPrintButton onClick={handlePrint}>{`print report`}</StyledPrintButton> : null}
 
