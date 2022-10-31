@@ -128,14 +128,17 @@ export const FullReport = () => {
   }
 
   const getTotalProfit = () => {
-    let total = 0
-    let annual = 0
     buildings.forEach((building) => {
+      let annual = 0
+      let total = 0
       reportInfo[building][buildingYear]['revenue'].forEach((item, index) => {
         if (typeof item === 'number') {
           if (reportInfo[buildingYear]['totalProfit'][index] === '-') {
-            let tempVal = item - reportInfo[buildingYear]['totalE'][index]
+            let tempVal = item - reportInfo[building][buildingYear]['expense'][index]
             reportInfo[buildingYear]['totalProfit'][index] = tempVal
+          } else {
+            let tempVal = item - reportInfo[building][buildingYear]['expense'][index]
+            reportInfo[buildingYear]['totalProfit'][index] += tempVal
           }
           if (index === 12) {
             annual += item
@@ -144,8 +147,8 @@ export const FullReport = () => {
            }
         }
       })
+      reportInfo[buildingYear]['totalProfit'][12] = annual - reportInfo[buildingYear]['totalE'][12]
     })
-    reportInfo[buildingYear]['totalProfit'][12] = annual - reportInfo[buildingYear]['totalE'][12]
   }
 
   const getTotalExpenses = () => {
@@ -154,16 +157,20 @@ export const FullReport = () => {
     }
     let annual = 0;
     buildings.forEach((building) => {
+      let total = 0;
       reportInfo[building][buildingYear]['expense'].forEach((item, index) => {
         if (item !== '-') {
           if (reportInfo[buildingYear]['totalExpenses'][index] === '-') {
             reportInfo[buildingYear]['totalExpenses'][index] = item
+            total += item
           } else {
             reportInfo[buildingYear]['totalExpenses'][index] += item
+            total += item
           }
           annual += item
         }
       })
+      reportInfo[building][buildingYear]['expense'][12] = total
     })
     reportInfo[buildingYear]['totalExpenses'][12] = annual;
   }
@@ -176,10 +183,13 @@ export const FullReport = () => {
       }
       // iterate through revenue and expenses
       reportInfo[building][buildingYear]['revenue'].forEach((item,index) => {
-        if (item !== '-') {
+        if (item !== '-' && index !== 12) {
           if (reportInfo[building][buildingYear]['totalNet'][index] === '-') {
           reportInfo[building][buildingYear]['totalNet'][index] = reportInfo[building][buildingYear]['revenue'][index] - reportInfo[building][buildingYear]['expense'][index]
-          annual += reportInfo[building][buildingYear]['revenue'][index] - reportInfo[building][buildingYear]['expense'][index]
+
+
+          let tempVal = reportInfo[building][buildingYear]['revenue'][index] - reportInfo[building][buildingYear]['expense'][index]
+          annual += tempVal
           }
         }
       })
