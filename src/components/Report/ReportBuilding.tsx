@@ -296,7 +296,11 @@ const generateFullReport = () => {
       let insertionPoint = hardCodeMonths.indexOf(month)
 
       if (!reportInfo[buildingName][yr]) {
-        reportInfo[buildingName][yr] = {'revenue': Array.from({length: 13}).fill('-', 0, 13)}
+        reportInfo[buildingName][yr] = {
+          'revenue': Array.from({length: 13}).fill('-', 0, 13),
+          'expense': Array.from({length: 13}).fill('-', 0, 13)
+        }
+
         reportInfo[yr] = {
           'admon': Array.from({length: 13}).fill('-', 0, 13),
           'gastos': Array.from({length: 13}).fill('-', 0, 13),
@@ -305,9 +309,23 @@ const generateFullReport = () => {
           'totalProfit': Array.from({length: 13}).fill('-', 0, 13),
         }
 
-        reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
+        // if (reportInfo[yr]['admon'][insertionPoint] === '-') {
+        //   // create {reportInfo: {year: {admon: []}}}
+        //   reportInfo[yr]['admon'][insertionPoint] = 0
+        //   reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
+        // } else {
+        //   reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
+        // }
 
-        // create {reportInfo: {year: {admon: []}}}
+        reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
+        reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
+
+
+
+
+
+
+        // // create {reportInfo: {year: {admon: []}}}
         reportInfo[yr]['admon'][insertionPoint] = 0
         reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
 
@@ -322,7 +340,10 @@ const generateFullReport = () => {
 
 
       } else {
-        reportInfo[buildingName][yr]['revenue'][insertionPoint]= totalTotal[insertionPoint]
+        reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
+        reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
+
+
         reportInfo[yr]['admon'][insertionPoint] = totalAdmon[insertionPoint]
         reportInfo[yr]['gastos'][insertionPoint] = totalGastos[insertionPoint]
         reportInfo[yr]['devol'][insertionPoint] = totalDevol[insertionPoint]

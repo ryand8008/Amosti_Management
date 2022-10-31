@@ -34,6 +34,9 @@ export const FullReport = () => {
       getTotalOtros()
       getTotalE()
       getTotalProfit()
+      getTotalRev()
+      getTotalExpenses()
+      getMonthNetTotal()
     }
   }, [aggregate, buildings.length, buildingYear, reportInfo, yearPicked])
 
@@ -81,6 +84,26 @@ export const FullReport = () => {
     reportInfo[buildingYear]['otros'][12] = total;
   }
 
+  const getTotalRev = () => {
+    let total = 0;
+    if (!reportInfo[buildingYear]['totalRev']) {
+      reportInfo[buildingYear]['totalRev'] = Array.from({length:13}).fill('-',0,13)
+    }
+    buildings.forEach((building) => {
+      reportInfo[building][buildingYear]['revenue'].forEach((item, index) => {
+        if (item !== '-') {
+          if (reportInfo[buildingYear]['totalRev'][index] === '-') {
+            reportInfo[buildingYear]['totalRev'][index] = item
+
+          } else {
+            reportInfo[buildingYear]['totalRev'][index] += item
+          }
+        }
+      })
+    })
+    console.log(reportInfo[buildingYear]['totalRev'], 'total rev')
+  }
+
   const getTotalE = () => {
     let total = 0
     let expensesArray = ['admon', 'gastos', 'devol', 'otros']
@@ -123,6 +146,45 @@ export const FullReport = () => {
       })
     })
     reportInfo[buildingYear]['totalProfit'][12] = annual - reportInfo[buildingYear]['totalE'][12]
+  }
+
+  const getTotalExpenses = () => {
+    if (!reportInfo[buildingYear]['totalExpenses']) {
+      reportInfo[buildingYear]['totalExpenses'] = Array.from({length: 13}).fill('-',0,13)
+    }
+    let annual = 0;
+    buildings.forEach((building) => {
+      reportInfo[building][buildingYear]['expense'].forEach((item, index) => {
+        if (item !== '-') {
+          if (reportInfo[buildingYear]['totalExpenses'][index] === '-') {
+            reportInfo[buildingYear]['totalExpenses'][index] = item
+          } else {
+            reportInfo[buildingYear]['totalExpenses'][index] += item
+          }
+          annual += item
+        }
+      })
+    })
+    reportInfo[buildingYear]['totalExpenses'][12] = annual;
+  }
+
+  const getMonthNetTotal = () => {
+    buildings.forEach((building) => {
+      let annual = 0;
+      if (!reportInfo[building][buildingYear]['totalNet']) {
+        reportInfo[building][buildingYear]['totalNet'] = Array.from({length: 13}).fill('-',0,13)
+      }
+      // iterate through revenue and expenses
+      reportInfo[building][buildingYear]['revenue'].forEach((item,index) => {
+        if (item !== '-') {
+          if (reportInfo[building][buildingYear]['totalNet'][index] === '-') {
+          reportInfo[building][buildingYear]['totalNet'][index] = reportInfo[building][buildingYear]['revenue'][index] - reportInfo[building][buildingYear]['expense'][index]
+          annual += reportInfo[building][buildingYear]['revenue'][index] - reportInfo[building][buildingYear]['expense'][index]
+          }
+        }
+      })
+      reportInfo[building][buildingYear]['totalNet'][12] = annual
+    })
   }
 console.log(reportInfo, 'reportInfo')
   return (
@@ -167,8 +229,16 @@ console.log(reportInfo, 'reportInfo')
             </>
             ) : null}
 
+            <StyledRowUnit>
+              <StyledCell>Total Rev</StyledCell>
+              {reportInfo[buildingYear]['totalRev'] ? reportInfo[buildingYear]['totalRev'].map((item2) => <>
+                <StyledCell>{item2}</StyledCell>
+              </>
+              ) : null}
+            </StyledRowUnit>
+
             <StyledRowUnit></StyledRowUnit>
-            <StyledBold>egresos</StyledBold>
+            {/* <StyledBold>egresos</StyledBold>
 
             <StyledRowUnit>
               <StyledCell>admon</StyledCell>
@@ -200,15 +270,33 @@ console.log(reportInfo, 'reportInfo')
                 <StyledCell>{item2}</StyledCell>
               </>
               ) : null}
-            </StyledRowUnit>
+            </StyledRowUnit> */}
+
+              {buildings.map((building) =>
+               <StyledRowUnit>
+                   <StyledCell>{building}</StyledCell>
+                   {reportInfo[building][buildingYear]['expense'].map((item) =>
+                    <StyledCell>{item}</StyledCell>
+                   )}
+                </StyledRowUnit>
+              )}
 
             <StyledRowUnit>
               <StyledCell>Total E</StyledCell>
-              {reportInfo[buildingYear]['totalE'] ? reportInfo[buildingYear]['totalE'].map((item2) => <>
+              {reportInfo[buildingYear]['totalExpenses'] ? reportInfo[buildingYear]['totalExpenses'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
               ) : null}
             </StyledRowUnit>
+
+            {buildings.map((building) =>
+               <StyledRowUnit>
+                   <StyledCell>{building}</StyledCell>
+                   {reportInfo[building][buildingYear]['totalNet'] ? reportInfo[building][buildingYear]['totalNet'].map((item) =>
+                    <StyledCell>{item}</StyledCell>
+                   ) : null}
+                </StyledRowUnit>
+              )}
 
             <StyledRowUnit>
               <StyledCell>Total net</StyledCell>
