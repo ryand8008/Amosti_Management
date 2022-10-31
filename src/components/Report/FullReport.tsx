@@ -16,6 +16,8 @@ export const FullReport = () => {
   const [buildings, setBuildings] = useState<string[]>([])
   const [buildingYear, setBuildingYear] = useState<string>('')
 
+  // drop down, should remove when picking a year
+  const [dropDown, setDropDown] = useState<boolean>(false)
   // print
   const componentToPrint = useRef(null)
 
@@ -101,7 +103,6 @@ export const FullReport = () => {
         }
       })
     })
-    console.log(reportInfo[buildingYear]['totalRev'], 'total rev')
   }
 
   const getTotalE = () => {
@@ -196,23 +197,22 @@ export const FullReport = () => {
       reportInfo[building][buildingYear]['totalNet'][12] = annual
     })
   }
-console.log(reportInfo, 'reportInfo')
   return (
     <>
-      {aggregate ? <StyledDiv>
+      {/* {aggregate && dropDown ? <StyledDiv>
         <div>generate a report </div>
-        <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { e.preventDefault(), setYearPicked(e.target.value); } }>
+        <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { e.preventDefault(), setYearPicked(e.target.value), setDropDown(false) } }>
           <option>select a year</option>
           {yearsAvailable.map((item) => <option>{item}</option>
           )}
         </select>
-        </StyledDiv> : null}
+        </StyledDiv> : null} */}
 
-        {/* {aggregate ? <StyledDiv>
-        <StyledPrintButton onClick={(e) => {e.preventDefault(), setBuildingYear('2022'); }}>generate a report </StyledPrintButton>
+        {aggregate ? <StyledDiv>
+        {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked('2022'); }}>generate a report </StyledPrintButton> : null}
         </StyledDiv>
 
-         : null} */}
+         : null}
 
         <StyledSomething ref={componentToPrint}>
       {buildingYear !== '' ?

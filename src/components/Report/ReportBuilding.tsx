@@ -113,7 +113,9 @@ export const ReportBuilding = ({ buildingName }) => {
             tempArr = blob[buildingName][year]['units'][tempUnit];
           }
           let insertionPoint = hardCodeMonths.indexOf(month)
-          tempArr[insertionPoint] = Number(item['Renta']);
+          // tempArr[insertionPoint] = Number(item['Renta']);
+          tempArr[insertionPoint] = !isNaN(Number(item['Renta'])) ?  Number(item['Renta']) : '-';
+
 
           blob[buildingName][year]['units'][tempUnit] = tempArr;
 
@@ -139,7 +141,12 @@ export const ReportBuilding = ({ buildingName }) => {
         annualTotal[unit] = 0
         array[unit].forEach((item:any) => {
           if (item !== '-') {
-            annualTotal[unit] += item
+            if (isNaN(item)) {
+              annualTotal[unit] = '-'
+            } else {
+              annualTotal[unit] += item
+
+            }
           }
         })
 
@@ -188,9 +195,6 @@ export const ReportBuilding = ({ buildingName }) => {
       // insert value with corresponding month index
       total[insertionPoint] = totalRent
       totalAdmon[insertionPoint] = admonTotal
-      // totalGastos[insertionPoint] = gastos;
-      // totalDevolucion[insertionPoint] = devol;
-      // totalOtros[insertionPoint] = otros;
       testGastos = getGastosInformation(gastos, insertionPoint, testGastos)
 
     })
@@ -309,13 +313,6 @@ const generateFullReport = () => {
           'totalProfit': Array.from({length: 13}).fill('-', 0, 13),
         }
 
-        // if (reportInfo[yr]['admon'][insertionPoint] === '-') {
-        //   // create {reportInfo: {year: {admon: []}}}
-        //   reportInfo[yr]['admon'][insertionPoint] = 0
-        //   reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
-        // } else {
-        //   reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
-        // }
 
         reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
         reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
