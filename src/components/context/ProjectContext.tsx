@@ -20,6 +20,7 @@ export const AggregateContext = React.createContext<ReportType | null>(null)
 const AggregateProvider = ({children}) => {
   // uploaded information
   const [aggregate, setAggregate] = useState<any>()
+  console.log(aggregate, 'agg')
   const aggregateStringified = JSON.stringify(aggregate)
   // report information
   const [reportInfo, setReportInfo] = useState<any>({})

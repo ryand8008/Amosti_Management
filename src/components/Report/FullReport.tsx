@@ -240,7 +240,7 @@ console.log(reportInfo, 'reportInfo')
             ) : null}
 
             <StyledRowUnit>
-              <StyledCell>Total Rev</StyledCell>
+              <StyledBold>Total Rev</StyledBold>
               {reportInfo[buildingYear]['totalRev'] ? reportInfo[buildingYear]['totalRev'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
@@ -292,7 +292,7 @@ console.log(reportInfo, 'reportInfo')
               )}
 
             <StyledRowUnit>
-              <StyledCell>Total E</StyledCell>
+            <StyledBold>Total E</StyledBold>
               {reportInfo[buildingYear]['totalExpenses'] ? reportInfo[buildingYear]['totalExpenses'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
@@ -309,7 +309,7 @@ console.log(reportInfo, 'reportInfo')
               )}
 
             <StyledRowUnit>
-              <StyledCell>Total net</StyledCell>
+            <StyledBold>Total net</StyledBold>
               {reportInfo[buildingYear]['totalProfit'] ? reportInfo[buildingYear]['totalProfit'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>

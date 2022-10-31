@@ -114,11 +114,20 @@ const findGastos = (json)=>{
           const workbook = xlsx.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
+
+          // skip first two rows to read file correctly for key pointers
+          var range = xlsx.utils.decode_range(worksheet['!ref']);
+          range.s.r = 2;
+
+          var newRange = xlsx.utils.encode_range(range);
+
+          const jsonMaster = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
+
           // raw data sheet
-          const jsonMaster = xlsx.utils.sheet_to_json((worksheet));
+
           // if entry doesn't exist make it using aggregate for use context
           [year, month ,buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'], jsonMaster[0]['Depto']]
-
+          console.log(jsonMaster, 'jsonMaster')
           holding2 = {
             [buildingName]: {
               [year]: {
@@ -138,12 +147,14 @@ const findGastos = (json)=>{
           for (let i = 0; i < 2; i++) {
             if (i === 0) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
-              range.s.r = 0;
+
+              range.s.r = 2;
               range.e.r = findGastos(jsonMaster);
 
               var newRange = xlsx.utils.encode_range(range);
               // const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: false});
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
+              console.log(json, 'this is json')
               holding[fileName].unitInfo.push(...json)
               holding2[buildingName][year][month]['unitInfo'] = [...json]
             } else if (i === 1) {
