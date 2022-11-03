@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 interface ReportType {
   aggregate: any
-  setAggregate: (newInformation) => void;
+  setAggregate: (newInformation) => any;
   mergeToAgg: (buildingName: string, year: string, holding2: any) => any;
   gatherInfo: (holding2: any, buildingName: string, year: string) => any;
   reportInfo: (buildingName: any[]) => void;

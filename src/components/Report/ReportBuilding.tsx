@@ -29,7 +29,9 @@ export const ReportBuilding = ({ buildingName }) => {
   const [totalProfit, setTotalProfit] = useState<number[] | any[]>(defaultReportRow)
 
   useEffect( () => {
-
+    if (aggregate === null) {
+      console.log('boo!')
+    }
 
     // years = Object.keys(aggregate[buildingName]).sort()
     years.forEach((item) => {
@@ -61,18 +63,14 @@ export const ReportBuilding = ({ buildingName }) => {
     if (annualRent && units.length > 0) {
       if (annualRent[buildingName][year]) {
         getAnnualRentTotal()
-        // console.log(Object.values(annualRent[buildingName][year]['units']))
-
       }
 
     }
     if (annualUnitTotal) {
       getMonthCostsTotal(annualUnitTotal)
-      // console.log(Object.keys(annualUnitTotal))
     }
     if (totalTotal) {
       getTotalProfit(totalTotal, totalExpenses)
-      // generateFullReport()
     }
     if (yearPicked) {
       generateFullReport()
@@ -376,7 +374,7 @@ const changeYears = (e, change: string, year: string) => {
     <StyledTop>
       {years.length > 1 && years.indexOf(year) !== 0 ? <StyledYearArrows onClick={(e) =>  {e.preventDefault(); changeYears(e,'decrease', year)}}>{'<'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
       <StyledTitle>
-          <h1>{buildingName}: {year}</h1>
+          <h2>{buildingName}: {year}</h2>
       </StyledTitle>
       {years.length > 1 && years.indexOf(year) !== years.length -1 ? <StyledYearArrows onClick={(e) => {e.preventDefault(); changeYears(e,'increase', year)}}>{'>'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
     </StyledTop>

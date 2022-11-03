@@ -221,12 +221,12 @@ export const FullReport = () => {
         <h1>Full Report: {buildingYear}</h1>
 
           <StyledTable>
+
             <StyledHeaderContainer>
               <th>Depto</th>
               {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
               )}
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
-
             </StyledHeaderContainer>
 
             {buildings.length > 0 ? buildings.map((item) => <><StyledRowUnit>
@@ -247,40 +247,11 @@ export const FullReport = () => {
               ) : null}
             </StyledRowUnit>
 
-            <StyledRowUnit></StyledRowUnit>
-            {/* <StyledBold>egresos</StyledBold>
-
-            <StyledRowUnit>
-              <StyledCell>admon</StyledCell>
-              {reportInfo[buildingYear]['admon'] ? reportInfo[buildingYear]['admon'].map((item2) => <>
-                <StyledCell>{item2}</StyledCell>
-              </>
-              ) : null}
-            </StyledRowUnit>
-
-            <StyledRowUnit>
-              <StyledCell>gastos</StyledCell>
-              {reportInfo[buildingYear]['gastos'] ? reportInfo[buildingYear]['gastos'].map((item2) => <>
-                <StyledCell>{item2}</StyledCell>
-              </>
-              ) : null}
-            </StyledRowUnit>
-
-            <StyledRowUnit>
-              <StyledCell>devol</StyledCell>
-              {reportInfo[buildingYear]['devol'] ? reportInfo[buildingYear]['devol'].map((item2) => <>
-                <StyledCell>{item2}</StyledCell>
-              </>
-              ) : null}
-            </StyledRowUnit>
-
-            <StyledRowUnit>
-              <StyledCell>otros</StyledCell>
-              {reportInfo[buildingYear]['otros'] ? reportInfo[buildingYear]['otros'].map((item2) => <>
-                <StyledCell>{item2}</StyledCell>
-              </>
-              ) : null}
-            </StyledRowUnit> */}
+            <tr><td> </td> </tr>
+            <tr><td> </td> </tr>
+            <tr><td> </td> </tr>
+            <tr><td> </td> </tr>
+            <tr><td> </td> </tr>
 
               {buildings.map((building) =>
                <StyledRowUnit>
@@ -332,6 +303,7 @@ export const FullReport = () => {
 
 const StyledCell = styled.td`
   text-align: center;
+  width: fit-content;
 `
 const StyledRowE = styled.tr`
 `
@@ -365,6 +337,7 @@ const StyledHeaderContainer = styled.tr`
 const StyledBold = styled(StyledCell)`
   font-weight: bold;
   text-decoration: underline;
+  width: fit-content;
 `
 
 const StyledTitle = styled.h1`

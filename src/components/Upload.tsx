@@ -183,6 +183,7 @@ const findGastos = (json)=>{
       setSplitExcel({})
       setShowCosts(false)
       setAggregate(null)
+      console.log(aggregate, 'should be null')
     }
 
   }
@@ -205,7 +206,7 @@ const findGastos = (json)=>{
     <>
       <Window>
 
-        <StyledTitle>Insert Title Here (main)</StyledTitle>
+        <StyledTitle>Amosti Management</StyledTitle>
 
       <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input

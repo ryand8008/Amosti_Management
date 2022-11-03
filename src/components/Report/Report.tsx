@@ -17,6 +17,7 @@ const componentToPrint = useRef(null)
 
 
 useEffect(() => {
+  console.log(aggregate, 'maybe null?')
   const buildings = Object.keys(aggregate);
   setBuildingNames(buildings)
 }, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null])
@@ -27,8 +28,8 @@ const handlePrint = useReactToPrint({
 
   return (
     <>
-      <StyledReportTitle>Report</StyledReportTitle>
-      {buildingNames.length > 0 ? buildingNames.map((building) =>
+      <StyledReportTitle>Individual Building Report</StyledReportTitle>
+      {aggregate && buildingNames.length > 0 ? buildingNames.map((building) =>
         <><div ref={componentToPrint}>
           <ReportBuilding buildingName={building} />
         </div>
@@ -43,6 +44,7 @@ const handlePrint = useReactToPrint({
 const StyledReportTitle = styled.h1`
   display: flex;
   justify-content: center;
+  text-decoration: underline;
 `
 const StyledTable = styled.table`
   border: 1px solid red;
