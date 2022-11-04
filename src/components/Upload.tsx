@@ -38,7 +38,7 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
-  const { aggregate, setAggregate, gatherInfo } = useContext(AggregateContext)
+  const { aggregate, setAggregate, gatherInfo, showReport, setShowReport } = useContext(AggregateContext)
 
   const [excel, setExcel] = useState<newSheet[]>()
 
@@ -206,7 +206,7 @@ const findGastos = (json)=>{
     <>
       <Window>
 
-        <StyledTitle>Amosti Management</StyledTitle>
+        {/* <StyledTitle>Amosti Management</StyledTitle> */}
 
       <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input
@@ -227,10 +227,11 @@ const findGastos = (json)=>{
         </>
          : null}
       </form>
+      {/* {show} */}
       {aggregate ? <Report /> : null}
       {aggregate ?
         <>
-          <button onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</button>
+          <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>
         </>
           : null}
       {generateReport ? <div>
@@ -266,6 +267,8 @@ const Window = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 10px;
+  margin-bottom: 25px;
 `
 
 const DragBox = styled.div`
@@ -284,5 +287,9 @@ const listitem = styled.ul`
   margin: auto;
   flex-direction: column;
   height: fit-content;
+`
+
+const ContentsButton = styled.button`
+  margin-top: 25px;
 `
 

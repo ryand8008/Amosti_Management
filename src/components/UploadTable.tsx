@@ -82,6 +82,7 @@ const StyledContainer = styled.div`
   margin-top: 10px;
   width: fit-content;
   border-radius: 5px;
+  margin-bottom: 10px;
 `
 
 const StyledTitle = styled.h1`

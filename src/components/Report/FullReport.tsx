@@ -229,63 +229,72 @@ export const FullReport = () => {
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
 
-            {buildings.length > 0 ? buildings.map((item) => <><StyledRowUnit>
-              <StyledCell>{reportInfo[item][buildingYear] ? item : null}</StyledCell>
-              {reportInfo[item][buildingYear]['revenue'] ? reportInfo[item][buildingYear]['revenue'].map((item2) => <>
-                <StyledCell>{item2}</StyledCell>
-              </>
-              ) : null}
-            </StyledRowUnit>
+            {buildings.length > 0 ? buildings.map((item) =>
+            <>
+              <StyledRowUnit>
+                <StyledCell>{reportInfo[item][buildingYear] ? item : null}</StyledCell>
+                {reportInfo[item][buildingYear]['revenue'] ? reportInfo[item][buildingYear]['revenue'].map((item2) => <>
+                  <StyledCell>{item2}</StyledCell>
+                </>
+                ) : null}
+              </StyledRowUnit>
             </>
             ) : null}
 
-            <StyledRowUnit>
+
+            <StyledTotal>
               <StyledBold>Total Rev</StyledBold>
               {reportInfo[buildingYear]['totalRev'] ? reportInfo[buildingYear]['totalRev'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
               ) : null}
-            </StyledRowUnit>
+            </StyledTotal>
 
             <tr><td> </td> </tr>
             <tr><td> </td> </tr>
             <tr><td> </td> </tr>
             <tr><td> </td> </tr>
-            <tr><td> </td> </tr>
+            {buildings.length % 2 === 0 ? <tr><td> </td> </tr> : null}
 
               {buildings.map((building) =>
-               <StyledRowUnit>
+               <StyledRowEx>
                    <StyledCell>{building}</StyledCell>
                    {reportInfo[building][buildingYear]['expense'].map((item) =>
                     <StyledCell>{item}</StyledCell>
                    )}
-                </StyledRowUnit>
+                </StyledRowEx>
               )}
 
-            <StyledRowUnit>
+            <StyledTotal>
             <StyledBold>Total E</StyledBold>
               {reportInfo[buildingYear]['totalExpenses'] ? reportInfo[buildingYear]['totalExpenses'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
               ) : null}
-            </StyledRowUnit>
+            </StyledTotal>
+
+            <tr><td> </td> </tr>
+            <tr><td> </td> </tr>
+            <tr><td> </td> </tr>
+            <tr><td> </td> </tr>
+            {buildings.length % 2 !== 0 ? <tr><td> </td> </tr> : null}
 
             {buildings.map((building) =>
-               <StyledRowUnit>
+               <StyledRowNet>
                    <StyledCell>{building}</StyledCell>
                    {reportInfo[building][buildingYear]['totalNet'] ? reportInfo[building][buildingYear]['totalNet'].map((item) =>
                     <StyledCell>{item}</StyledCell>
                    ) : null}
-                </StyledRowUnit>
+                </StyledRowNet>
               )}
 
-            <StyledRowUnit>
+            <StyledTotal>
             <StyledBold>Total net</StyledBold>
               {reportInfo[buildingYear]['totalProfit'] ? reportInfo[buildingYear]['totalProfit'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
               ) : null}
-            </StyledRowUnit>
+            </StyledTotal>
 
           </StyledTable></>
         : null}
@@ -305,9 +314,17 @@ const StyledCell = styled.td`
   text-align: center;
   width: fit-content;
 `
-const StyledRowE = styled.tr`
+
+const StyledTotal = styled.tr`
+  background: lightyellow;
+  border-top: 1px solid black;
+`
+
+const StyledRowEx = styled.tr`
 `
 const StyledRowUnit = styled.tr`
+`
+const StyledRowNet = styled.tr`
 `
 const StyledTable = styled.table`
   border: 1px solid black;
@@ -317,13 +334,15 @@ const StyledTable = styled.table`
   margin-bottom: 10px;
   margin-left: 30px;
   margin-right: 30px;
-  ${StyledRowE}:nth-child(odd) {
+  ${StyledRowUnit}:nth-child(even) {
     background: lightgrey;
   }
-  ${StyledRowUnit}:nth-child(odd) {
+  ${StyledRowEx}:nth-child(even) {
     background: lightgrey;
   }
-
+  ${StyledRowNet}:nth-child(odd) {
+    background: lightgrey;
+  }
 `
 const StyleMonthsHeaders = styled.th`
   border: 1px solid black;
@@ -348,6 +367,7 @@ const StyledDiv = styled.div`
   display: flex;
   justify-content: center;
   margin: auto;
+  margin-bottom: 25px;
 `
 
 const StyledSomething = styled.div`

@@ -10,6 +10,8 @@ interface ReportType {
   yearsAvailable: string[];
   yearPicked: string
   setYearPicked: (string) => any;
+  showReport: boolean;
+  setShowReport: (bool) => any;
 }
 // reportInfo = {
 //   buildingName = {}
@@ -21,7 +23,7 @@ const AggregateProvider = ({children}) => {
   // uploaded information
   const [aggregate, setAggregate] = useState<any>()
   const aggregateStringified = JSON.stringify(aggregate)
-
+  const [showReport, setShowReport] = useState<boolean>(false)
   // report information
   const [reportInfo, setReportInfo] = useState<any>({})
   const [yearPicked, setYearPicked] = useState<string>()
@@ -188,7 +190,7 @@ const AggregateProvider = ({children}) => {
   }
 
   return (
-    <AggregateContext.Provider value={{aggregate, setAggregate, mergeToAgg, gatherInfo, reportInfo, yearsAvailable, yearPicked, setYearPicked}}>
+    <AggregateContext.Provider value={{aggregate, setAggregate, mergeToAgg, gatherInfo, reportInfo, yearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
       {children}
     </AggregateContext.Provider>
   )
