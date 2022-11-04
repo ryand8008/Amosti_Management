@@ -10,7 +10,7 @@ export const App = () => {
 
   return (
     <>
-      {/* <Header /> */}
+      <Header />
       <AggregateProvider>
         {/* {showReport ? <Report /> : null } */}
         {/* {<button onClick={() =>setShowReport(!showReport)}>show report</button> } */}

@@ -38,7 +38,7 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
-  const { aggregate, setAggregate, gatherInfo } = useContext(AggregateContext)
+  const { aggregate, setAggregate, gatherInfo, showReport, setShowReport } = useContext(AggregateContext)
 
   const [excel, setExcel] = useState<newSheet[]>()
 
@@ -114,11 +114,19 @@ const findGastos = (json)=>{
           const workbook = xlsx.read(data, { type: "array" });
           const sheetName = workbook.SheetNames[0];
           const worksheet = workbook.Sheets[sheetName];
-          // raw data sheet
-          const jsonMaster = xlsx.utils.sheet_to_json((worksheet));
-          // if entry doesn't exist make it using aggregate for use context
-          [year, month ,buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'], jsonMaster[0]['Depto']]
 
+          // skip first two rows to read file correctly for key pointers
+          var range = xlsx.utils.decode_range(worksheet['!ref']);
+          range.s.r = 2;
+
+          var newRange = xlsx.utils.encode_range(range);
+
+          const jsonMaster = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
+
+          // raw data sheet
+
+          // if entry doesn't exist make it using aggregate for use context
+          [year, month ,buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'].toLowerCase(), jsonMaster[0]['Depto']]
           holding2 = {
             [buildingName]: {
               [year]: {
@@ -132,17 +140,15 @@ const findGastos = (json)=>{
           }
           gatherInfo(holding2, buildingName, year)
 
-
-
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
             if (i === 0) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
-              range.s.r = 0;
-              range.e.r = findGastos(jsonMaster);
+
+              range.s.r = 2;
+              range.e.r = findGastos(jsonMaster)+1;
 
               var newRange = xlsx.utils.encode_range(range);
-              // const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: false});
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
               holding[fileName].unitInfo.push(...json)
               holding2[buildingName][year][month]['unitInfo'] = [...json]
@@ -177,6 +183,7 @@ const findGastos = (json)=>{
       setSplitExcel({})
       setShowCosts(false)
       setAggregate(null)
+      console.log(aggregate, 'should be null')
     }
 
   }
@@ -199,7 +206,7 @@ const findGastos = (json)=>{
     <>
       <Window>
 
-        <StyledTitle>Insert Title Here (main)</StyledTitle>
+        {/* <StyledTitle>Amosti Management</StyledTitle> */}
 
       <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input
@@ -220,10 +227,11 @@ const findGastos = (json)=>{
         </>
          : null}
       </form>
+      {/* {show} */}
       {aggregate ? <Report /> : null}
       {aggregate ?
         <>
-          <button onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</button>
+          <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>
         </>
           : null}
       {generateReport ? <div>
@@ -259,6 +267,8 @@ const Window = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: 10px;
+  margin-bottom: 25px;
 `
 
 const DragBox = styled.div`
@@ -277,5 +287,9 @@ const listitem = styled.ul`
   margin: auto;
   flex-direction: column;
   height: fit-content;
+`
+
+const ContentsButton = styled.button`
+  margin-top: 25px;
 `
 
