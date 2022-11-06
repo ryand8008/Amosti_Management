@@ -76,7 +76,7 @@ export const ReportBuilding = ({ buildingName }) => {
       generateFullReport()
     }
 
- }, [aggregate, aggregate[buildingName][year], months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), year, years.length, yearPicked])
+ }, [aggregate, aggregate[buildingName][year], months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), year, years.length, yearPicked])
 
   const buildUnits = async () => {
     let units = [];
@@ -165,6 +165,7 @@ export const ReportBuilding = ({ buildingName }) => {
     let totalDevolucion:any[] = Array.from({length: 13}).fill('-',0, 13)
     //otros
     let totalOtros:any[] = Array.from({length: 13}).fill('-',0, 13)
+    // let otrosTotal = 0;
 
     tempMonths.forEach((month) => {
       let insertionPoint = hardCodeMonths.indexOf(month)
@@ -197,6 +198,17 @@ export const ReportBuilding = ({ buildingName }) => {
 
     })
     setTotalDevol(totalDevolucion)
+
+    // get total Otros
+    let otrosTotal = 0;
+
+    totalOtros.forEach((item) => {
+      if (item !== '-') {
+        otrosTotal += Number(item)
+      }
+    })
+    totalOtros[12] = otrosTotal;
+    console.log(totalOtros, 'totalOtros')
     setTotalOtros(totalOtros)
 
     if (annualUnitTotal) {
@@ -345,7 +357,8 @@ const generateFullReport = () => {
         reportInfo[yr]['otros'][insertionPoint] = totalOtros[insertionPoint]
       }
       reportInfo[buildingName][yr]['revenue'][12] = totalTotal[12]
-
+      // check otros
+      console.log(reportInfo[yr]['otros'], 'otros reportInfo')
     })
   }
 

@@ -10,6 +10,13 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
   // make annual
 // sum them all up
 
+// TODO: make sure that generated full report fits print screen
+// TODO: Create error messages
+  // Examples:
+    // -wrong file format
+    //
+
+
 export const FullReport = () => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)

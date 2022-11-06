@@ -227,7 +227,6 @@ const findGastos = (json)=>{
         </>
          : null}
       </form>
-      {/* {show} */}
       {aggregate ? <Report /> : null}
       {aggregate ?
         <>
