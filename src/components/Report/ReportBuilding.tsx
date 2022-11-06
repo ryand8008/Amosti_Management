@@ -208,7 +208,6 @@ export const ReportBuilding = ({ buildingName }) => {
       }
     })
     totalOtros[12] = otrosTotal;
-    console.log(totalOtros, 'totalOtros')
     setTotalOtros(totalOtros)
 
     if (annualUnitTotal) {

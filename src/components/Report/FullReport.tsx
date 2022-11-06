@@ -222,7 +222,7 @@ export const FullReport = () => {
          : null}
 
         <StyledSomething ref={componentToPrint}>
-      {buildingYear !== '' ?
+      {buildingYear !== '' && aggregate ?
         <>
         {/* <StyledTitle>Full Report</StyledTitle> */}
         <h1>Full Report: {buildingYear}</h1>

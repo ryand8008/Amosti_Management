@@ -7,6 +7,7 @@ interface ReportType {
   mergeToAgg: (buildingName: string, year: string, holding2: any) => any;
   gatherInfo: (holding2: any, buildingName: string, year: string) => any;
   reportInfo: (buildingName: any[]) => void;
+  setReportInfo: (any) => any;
   yearsAvailable: string[];
   yearPicked: string
   setYearPicked: (string) => any;
@@ -26,6 +27,8 @@ const AggregateProvider = ({children}) => {
   const [showReport, setShowReport] = useState<boolean>(false)
   // report information
   const [reportInfo, setReportInfo] = useState<any>({})
+  // reportInfo 2
+  const [report2, setReport2] = useState<any>()
   const [yearPicked, setYearPicked] = useState<string>()
   const [yearsAvailable, setYearsAvailable] = useState<string[]>([])
   let yearsStringified = JSON.stringify(yearsAvailable)
@@ -43,12 +46,17 @@ const AggregateProvider = ({children}) => {
 
   useEffect(() => {
     if (aggregate) {
+      console.log('!boo')
       // let builds = Object.keys(aggregate)
       // setBuildings(builds)
       // findYearsAvailable()
       // createReportInfoBlank()
       // getMonths()
       // console.log(monthsAvailable, 'how many?')
+    }
+
+    if (!aggregate) {
+      console.log('boo!!')
     }
 
     // DO NOT TOUCH
@@ -190,7 +198,7 @@ const AggregateProvider = ({children}) => {
   }
 
   return (
-    <AggregateContext.Provider value={{aggregate, setAggregate, mergeToAgg, gatherInfo, reportInfo, yearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
+    <AggregateContext.Provider value={{aggregate, setAggregate, mergeToAgg, gatherInfo, reportInfo, setReportInfo, yearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
       {children}
     </AggregateContext.Provider>
   )

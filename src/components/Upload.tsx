@@ -38,7 +38,7 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
-  const { aggregate, setAggregate, gatherInfo, showReport, setShowReport } = useContext(AggregateContext)
+  const { aggregate, setAggregate, gatherInfo, showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
 
   const [excel, setExcel] = useState<newSheet[]>()
 
@@ -65,9 +65,9 @@ export const Upload = () => {
   const [files, setFiles] = useState<string[]>([])
 
   // // checking aggregate
-  // useEffect(() => {
+  useEffect(() => {
 
-  // }, [JSON.stringify(aggregate), newExcel])
+  }, [aggregate, splitExcel])
 
 
 
@@ -123,10 +123,16 @@ const findGastos = (json)=>{
 
           const jsonMaster = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
 
+          // how to handle error for invalid file format or type
+          if (!Object.keys(jsonMaster[0]).includes('Año')) {
+            alert('invalid file')
+            // throw new Error ('invalid file type')
+            handleClear(e)
+          } else {
           // raw data sheet
 
           // if entry doesn't exist make it using aggregate for use context
-          [year, month ,buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'].toLowerCase(), jsonMaster[0]['Depto']]
+          [year, month, buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'].toLowerCase(), jsonMaster[0]['Depto']]
           holding2 = {
             [buildingName]: {
               [year]: {
@@ -139,6 +145,9 @@ const findGastos = (json)=>{
             }
           }
           gatherInfo(holding2, buildingName, year)
+
+          //check file type
+          console.log(jsonMaster, 'this is master')
 
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
@@ -163,12 +172,16 @@ const findGastos = (json)=>{
               holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
+        }
 
             setSplitExcel({...splitExcel, ...holding})
         };
         reader.readAsArrayBuffer(file);
+
       })
+
     }
+
   }
 
 
@@ -181,8 +194,15 @@ const findGastos = (json)=>{
       setFiles([])
       setFilteredExcel(null)
       setSplitExcel({})
+
+      console.log(splitExcel, 'this is split excel')
+      console.log(Object.entries(splitExcel), 'this should have a 0 length')
+      // setSplitExcel({})
+      // setSplitExcel(null)
+
       setShowCosts(false)
       setAggregate(null)
+      // setReportInfo(null)
       console.log(aggregate, 'should be null')
     }
 
@@ -219,7 +239,8 @@ const findGastos = (json)=>{
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
-        {Object.entries(splitExcel).length > 0 ?
+        {/* {Object.entries(splitExcel).length > 0 && aggregate ? */}
+        {aggregate ?
         <>
           <button onClick={(e) => handleClear(e)}>
             clear files
@@ -291,4 +312,3 @@ const listitem = styled.ul`
 const ContentsButton = styled.button`
   margin-top: 25px;
 `
-
