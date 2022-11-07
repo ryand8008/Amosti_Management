@@ -67,7 +67,7 @@ export const Upload = () => {
   // // checking aggregate
   useEffect(() => {
 
-  }, [aggregate, splitExcel])
+  }, [aggregate, splitExcel, files.length])
 
 
 
@@ -127,7 +127,10 @@ const findGastos = (json)=>{
           if (!Object.keys(jsonMaster[0]).includes('Año')) {
             alert('invalid file')
             // throw new Error ('invalid file type')
-            handleClear(e)
+            console.log(files, 'this is files')
+            // handleClear(e)
+            console.log(fileName, 'filename')
+            files.splice(files.indexOf(fileName), 1)
           } else {
           // raw data sheet
 
@@ -201,7 +204,7 @@ const findGastos = (json)=>{
       // setSplitExcel(null)
 
       setShowCosts(false)
-      setAggregate(null)
+      // setAggregate({})
       // setReportInfo(null)
       console.log(aggregate, 'should be null')
     }
@@ -240,14 +243,15 @@ const findGastos = (json)=>{
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
         {/* {Object.entries(splitExcel).length > 0 && aggregate ? */}
-        {aggregate ?
+        {/* {aggregate ?
         <>
           <button onClick={(e) => handleClear(e)}>
             clear files
           </button>
         </>
-         : null}
+         : null} */}
       </form>
+      {/* {aggregate ? <Report /> : null} */}
       {aggregate ? <Report /> : null}
       {aggregate ?
         <>

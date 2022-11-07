@@ -216,7 +216,7 @@ export const FullReport = () => {
         </StyledDiv> : null} */}
 
         {aggregate ? <StyledDiv>
-        {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked('2022'); }}>generate a report </StyledPrintButton> : null}
+        {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked('2022'); }}>generate report </StyledPrintButton> : null}
         </StyledDiv>
 
          : null}
@@ -386,5 +386,12 @@ align-items: center;
 const StyledPrintButton = styled.button`
   display: flex;
   justify-content: center;
+  height: 50px;
+  width: fit-content;
+  border-radius: 10px;
+  margin: auto;
+  margin-top: 50px;
+  align-items: center;
+  padding: 5px;
 
 `

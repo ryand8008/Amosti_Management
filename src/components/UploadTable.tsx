@@ -40,8 +40,9 @@ export const UploadTable = ({exceldata, testing, fileName, showCosts} ) => {
       setHeaders(Object.keys(information[0]))
     }
     // console.log(information)
+    console.log(testing, 'this is testing and after clearing should be null or something')
 
-  }, [headers.length, testing, fileName, information.length, showCosts, month])
+  }, [headers.length, testing.length, fileName, information.length, showCosts, month])
 
   // TODO: implement running total to end of table, or somehwere else?
   return (
