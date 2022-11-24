@@ -17,7 +17,7 @@ const componentToPrint = useRef(null)
 
 
 useEffect(() => {
-  console.log(aggregate, 'maybe null?')
+  // console.log(aggregate, 'maybe null?')
   const buildings = Object.keys(aggregate);
   setBuildingNames(buildings)
 }, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null])

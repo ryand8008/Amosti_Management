@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AggregateContext } from "./context/ProjectContext";
 import { Filtered } from "./filtered/Filtered";
+import { FullReport } from "./Report/FullReport";
 import { Report } from "./Report/Report";
 import { UploadTable } from "./UploadTable";
 
@@ -40,6 +41,8 @@ interface Testing {
 export const Upload = () => {
   const { aggregate, setAggregate, gatherInfo, showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
 
+  // stringified aggre
+  let stringAgg = JSON.stringify(aggregate)
   const [excel, setExcel] = useState<newSheet[]>()
 
   // testing SPLIT EXCEL
@@ -64,11 +67,63 @@ export const Upload = () => {
   // display file names
   const [files, setFiles] = useState<string[]>([])
 
+  // two buttons
+  const [showIndividual, setShowIndividual] = useState<boolean>(false)
+
+  const [showFull, setShowFull] = useState<boolean>(false)
+  let stringSplitExcel = JSON.stringify(splitExcel)
   // // checking aggregate
+  const [testing, setTesting] = useState<any>({})
+
   useEffect(() => {
+    if (Object.keys(splitExcel).length > 0) {
+      splittingFunction(splitExcel)
+      // console.log(testing, 'this is testing in useeffect')
+      setAggregate(testing)
+    }
 
-  }, [aggregate, splitExcel, files.length])
+  }, [stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
 
+
+  const splittingFunction = async (splitExcel) => {
+    const filesNames = Object.keys(splitExcel)
+
+    filesNames.forEach((file, index) => {
+      let fileInfo = splitExcel[file]['unitInfo'];
+      let [year, month, buildingName] =  [fileInfo[0]['Año'], fileInfo[0]['Mes'].toLowerCase(), fileInfo[0]['Depto']]
+
+      try {
+
+        if (Object.keys(testing).length === 0) {
+          setTesting(current => {
+            let temp = {}
+            temp[buildingName] = {[year]: {}}
+            temp[buildingName][year] = {[month]: {}}
+            temp[buildingName][year][month] = splitExcel[file]
+            return temp;
+          })
+        } else if (!testing[buildingName]) {
+          setTesting(current => {
+          let temp = {...current}
+            temp[buildingName] = {[year]: {}}
+            temp[buildingName][year] = {[month]: {}}
+            temp[buildingName][year][month] = splitExcel[file]
+            return temp;
+          })
+        } else if (testing[buildingName][year]) {
+          setTesting(current => {
+            let temp = {...current}
+            temp[buildingName] = testing[buildingName]
+            temp[buildingName][year] = {...temp[buildingName][year], ...{[month]: splitExcel[file]}}
+
+            return temp;
+          })
+        }
+      } catch {
+        console.log('testing')
+      }
+    })
+  }
 
 
 // find the location of key = Month: 'Gastos'
@@ -99,7 +154,6 @@ const findGastos = (json)=>{
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
-
       filesToRead.map((file: any, index) => {
         const fileName = file['name']
         holding[fileName] = {'unitInfo': [], 'costs': []}
@@ -127,9 +181,7 @@ const findGastos = (json)=>{
           if (!Object.keys(jsonMaster[0]).includes('Año')) {
             alert('invalid file')
             // throw new Error ('invalid file type')
-            console.log(files, 'this is files')
-            // handleClear(e)
-            console.log(fileName, 'filename')
+
             files.splice(files.indexOf(fileName), 1)
           } else {
           // raw data sheet
@@ -139,18 +191,17 @@ const findGastos = (json)=>{
           holding2 = {
             [buildingName]: {
               [year]: {
-                [month]:
-                  {
-                    'unitInfo': [],
-                    'costs': []
-                  }
+                [month]: {
+                  'unitInfo': [],
+                  'costs': []
+                }
               }
             }
           }
-          gatherInfo(holding2, buildingName, year)
+          // await gatherInfo(holding2, buildingName, year, month)
 
           //check file type
-          console.log(jsonMaster, 'this is master')
+          // console.log(jsonMaster, 'this is master')
 
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
@@ -224,6 +275,39 @@ const findGastos = (json)=>{
     }
   }
 
+  const handleRemoveFile = (file) => {
+
+
+
+    let year = splitExcel[file]['unitInfo'][0]['Año'];
+    let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
+    let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
+
+    console.log(aggregate, 'this is aggregate in handleRemove')
+
+
+    setAggregate(current => {
+      const copy = {...current};
+      delete copy[buildingName][year][month]
+      return copy
+    })
+
+    setFiles( current => {
+      const copy = [...current]
+      copy.splice(copy.indexOf(file), 1)
+      return copy
+    })
+
+    setSplitExcel(current => {
+      const copy = {...current};
+      delete copy[file];
+      return copy;
+    })
+
+    setTesting({})
+
+
+  }
 
   return (
     <>
@@ -241,7 +325,7 @@ const findGastos = (json)=>{
           // webkitdirectory="" // will allow file upload, but not single files
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
-        <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
+        <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span onClick={() => handleRemoveFile(item)}> X</span></ul>) : 'upload files' }</DragBox>
         {/* {Object.entries(splitExcel).length > 0 && aggregate ? */}
         {/* {aggregate ?
         <>
@@ -251,8 +335,14 @@ const findGastos = (json)=>{
         </>
          : null} */}
       </form>
+
+         {/* Make both visible but not functional when one view is active over the other */}
+      <button onClick={() => setShowIndividual(!showIndividual)}>{showIndividual ? 'close' : 'show Individual'}</button>
+      <button onClick={() => setShowFull(!showFull)}>show full</button>
+      {showIndividual ? <Report /> : null}
+      {showFull ? <FullReport /> : null}
       {/* {aggregate ? <Report /> : null} */}
-      {aggregate ? <Report /> : null}
+      {/* {aggregate ? <Report /> : null} */}
       {aggregate ?
         <>
           <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>

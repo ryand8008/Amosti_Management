@@ -5,7 +5,7 @@ interface ReportType {
   aggregate: any
   setAggregate: (newInformation) => any;
   mergeToAgg: (buildingName: string, year: string, holding2: any) => any;
-  gatherInfo: (holding2: any, buildingName: string, year: string) => any;
+  gatherInfo: (holding2: any, buildingName: string, year: string, month: string) => any;
   reportInfo: (buildingName: any[]) => void;
   setReportInfo: (any) => any;
   yearsAvailable: string[];
@@ -13,6 +13,8 @@ interface ReportType {
   setYearPicked: (string) => any;
   showReport: boolean;
   setShowReport: (bool) => any;
+  // splittingFunction: (splitExcel) => any;
+
 }
 // reportInfo = {
 //   buildingName = {}
@@ -45,6 +47,8 @@ const AggregateProvider = ({children}) => {
    const [container, setContainer] = useState<any[]>([])
 
   useEffect(() => {
+
+
     if (aggregate) {
       console.log('!boo')
       // let builds = Object.keys(aggregate)
@@ -60,6 +64,19 @@ const AggregateProvider = ({children}) => {
     }
 
     // DO NOT TOUCH
+    // if (container.length > 0) {
+    //   container.map(async (item, index) => {
+    //     if (index === 0) {
+    //       setAggregate((aggregate) => ({ ...aggregate, ...item }))
+
+    //     } else {
+    //       mergeToAgg(item)
+    //     }
+    //   })
+    // }
+    // DO NOT TOUCH
+    // console.log(container, 'this is container')
+
     if (container.length > 0) {
       container.map(async (item, index) => {
         if (index === 0) {
@@ -70,9 +87,49 @@ const AggregateProvider = ({children}) => {
         }
       })
     }
-    // DO NOT TOUCH
 
   }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, container.length])
+
+
+  // const splittingFunction = async (splitExcel) => {
+  //   const filesNames = Object.keys(splitExcel)
+
+  //   filesNames.forEach((file, index) => {
+  //     let fileInfo = splitExcel[file]['unitInfo'];
+  //     let [year, month, buildingName] =  [fileInfo[0]['Año'], fileInfo[0]['Mes'].toLowerCase(), fileInfo[0]['Depto']]
+
+  //     try {
+
+  //       if (Object.keys(testing).length === 0) {
+  //         setTesting(current => {
+  //           let temp = {}
+  //           temp[buildingName] = {[year]: {}}
+  //           temp[buildingName][year] = {[month]: {}}
+  //           temp[buildingName][year][month] = splitExcel[file]
+  //           return temp;
+  //         })
+  //       } else if (!testing[buildingName]) {
+  //         setTesting(current => {
+  //         let temp = {...current}
+  //           temp[buildingName] = {[year]: {}}
+  //           temp[buildingName][year] = {[month]: {}}
+  //           temp[buildingName][year][month] = splitExcel[file]
+  //           return temp;
+  //         })
+  //       } else if (testing[buildingName][year]) {
+  //         setTesting(current => {
+  //           let temp = {...current}
+  //           temp[buildingName] = testing[buildingName]
+  //           temp[buildingName][year] = {...temp[buildingName][year], ...{[month]: splitExcel[file]}}
+
+  //           return temp;
+  //         })
+  //       }
+  //     } catch {
+  //       console.log('testing')
+  //     }
+  //   })
+  // }
 
 
 
@@ -167,8 +224,22 @@ const AggregateProvider = ({children}) => {
 
 
 
-  const gatherInfo = async (holding2) => {
-    setContainer((container) => [...container, {...holding2}])
+  const gatherInfo = async (holding2, buildingName, year, month ) => {
+    // console.log(holding2, 'this is holding 2')
+    // console.log(buildingName, 'buildingName')
+    // console.log(year, 'this is year')
+    // console.log(month, 'this is month')
+    // console.log(container, 'container before')
+
+      setContainer((container) => [...container, {...holding2}])
+      // setContainer([...holding2])
+
+    // console.log(container, 'container after')
+    // testing stuff
+    // setTesting(current => {
+    //   if (current) {}
+    // })
+
   }
 
   const mergeToAgg = async (item) => {

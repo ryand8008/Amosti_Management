@@ -20,6 +20,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 export const FullReport = () => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)
+  let stringAgg = JSON.stringify(aggregate)
   const [buildings, setBuildings] = useState<string[]>([])
   const [buildingYear, setBuildingYear] = useState<string>('')
 
@@ -47,7 +48,7 @@ export const FullReport = () => {
       getTotalExpenses()
       getMonthNetTotal()
     }
-  }, [aggregate, buildings.length, buildingYear, reportInfo, yearPicked])
+  }, [stringAgg, buildings.length, buildingYear, reportInfo, yearPicked])
 
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,
