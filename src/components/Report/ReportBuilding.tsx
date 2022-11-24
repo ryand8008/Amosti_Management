@@ -7,6 +7,7 @@ import styled from "styled-components";
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre','noviem', 'diciem' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked } = useContext(AggregateContext)
+  let stringAgg = JSON.stringify(aggregate)
   // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
 
   // somehow use years available context variable
@@ -28,7 +29,11 @@ export const ReportBuilding = ({ buildingName }) => {
   const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(defaultReportRow)
   const [totalProfit, setTotalProfit] = useState<number[] | any[]>(defaultReportRow)
 
+  //testing
+  const [showThing, setShowThing] = useState<boolean>(false)
+
   useEffect( () => {
+    console.log(reportInfo, 'this is reportInfo')
     if (aggregate === null) {
       console.log('boo!')
     }
@@ -76,7 +81,7 @@ export const ReportBuilding = ({ buildingName }) => {
       generateFullReport()
     }
 
- }, [aggregate, aggregate[buildingName][year], months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), year, years.length, yearPicked])
+ }, [stringAgg, aggregate[buildingName][year], months ? months.length : null, units.length, annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), year, years.length, yearPicked])
 
   const buildUnits = async () => {
     let units = [];
@@ -326,11 +331,6 @@ const generateFullReport = () => {
         reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
         reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
 
-
-
-
-
-
         // // create {reportInfo: {year: {admon: []}}}
         reportInfo[yr]['admon'][insertionPoint] = 0
         reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
@@ -384,90 +384,77 @@ const changeYears = (e, change: string, year: string) => {
   return (
     <>
     <StyledTop>
-      {years.length > 1 && years.indexOf(year) !== 0 ? <StyledYearArrows onClick={(e) =>  {e.preventDefault(); changeYears(e,'decrease', year)}}>{'<'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
-      <StyledTitle>
-          <h2>{buildingName}: {year}</h2>
-      </StyledTitle>
-      {years.length > 1 && years.indexOf(year) !== years.length -1 ? <StyledYearArrows onClick={(e) => {e.preventDefault(); changeYears(e,'increase', year)}}>{'>'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
-    </StyledTop>
-   <StyledTable>
-    <StyledHeaderContainer>
-      <th>Depto</th>
-      { hardCodeMonths.map((item) =>
-      <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
-      )}
-      <StyleMonthsHeaders>annual</StyleMonthsHeaders>
-    </StyledHeaderContainer>
-      {annualRent  ? units.map((unit, index) =>
-        <StyledRowUnit>
-          {unit !== buildingName ? <StyledCell>{unit} </StyledCell>: null}
-          {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) =>
-            <StyledCell>{item2}</StyledCell>
-          )
-          :null}
-          <StyledCell>{annualUnitTotal && unit !== buildingName ? annualUnitTotal[unit] : null}</StyledCell>
-        </StyledRowUnit>
-      ) :null
-    }
-    <StyledTotal>
-      <StyledBold>total r</StyledBold>
-      {totalTotal ? totalTotal.map((total) =>
-        <StyledCell>{total}</StyledCell>
-      ):null}
-    </StyledTotal>
-    <tr><td></td>
-    </tr>
-    <tr>
-        <td></td>
-    </tr>
-    <tr>
-      <StyledBold>egresos</StyledBold>
-    </tr>
-    <StyledRowE>
-      <StyledCell>corretaje</StyledCell>
-      {totalCorretaje ? totalCorretaje.map((admon) =>
-        <StyledCell>{admon}</StyledCell>
-      ): null}
-    </StyledRowE>
-    <StyledRowE>
-      <StyledCell>admon</StyledCell>
-      {totalAdmon ? totalAdmon.map((admon) =>
-        <StyledCell>{admon}</StyledCell>
-      ): null}
-    </StyledRowE>
-    <StyledRowE>
-      <StyledCell>gastos</StyledCell>
-      {totalGastos ? totalGastos.map((item) =>
-        <StyledCell>{item}</StyledCell>
-      ) : null}
-    </StyledRowE>
-    <StyledRowE>
-      <StyledCell>devol</StyledCell>
-      {totalDevol ? totalDevol.map((item) =>
-        <StyledCell>{item}</StyledCell>
-      ) : null}
-    </StyledRowE>
-    <StyledRowE>
-      <StyledCell>otros</StyledCell>
-      {totalOtros ? totalOtros.map((item) =>
-        <StyledCell>{item}</StyledCell>
-      ) : null}
-    </StyledRowE>
-    <StyledRowE>
-      <StyledBold>total E</StyledBold>
-      {totalExpenses ? totalExpenses.map((item) =>
-        <StyledCell>{item}</StyledCell>
-      ) : null}
-    </StyledRowE>
+          {years.length > 1 && years.indexOf(year) !== 0 ? <StyledYearArrows onClick={(e) => { e.preventDefault(); changeYears(e, 'decrease', year); } }>{'<'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
+          <StyledTitle>
+            <h2>{buildingName}: {year}</h2>
+          </StyledTitle>
+          {years.length > 1 && years.indexOf(year) !== years.length - 1 ? <StyledYearArrows onClick={(e) => { e.preventDefault(); changeYears(e, 'increase', year); } }>{'>'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
+        </StyledTop><StyledTable>
+            <StyledHeaderContainer>
+              <th>Depto</th>
+              {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
+              )}
+              <StyleMonthsHeaders>annual</StyleMonthsHeaders>
+            </StyledHeaderContainer>
+            {annualRent ? units.map((unit, index) => <StyledRowUnit>
+              {unit !== buildingName ? <StyledCell>{unit} </StyledCell> : null}
+              {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) => <StyledCell>{item2}</StyledCell>
+              )
+                : null}
+              <StyledCell>{annualUnitTotal && unit !== buildingName ? annualUnitTotal[unit] : null}</StyledCell>
+            </StyledRowUnit>
+            ) : null}
+            <StyledTotal>
+              <StyledBold>total r</StyledBold>
+              {totalTotal ? totalTotal.map((total) => <StyledCell>{total}</StyledCell>
+              ) : null}
+            </StyledTotal>
+            <tr><td></td>
+            </tr>
+            <tr>
+              <td></td>
+            </tr>
+            <tr>
+              <StyledBold>egresos</StyledBold>
+            </tr>
+            <StyledRowE>
+              <StyledCell>corretaje</StyledCell>
+              {totalCorretaje ? totalCorretaje.map((admon) => <StyledCell>{admon}</StyledCell>
+              ) : null}
+            </StyledRowE>
+            <StyledRowE>
+              <StyledCell>admon</StyledCell>
+              {totalAdmon ? totalAdmon.map((admon) => <StyledCell>{admon}</StyledCell>
+              ) : null}
+            </StyledRowE>
+            <StyledRowE>
+              <StyledCell>gastos</StyledCell>
+              {totalGastos ? totalGastos.map((item) => <StyledCell>{item}</StyledCell>
+              ) : null}
+            </StyledRowE>
+            <StyledRowE>
+              <StyledCell>devol</StyledCell>
+              {totalDevol ? totalDevol.map((item) => <StyledCell>{item}</StyledCell>
+              ) : null}
+            </StyledRowE>
+            <StyledRowE>
+              <StyledCell>otros</StyledCell>
+              {totalOtros ? totalOtros.map((item) => <StyledCell>{item}</StyledCell>
+              ) : null}
+            </StyledRowE>
+            <StyledRowE>
+              <StyledBold>total E</StyledBold>
+              {totalExpenses ? totalExpenses.map((item) => <StyledCell>{item}</StyledCell>
+              ) : null}
+            </StyledRowE>
 
-    <tr>
-      <StyledBold>total n</StyledBold>
-      {totalProfit ? totalProfit.map((item) =>
-        <StyledCell>{item}</StyledCell>
-      ) : null}
-    </tr>
+            <tr>
+              <StyledBold>total n</StyledBold>
+              {totalProfit ? totalProfit.map((item) => <StyledCell>{item}</StyledCell>
+              ) : null}
+            </tr>
 
-    </StyledTable>
+          </StyledTable>
 
     </>
   )

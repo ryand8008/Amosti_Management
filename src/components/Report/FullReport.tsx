@@ -207,14 +207,6 @@ export const FullReport = () => {
   }
   return (
     <>
-      {/* {aggregate && dropDown ? <StyledDiv>
-        <div>generate a report </div>
-        <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { e.preventDefault(), setYearPicked(e.target.value), setDropDown(false) } }>
-          <option>select a year</option>
-          {yearsAvailable.map((item) => <option>{item}</option>
-          )}
-        </select>
-        </StyledDiv> : null} */}
 
         {aggregate ? <StyledDiv>
         {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked('2022'); }}>generate report </StyledPrintButton> : null}

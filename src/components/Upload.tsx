@@ -39,7 +39,7 @@ interface Testing {
 // TODO: batch add files
 
 export const Upload = () => {
-  const { aggregate, setAggregate, gatherInfo, showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
+  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
 
   // stringified aggre
   let stringAgg = JSON.stringify(aggregate)
@@ -186,23 +186,6 @@ const findGastos = (json)=>{
           } else {
           // raw data sheet
 
-          // if entry doesn't exist make it using aggregate for use context
-          [year, month, buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'].toLowerCase(), jsonMaster[0]['Depto']]
-          holding2 = {
-            [buildingName]: {
-              [year]: {
-                [month]: {
-                  'unitInfo': [],
-                  'costs': []
-                }
-              }
-            }
-          }
-          // await gatherInfo(holding2, buildingName, year, month)
-
-          //check file type
-          // console.log(jsonMaster, 'this is master')
-
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
             if (i === 0) {
@@ -214,7 +197,6 @@ const findGastos = (json)=>{
               var newRange = xlsx.utils.encode_range(range);
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
               holding[fileName].unitInfo.push(...json)
-              holding2[buildingName][year][month]['unitInfo'] = [...json]
             } else if (i === 1) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
               range.s.r = findGastos(jsonMaster)+1;
@@ -223,7 +205,6 @@ const findGastos = (json)=>{
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, header: ['Gastos', 'Cost', 'Notas', 'Billetes o Moneda', 'Cantidad', 'TOTALS']});
               let newJson = json.slice(1, json.length)
               holding[fileName].costs.push(...newJson)
-              holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
         }
@@ -237,31 +218,6 @@ const findGastos = (json)=>{
     }
 
   }
-
-
-  // handle clear fileList
-  const handleClear = (e) => {
-    const element: any = document.getElementById("uploads")
-    if (element.files.length > 0) {
-      element.value = ''
-      setExcel(null)
-      setFiles([])
-      setFilteredExcel(null)
-      setSplitExcel({})
-
-      console.log(splitExcel, 'this is split excel')
-      console.log(Object.entries(splitExcel), 'this should have a 0 length')
-      // setSplitExcel({})
-      // setSplitExcel(null)
-
-      setShowCosts(false)
-      // setAggregate({})
-      // setReportInfo(null)
-      console.log(aggregate, 'should be null')
-    }
-
-  }
-
   // testing drag drop
   // XLSX is a global from the standalone script
   const handleDrag = (e) => {
@@ -276,8 +232,6 @@ const findGastos = (json)=>{
   }
 
   const handleRemoveFile = (file) => {
-
-
 
     let year = splitExcel[file]['unitInfo'][0]['Año'];
     let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
@@ -303,9 +257,11 @@ const findGastos = (json)=>{
       delete copy[file];
       return copy;
     })
+    // set to false to close window for rerender
+    setShowIndividual(false)
 
+    // needed to reset and rerender based off new raw data
     setTesting({})
-
 
   }
 
@@ -326,23 +282,15 @@ const findGastos = (json)=>{
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
         <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span onClick={() => handleRemoveFile(item)}> X</span></ul>) : 'upload files' }</DragBox>
-        {/* {Object.entries(splitExcel).length > 0 && aggregate ? */}
-        {/* {aggregate ?
-        <>
-          <button onClick={(e) => handleClear(e)}>
-            clear files
-          </button>
-        </>
-         : null} */}
       </form>
 
          {/* Make both visible but not functional when one view is active over the other */}
-      <button onClick={() => setShowIndividual(!showIndividual)}>{showIndividual ? 'close' : 'show Individual'}</button>
-      <button onClick={() => setShowFull(!showFull)}>show full</button>
+      {aggregate ? <button onClick={() => setShowIndividual(!showIndividual)}>{showIndividual ? 'close' : 'show Individual'}</button> : null}
+      {/* <button onClick={() => setShowFull(!showFull)}>show full</button> */}
+
       {showIndividual ? <Report /> : null}
-      {showFull ? <FullReport /> : null}
-      {/* {aggregate ? <Report /> : null} */}
-      {/* {aggregate ? <Report /> : null} */}
+      {/* {showFull ? <FullReport /> : null} */}
+
       {aggregate ?
         <>
           <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>
