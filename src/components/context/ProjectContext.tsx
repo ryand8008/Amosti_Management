@@ -11,6 +11,7 @@ interface ReportType {
   setYearPicked: (string) => any;
   showReport: boolean;
   setShowReport: (bool) => any;
+  testingUnit: (uni) => any;
 
 }
 // reportInfo = {
@@ -39,10 +40,10 @@ const AggregateProvider = ({children}) => {
   const [monthsAvailable, setMonthsAvailable] = useState<string[]>([])
   let monthsStringified = JSON.stringify(monthsAvailable)
 
-
-   // container to hold
-   const [container, setContainer] = useState<any[]>([])
    const [testReport, setTestReport] = useState<any>({})
+
+   //testing units
+   const [buildingUnits, setBuildingUnits] = useState<any>({})
 
   useEffect(() => {
 
@@ -61,7 +62,13 @@ const AggregateProvider = ({children}) => {
       console.log('boo!!')
     }
 
-  }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, container.length])
+  }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified])
+
+  // testing building units
+  const testingUnit = (uni) => {
+    console.log(uni)
+  }
+
 
 
   // report logic*****
@@ -143,7 +150,7 @@ const AggregateProvider = ({children}) => {
 
 
   return (
-    <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
+    <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, yearPicked, setYearPicked, showReport, setShowReport, testingUnit}}>
       {children}
     </AggregateContext.Provider>
   )

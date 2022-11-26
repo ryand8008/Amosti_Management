@@ -78,14 +78,16 @@ export const Upload = () => {
   useEffect(() => {
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
-      // console.log(testing, 'this is testing in useeffect')
-      setAggregate(testing)
+
+      setAggregate(() => testing)
+
     }
 
   }, [stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
 
 
   const splittingFunction = async (splitExcel) => {
+
     const filesNames = Object.keys(splitExcel)
 
     filesNames.forEach((file, index) => {
@@ -257,11 +259,21 @@ const findGastos = (json)=>{
       delete copy[file];
       return copy;
     })
+
+    // need to handle if reportInfo is {} or not
+    console.log(Object.keys(reportInfo), 'check reportInfo values')
+    if (Object.keys(reportInfo).length > 0) {
+      setReportInfo({})
+    }
+
     // set to false to close window for rerender
     setShowIndividual(false)
+    setShowFull(false)
 
     // needed to reset and rerender based off new raw data
     setTesting({})
+
+
 
   }
 
@@ -285,13 +297,26 @@ const findGastos = (json)=>{
       </form>
 
          {/* Make both visible but not functional when one view is active over the other */}
-      {aggregate ? <button onClick={() => setShowIndividual(!showIndividual)}>{showIndividual ? 'close' : 'show Individual'}</button> : null}
-      {/* <button onClick={() => setShowFull(!showFull)}>show full</button> */}
-
-      {showIndividual ? <Report /> : null}
-      {/* {showFull ? <FullReport /> : null} */}
-
       {aggregate ?
+        <>
+          {!showIndividual ? <div>Please verify information is correct</div> : null}
+          <button onClick={() => setShowIndividual(!showIndividual)}>
+            {showIndividual ? 'close individual buildings report' : 'show individual buildings'}
+          </button>
+          {!showFull && showIndividual ?
+            <>
+              <div>Generate Full Report?</div><button onClick={() => setShowFull(!showFull)}>
+                Confirm
+              </button>
+            </>
+            : null}
+        </>
+      : null}
+      {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
+      {showFull ? <FullReport /> : null}
+      {showIndividual ? <Report /> : null}
+
+      {/* {aggregate ?
         <>
           <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>
         </>
@@ -314,7 +339,7 @@ const findGastos = (json)=>{
 
           {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
 
-          </div> : null}
+          </div> : null} */}
       </Window>
     </>
   )
