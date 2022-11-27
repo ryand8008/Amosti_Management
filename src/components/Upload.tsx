@@ -34,9 +34,10 @@ interface Testing {
   testing: any
 }
 
-// TODO: create a way to show the uploaded files
-// TODO: delete a file and information
+// TODO: create a way to show the uploaded files => DONE
+// TODO: delete a file and information => DONE
 // TODO: batch add files
+// TODO: Handle multiple years
 
 export const Upload = () => {
   const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
@@ -76,6 +77,7 @@ export const Upload = () => {
   const [testing, setTesting] = useState<any>({})
 
   useEffect(() => {
+    console.log(aggregate, 'this is agg')
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
 
@@ -83,9 +85,9 @@ export const Upload = () => {
 
     }
 
-  }, [stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
+  }, [JSON.stringify(testing), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
 
-
+  // parses aggregate infomration
   const splittingFunction = async (splitExcel) => {
 
     const filesNames = Object.keys(splitExcel)
@@ -93,7 +95,7 @@ export const Upload = () => {
     filesNames.forEach((file, index) => {
       let fileInfo = splitExcel[file]['unitInfo'];
       let [year, month, buildingName] =  [fileInfo[0]['Año'], fileInfo[0]['Mes'].toLowerCase(), fileInfo[0]['Depto']]
-
+      console.log(year, month, buildingName, 'year, month, bn, should have 2023 sometime')
       try {
 
         if (Object.keys(testing).length === 0) {
@@ -112,14 +114,22 @@ export const Upload = () => {
             temp[buildingName][year][month] = splitExcel[file]
             return temp;
           })
-        } else if (testing[buildingName][year]) {
-          setTesting(current => {
-            let temp = {...current}
-            temp[buildingName] = testing[buildingName]
-            temp[buildingName][year] = {...temp[buildingName][year], ...{[month]: splitExcel[file]}}
+        } else if (testing[buildingName]) {
+          if (testing[buildingName][year]) {
+            setTesting(current => {
+              let temp = {...current}
+              temp[buildingName] = testing[buildingName]
+              temp[buildingName][year] = {...temp[buildingName][year], ...{[month]: splitExcel[file]}}
 
-            return temp;
-          })
+              return temp;
+              })
+            } else {
+              setTesting(current => {
+                let temp = {...current}
+                temp[buildingName] = {...temp[buildingName], ...{[year]: {[month]: splitExcel[file]}}}
+                return temp;
+              })
+            }
         }
       } catch {
         console.log('testing')
@@ -149,10 +159,6 @@ const findGastos = (json)=>{
 
     // test newSheet array
     let holding: any = {}
-    let holding2: any = {}
-    let buildingName;
-    let year;
-    let month;
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
