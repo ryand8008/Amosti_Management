@@ -30,6 +30,7 @@ export const FullReport = () => {
   const componentToPrint = useRef(null)
 
   useEffect(() => {
+    console.log(yearPicked, 'where??')
     if (aggregate) {
       let tempBuilding = Object.keys(aggregate)
       setBuildings(tempBuilding)

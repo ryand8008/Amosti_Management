@@ -6,7 +6,7 @@ import styled from "styled-components";
 // This function should receive a building's information, and only that.
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre','noviem', 'diciem' ]
-  const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo } = useContext(AggregateContext)
+  const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo, setYearPicked } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   let stringReportInfo = JSON.stringify(reportInfo)
   // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
@@ -14,6 +14,7 @@ export const ReportBuilding = ({ buildingName }) => {
   // somehow use years available context variable
   let years = Object.keys(aggregate[buildingName]).sort()
   const [year, setYear] = useState<string>(yearPicked || years[0] )
+  // const [year, setYear] = useState<string>(yearPicked)
 
   const [months, setMonths] = useState<string[]>(Object.keys(aggregate[buildingName][year]))
   // const [units, setUnits] = useState<string[] | any>([])
@@ -42,12 +43,28 @@ export const ReportBuilding = ({ buildingName }) => {
 
 
   useEffect( () => {
-    console.log(yearPicked, 'initial year picked')
-    years.forEach((item) => {
-      if (!yearsAvailable.includes(item)) {
-        yearsAvailable.push(item)
-      }
-    })
+    // set initial year
+    console.log(yearPicked, 'initial, is it undefined?')
+    console.log(years, 'initial years, should be sorted')
+    if (!yearPicked) {
+      setYearPicked(years[0])
+      console.log(yearPicked, 'after setting it')
+
+    }
+
+    if (yearPicked) {
+      console.log(months, 'initial')
+      setMonths(Object.keys(aggregate[buildingName][yearPicked]))
+
+      console.log(Object.keys(aggregate[buildingName][yearPicked]), 'should be different from months, potentally')
+    }
+    // years.forEach((item) => {
+    //   if (!yearsAvailable.includes(item)) {
+    //     yearsAvailable.push(item)
+    //   }
+    // })
+
+    // setMonths()
 
     buildUnitArrays()
 
@@ -74,15 +91,26 @@ export const ReportBuilding = ({ buildingName }) => {
     }
 
   // }, [stringAgg, stringReportInfo, aggregate[buildingName][year], months ? months.length : null, units.length,
- }, [aggregate, stringReportInfo, aggregate[buildingName][year], annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), year, years.length, yearPicked])
+ }, [aggregate, stringReportInfo, aggregate[buildingName][year], annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), year, years.length, yearPicked, JSON.stringify(months)])
 
     // build unit array - structure: {buildingname: {year: {units: {[unitname]: [...rent for each month]}}}}
   const buildUnitArrays = () => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
+    // console.log(months, '? what is this')
+    let monthsContainer;
+    // let tempMonths;
 
+    if (yearPicked) {
+      // setMonths(Object.keys(aggregate[buildingName][yearPicked]))
+      // console.log(months, 'yearpicked months?')
+      monthsContainer = Object.keys(aggregate[buildingName][yearPicked])
+    } else {
+      monthsContainer = months;
+    }
+    // console.log(tempMonths, 'should be enero for this scenario?')
     // tempMonths.forEach( (month: string) =>{
-    months.forEach( (month: string) =>{
+    monthsContainer.forEach( (month: string) =>{
         aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
         let tempUnit = units[index]
 
@@ -349,6 +377,10 @@ const changeYears = (e, change: string, year: string) => {
     setYear((year) => years[index -1])
     setAnnualRent(null)
     setAnnualUnitTotal(null)
+
+    // testing year picked
+    setYearPicked(years[index -1])
+    console.log(yearPicked)
   }
 
   if (change === 'increase') {
@@ -356,6 +388,10 @@ const changeYears = (e, change: string, year: string) => {
     setAnnualRent(null)
     setAnnualUnitTotal(null)
     let newYear = years[index + 1]
+
+    // testing year picked
+    setYearPicked(newYear)
+    console.log(yearPicked)
   }
 }
 

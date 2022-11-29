@@ -44,8 +44,8 @@ const AggregateProvider = ({children}) => {
    const [buildingUnits, setBuildingUnits] = useState<any>({})
 
   useEffect(() => {
-
-  }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified])
+    console.log(yearPicked, 'context year')
+  }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
 
     return (
     <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
