@@ -87,7 +87,7 @@ export const Upload = () => {
 
   }, [JSON.stringify(testing), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
 
-  // parses aggregate infomration
+  // parses aggregate information
   const splittingFunction = async (splitExcel) => {
 
     const filesNames = Object.keys(splitExcel)
@@ -133,18 +133,6 @@ export const Upload = () => {
               return temp;
             })
           }
-          console.log(testing, 'should have 2023')
-          // else if (!testing[buildingName][year]) {
-          //   console.log(year, 'this should be 2023')
-          //   setTesting(current => {
-          //     let temp = {...current}
-          //     temp[buildingName] = testing[buildingName]
-          //     temp[buildingName] = {...temp[buildingName], ...{[year]: {[month]: splitExcel[file]}}}
-          //     console.log(temp, 'does this have multiple  years?')
-          //     return temp;
-          //   })
-          //   console.log(testing, 'should have 2023')
-          // }
         }
       } catch {
         console.log('testing')
@@ -260,9 +248,6 @@ const findGastos = (json)=>{
     let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
     let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
 
-    console.log(aggregate, 'this is aggregate in handleRemove')
-
-
     setAggregate(current => {
       const copy = {...current};
       delete copy[buildingName][year][month]
@@ -290,7 +275,7 @@ const findGastos = (json)=>{
     setShowIndividual(false)
     setShowFull(false)
 
-    // needed to reset and rerender based off new raw data
+    // needed to reset and re-render based off new raw data
     setTesting({})
 
   }
@@ -317,10 +302,12 @@ const findGastos = (json)=>{
          {/* Make both visible but not functional when one view is active over the other */}
       {aggregate ?
         <>
-          {!showIndividual ? <Verify>Please verify information is correct</Verify> : null}
-          <button onClick={() => setShowIndividual(!showIndividual)}>
-            {showIndividual ? 'close individual buildings report' : 'show individual buildings'}
-          </button>
+        <Verify>
+          {!showIndividual ? 'Please verify information is correct' : null}
+
+            <button onClick={() => setShowIndividual(!showIndividual)}>
+              {showIndividual ? 'close individual buildings report' : 'show individual buildings'}
+            </button>
           {!showFull && showIndividual ?
             <>
               <div>Generate Full Report?</div><button onClick={() => setShowFull(!showFull)}>
@@ -328,8 +315,10 @@ const findGastos = (json)=>{
               </button>
             </>
             : null}
+      </Verify>
         </>
-      : null}
+      : null
+      }
       {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
       {showFull ? <FullReport /> : null}
       {showIndividual ? <Report /> : null}
@@ -399,5 +388,12 @@ const ContentsButton = styled.button`
 `
 
 const Verify = styled.div`
+  display: flex;
+  margin-top: 50px;
+  flex-direction: column;
+  align-items: center;
+`
+
+const VerifyButton = styled.button`
   margin-top: 50px;
 `
