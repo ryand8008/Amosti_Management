@@ -181,7 +181,9 @@ export const ReportBuilding = ({ buildingName }) => {
     let totalDevolucion:any[] = Array.from({length: 13}).fill('-',0, 13)
     //otros
     let totalOtros:any[] = Array.from({length: 13}).fill('-',0, 13)
-    // let otrosTotal = 0;
+
+    let totalCorretaje:any[] = Array.from({length: 13}).fill('-',0, 13)
+
 
     months.forEach((month) => {
       let insertionPoint = hardCodeMonths.indexOf(month)
@@ -199,6 +201,11 @@ export const ReportBuilding = ({ buildingName }) => {
         if (item['Gastos'] === 'Otros') {
           if (item['Cost'] !== '') {
           totalOtros[insertionPoint] = item['Cost']
+          }
+        }
+        if (item['Gastos'] === 'Corretaje') {
+          if (item['Cost'] !== '') {
+            totalCorretaje[insertionPoint] = item['Cost']
           }
         }
       })

@@ -303,11 +303,12 @@ const findGastos = (json)=>{
       {aggregate ?
         <>
         <Verify>
-          {!showIndividual ? 'Please verify information is correct' : null}
+          {!showIndividual && files.length > 0 ? 'Please verify information is correct' : null}
 
-            <button onClick={() => setShowIndividual(!showIndividual)}>
+            {files.length > 0 ? <button onClick={() => setShowIndividual(!showIndividual)}>
               {showIndividual ? 'close individual buildings report' : 'show individual buildings'}
             </button>
+            : null}
           {!showFull && showIndividual ?
             <>
               <div>Generate Full Report?</div><button onClick={() => setShowFull(!showFull)}>
