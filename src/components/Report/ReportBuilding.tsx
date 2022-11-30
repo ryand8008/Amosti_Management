@@ -13,8 +13,14 @@ export const ReportBuilding = ({ buildingName }) => {
 
   // somehow use years available context variable
   let years = Object.keys(aggregate[buildingName]).sort()
-  const [year, setYear] = useState<string>(yearPicked || years[0] )
-  // const [year, setYear] = useState<string>(yearPicked)
+  // const [year, setYear] = useState<string>(yearPicked || years[0] )
+  const [year, setYear] = useState<string>(() => {
+    if (!yearPicked) {
+      return years[0]
+    } else {
+      return yearPicked
+    }
+  })
 
   const [months, setMonths] = useState<string[]>(Object.keys(aggregate[buildingName][year]))
   // const [units, setUnits] = useState<string[] | any>([])
@@ -46,6 +52,7 @@ export const ReportBuilding = ({ buildingName }) => {
     // set initial year
     console.log(yearPicked, 'initial, is it undefined?')
     console.log(years, 'initial years, should be sorted')
+    console.log(year, 'this is year, not sure what the value is')
     if (!yearPicked) {
       setYearPicked(years[0])
       console.log(yearPicked, 'after setting it')
@@ -53,10 +60,11 @@ export const ReportBuilding = ({ buildingName }) => {
     }
 
     if (yearPicked) {
-      console.log(months, 'initial')
-      setMonths(Object.keys(aggregate[buildingName][yearPicked]))
-
-      console.log(Object.keys(aggregate[buildingName][yearPicked]), 'should be different from months, potentally')
+      if (!aggregate[buildingName][yearPicked]) {
+        setMonths(Object.keys(aggregate[buildingName][year]))
+      } else {
+        setMonths(Object.keys(aggregate[buildingName][yearPicked]))
+      }
     }
     // years.forEach((item) => {
     //   if (!yearsAvailable.includes(item)) {
@@ -101,9 +109,7 @@ export const ReportBuilding = ({ buildingName }) => {
     let monthsContainer;
     // let tempMonths;
 
-    if (yearPicked) {
-      // setMonths(Object.keys(aggregate[buildingName][yearPicked]))
-      // console.log(months, 'yearpicked months?')
+    if (yearPicked && aggregate[buildingName][yearPicked]) {
       monthsContainer = Object.keys(aggregate[buildingName][yearPicked])
     } else {
       monthsContainer = months;
