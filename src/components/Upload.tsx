@@ -317,7 +317,7 @@ const findGastos = (json)=>{
          {/* Make both visible but not functional when one view is active over the other */}
       {aggregate ?
         <>
-          {!showIndividual ? <div>Please verify information is correct</div> : null}
+          {!showIndividual ? <Verify>Please verify information is correct</Verify> : null}
           <button onClick={() => setShowIndividual(!showIndividual)}>
             {showIndividual ? 'close individual buildings report' : 'show individual buildings'}
           </button>
@@ -396,4 +396,8 @@ const listitem = styled.ul`
 
 const ContentsButton = styled.button`
   margin-top: 25px;
+`
+
+const Verify = styled.div`
+  margin-top: 50px;
 `

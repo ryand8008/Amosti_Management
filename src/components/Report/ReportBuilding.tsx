@@ -105,17 +105,14 @@ export const ReportBuilding = ({ buildingName }) => {
   const buildUnitArrays = () => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
-    // console.log(months, '? what is this')
     let monthsContainer;
-    // let tempMonths;
 
     if (yearPicked && aggregate[buildingName][yearPicked]) {
       monthsContainer = Object.keys(aggregate[buildingName][yearPicked])
     } else {
       monthsContainer = months;
     }
-    // console.log(tempMonths, 'should be enero for this scenario?')
-    // tempMonths.forEach( (month: string) =>{
+
     monthsContainer.forEach( (month: string) =>{
         aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
         let tempUnit = units[index]
@@ -133,7 +130,6 @@ export const ReportBuilding = ({ buildingName }) => {
             tempArr = blob[buildingName][year]['units'][tempUnit];
           }
           let insertionPoint = hardCodeMonths.indexOf(month)
-          // tempArr[insertionPoint] = Number(item['Renta']);
           tempArr[insertionPoint] = !isNaN(Number(item['Renta'])) ?  Number(item['Renta']) : '-';
 
 
@@ -148,7 +144,6 @@ export const ReportBuilding = ({ buildingName }) => {
 
   // annual total for a specific unit
   const getAnnualRentTotal = async () => {
-    // yearsAvailable.forEach((year) => {
     let annualTotal = {}
     let array;
     if (annualRent[buildingName][year]['units']) {
@@ -257,7 +252,6 @@ export const ReportBuilding = ({ buildingName }) => {
 
   const getGastosInformation = (gastos, insertionPoint, testGastos) => {
     let gastosTotal = 0;
-    // let tempIndexStop = gastos['Gastos'].indexOf()
     gastos.forEach((item, index) => {
       if (index !== 0 ) {
         if (item['Gastos'] !== '' && item['Gastos'] !== 'TOTAL' && item['Gastos'] !== 'Devolución' && item['Gastos'] !== 'Otros' ) { // && item['Gastos'] !== 'TOTAL'
@@ -319,6 +313,7 @@ const generateFullReport = () => {
     reportInfo[buildingName] = {}
   }
 
+  // HERE should help determine report generation
   let yr = yearPicked
   let tempThing = aggregate[buildingName][yr]
   if (tempThing) {
@@ -549,14 +544,3 @@ const StyledBold = styled(StyledCell)`
   font-weight: bold;
   text-decoration: underline;
 `
-
-// egresos <bold>
-// corretaje
-// admon
-// gastos
-// devol
-// otros
-// total expenses
-
-// total all
-

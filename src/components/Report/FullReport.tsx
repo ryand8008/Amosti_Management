@@ -335,13 +335,13 @@ const StyledTable = styled.table`
   margin-bottom: 10px;
   margin-left: 30px;
   margin-right: 30px;
-  ${StyledRowUnit}:nth-child(even) {
+  ${StyledRowUnit}:nth-child(odd) {
     background: lightgrey;
   }
-  ${StyledRowEx}:nth-child(even) {
+  ${StyledRowEx}:nth-child(odd) {
     background: lightgrey;
   }
-  ${StyledRowNet}:nth-child(odd) {
+  ${StyledRowNet}:nth-child(even) {
     background: lightgrey;
   }
 `
@@ -350,6 +350,7 @@ const StyleMonthsHeaders = styled.th`
   text-align: center;
   width: 80px;
   padding: 5px;
+  background: #82b0f5;
 `
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
