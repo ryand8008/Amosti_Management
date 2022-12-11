@@ -4,6 +4,7 @@ import styled from "styled-components";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { ReportBuilding } from "./ReportBuilding";
 
+
 // GET BUILDING NAMES with Object.keys(aggregate), then iterate through
 export const Report = () => {
 const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
@@ -15,13 +16,30 @@ const [showReport, setShowReport] = useState<boolean>(false)
 // to print things
 const componentToPrint = useRef(null)
 
+// years logic
+// shape of data => {[buildingName1]: [year, ....], [buildingName2]: [year, ...], ...}
+let years = {};
+
 
 useEffect(() => {
-  console.log(aggregate, 'maybe null?')
+
   const buildings = Object.keys(aggregate);
   setBuildingNames(buildings)
+
+  // find the years!
+  console.log(buildingNames, 'buildingNames!!')
+  buildingNames.forEach((building) => {
+    if (!years[building]) {
+      years[building] = Object.keys(aggregate[building])
+    }
+  })
+
+  console.log(years, 'this is years, should be an object {}')
+  // years = Object.keys(aggregate[buildings])
+
 }, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null])
 
+// DO NOT TOUCH
 const handlePrint = useReactToPrint({
   content: () => componentToPrint.current,
 });

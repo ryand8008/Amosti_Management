@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AggregateContext } from "./context/ProjectContext";
 import { Filtered } from "./filtered/Filtered";
+import { FullReport } from "./Report/FullReport";
 import { Report } from "./Report/Report";
 import { UploadTable } from "./UploadTable";
 
@@ -33,13 +34,16 @@ interface Testing {
   testing: any
 }
 
-// TODO: create a way to show the uploaded files
-// TODO: delete a file and information
+// TODO: create a way to show the uploaded files => DONE
+// TODO: delete a file and information => DONE
 // TODO: batch add files
+// TODO: Handle multiple years
 
 export const Upload = () => {
-  const { aggregate, setAggregate, gatherInfo, showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
+  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
 
+  // stringified aggre
+  let stringAgg = JSON.stringify(aggregate)
   const [excel, setExcel] = useState<newSheet[]>()
 
   // testing SPLIT EXCEL
@@ -64,11 +68,77 @@ export const Upload = () => {
   // display file names
   const [files, setFiles] = useState<string[]>([])
 
+  // two buttons
+  const [showIndividual, setShowIndividual] = useState<boolean>(false)
+
+  const [showFull, setShowFull] = useState<boolean>(false)
+  let stringSplitExcel = JSON.stringify(splitExcel)
   // // checking aggregate
+  const [testing, setTesting] = useState<any>({})
+
   useEffect(() => {
+    console.log(testing, 'this is testing')
+    if (Object.keys(splitExcel).length > 0) {
+      splittingFunction(splitExcel)
 
-  }, [aggregate, splitExcel, files.length])
+      setAggregate(() => testing)
 
+    }
+
+  }, [JSON.stringify(testing), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
+
+  // parses aggregate information
+  const splittingFunction = async (splitExcel) => {
+
+    const filesNames = Object.keys(splitExcel)
+
+    filesNames.forEach((file, index) => {
+      let fileInfo = splitExcel[file]['unitInfo'];
+      let [year, month, buildingName] =  [fileInfo[0]['Año'], fileInfo[0]['Mes'].toLowerCase(), fileInfo[0]['Depto']]
+
+      try {
+
+        if (Object.keys(testing).length === 0) {
+          setTesting(current => {
+            let temp = {}
+            temp[buildingName] = {[year]: {}}
+            temp[buildingName][year] = {[month]: {}}
+            temp[buildingName][year][month] = splitExcel[file]
+            return temp;
+          })
+        } else if (!testing[buildingName]) {
+          setTesting(current => {
+          let temp = {...current}
+            temp[buildingName] = {[year]: {}}
+            temp[buildingName][year] = {[month]: {}}
+            temp[buildingName][year][month] = splitExcel[file]
+            return temp;
+          })
+        } else if (testing[buildingName]) {
+          if (!testing[buildingName][year]) {
+            setTesting(current => {
+              let temp = {...current}
+              temp[buildingName] = {...temp[buildingName], ...{[year]: {[month]: splitExcel[file]}}}
+              testing[buildingName] = temp[buildingName]
+              return temp;
+            })
+
+          }
+          else if (testing[buildingName][year]) {
+            setTesting(current => {
+              let temp = {...current}
+              temp[buildingName] = testing[buildingName]
+              temp[buildingName][year] = {...temp[buildingName][year], ...{[month]: splitExcel[file]}}
+
+              return temp;
+            })
+          }
+        }
+      } catch {
+        console.log('testing')
+      }
+    })
+  }
 
 
 // find the location of key = Month: 'Gastos'
@@ -92,14 +162,9 @@ const findGastos = (json)=>{
 
     // test newSheet array
     let holding: any = {}
-    let holding2: any = {}
-    let buildingName;
-    let year;
-    let month;
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
-
       filesToRead.map((file: any, index) => {
         const fileName = file['name']
         holding[fileName] = {'unitInfo': [], 'costs': []}
@@ -127,30 +192,10 @@ const findGastos = (json)=>{
           if (!Object.keys(jsonMaster[0]).includes('Año')) {
             alert('invalid file')
             // throw new Error ('invalid file type')
-            console.log(files, 'this is files')
-            // handleClear(e)
-            console.log(fileName, 'filename')
+
             files.splice(files.indexOf(fileName), 1)
           } else {
           // raw data sheet
-
-          // if entry doesn't exist make it using aggregate for use context
-          [year, month, buildingName] =  [jsonMaster[0]['Año'], jsonMaster[0]['Mes'].toLowerCase(), jsonMaster[0]['Depto']]
-          holding2 = {
-            [buildingName]: {
-              [year]: {
-                [month]:
-                  {
-                    'unitInfo': [],
-                    'costs': []
-                  }
-              }
-            }
-          }
-          gatherInfo(holding2, buildingName, year)
-
-          //check file type
-          console.log(jsonMaster, 'this is master')
 
           // create two arrays, [units info] | [total costs] => refactor later****
           for (let i = 0; i < 2; i++) {
@@ -163,7 +208,6 @@ const findGastos = (json)=>{
               var newRange = xlsx.utils.encode_range(range);
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, blankrows: true});
               holding[fileName].unitInfo.push(...json)
-              holding2[buildingName][year][month]['unitInfo'] = [...json]
             } else if (i === 1) {
               var range = xlsx.utils.decode_range(worksheet['!ref']);
               range.s.r = findGastos(jsonMaster)+1;
@@ -172,7 +216,6 @@ const findGastos = (json)=>{
               const json = xlsx.utils.sheet_to_json((worksheet), {defval:"", range: newRange, header: ['Gastos', 'Cost', 'Notas', 'Billetes o Moneda', 'Cantidad', 'TOTALS']});
               let newJson = json.slice(1, json.length)
               holding[fileName].costs.push(...newJson)
-              holding2[buildingName][year][month]['costs'].push(...newJson)
             }
           }
         }
@@ -186,31 +229,6 @@ const findGastos = (json)=>{
     }
 
   }
-
-
-  // handle clear fileList
-  const handleClear = (e) => {
-    const element: any = document.getElementById("uploads")
-    if (element.files.length > 0) {
-      element.value = ''
-      setExcel(null)
-      setFiles([])
-      setFilteredExcel(null)
-      setSplitExcel({})
-
-      console.log(splitExcel, 'this is split excel')
-      console.log(Object.entries(splitExcel), 'this should have a 0 length')
-      // setSplitExcel({})
-      // setSplitExcel(null)
-
-      setShowCosts(false)
-      // setAggregate({})
-      // setReportInfo(null)
-      console.log(aggregate, 'should be null')
-    }
-
-  }
-
   // testing drag drop
   // XLSX is a global from the standalone script
   const handleDrag = (e) => {
@@ -224,6 +242,43 @@ const findGastos = (json)=>{
     }
   }
 
+  const handleRemoveFile = (file) => {
+
+    let year = splitExcel[file]['unitInfo'][0]['Año'];
+    let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
+    let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
+
+    setAggregate(current => {
+      const copy = {...current};
+      delete copy[buildingName][year][month]
+      return copy
+    })
+
+    setFiles( current => {
+      const copy = [...current]
+      copy.splice(copy.indexOf(file), 1)
+      return copy
+    })
+
+    setSplitExcel(current => {
+      const copy = {...current};
+      delete copy[file];
+      return copy;
+    })
+
+    // need to handle if reportInfo is {} or not
+    if (Object.keys(reportInfo).length > 0) {
+      setReportInfo({})
+    }
+
+    // set to false to close window for rerender
+    setShowIndividual(false)
+    setShowFull(false)
+
+    // needed to reset and re-render based off new raw data
+    setTesting({})
+
+  }
 
   return (
     <>
@@ -241,19 +296,35 @@ const findGastos = (json)=>{
           // webkitdirectory="" // will allow file upload, but not single files
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
-        <DragBox id="drop_dom_element">{files.length > 0 ? files.map((item) => <ul>{item}</ul>) : 'upload files' }</DragBox>
-        {/* {Object.entries(splitExcel).length > 0 && aggregate ? */}
-        {/* {aggregate ?
-        <>
-          <button onClick={(e) => handleClear(e)}>
-            clear files
-          </button>
-        </>
-         : null} */}
+        <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span onClick={() => handleRemoveFile(item)}> X</span></ul>) : 'upload files' }</DragBox>
       </form>
-      {/* {aggregate ? <Report /> : null} */}
-      {aggregate ? <Report /> : null}
+
+         {/* Make both visible but not functional when one view is active over the other */}
       {aggregate ?
+        <>
+        <Verify>
+          {!showIndividual && files.length > 0 ? 'Please verify information is correct' : null}
+
+            {files.length > 0 ? <button onClick={() => setShowIndividual(!showIndividual)}>
+              {showIndividual ? 'close individual buildings report' : 'show individual buildings'}
+            </button>
+            : null}
+          {!showFull && showIndividual ?
+            <>
+              <div>Generate Full Report?</div><button onClick={() => setShowFull(!showFull)}>
+                Confirm
+              </button>
+            </>
+            : null}
+      </Verify>
+        </>
+      : null
+      }
+      {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
+      {showFull ? <FullReport /> : null}
+      {showIndividual ? <Report /> : null}
+
+      {/* {aggregate ?
         <>
           <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>
         </>
@@ -276,7 +347,7 @@ const findGastos = (json)=>{
 
           {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
 
-          </div> : null}
+          </div> : null} */}
       </Window>
     </>
   )
@@ -315,4 +386,15 @@ const listitem = styled.ul`
 
 const ContentsButton = styled.button`
   margin-top: 25px;
+`
+
+const Verify = styled.div`
+  display: flex;
+  margin-top: 50px;
+  flex-direction: column;
+  align-items: center;
+`
+
+const VerifyButton = styled.button`
+  margin-top: 50px;
 `

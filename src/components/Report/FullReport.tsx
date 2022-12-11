@@ -20,6 +20,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 export const FullReport = () => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)
+  let stringAgg = JSON.stringify(aggregate)
   const [buildings, setBuildings] = useState<string[]>([])
   const [buildingYear, setBuildingYear] = useState<string>('')
 
@@ -29,6 +30,7 @@ export const FullReport = () => {
   const componentToPrint = useRef(null)
 
   useEffect(() => {
+    console.log(yearPicked, 'where??')
     if (aggregate) {
       let tempBuilding = Object.keys(aggregate)
       setBuildings(tempBuilding)
@@ -47,7 +49,7 @@ export const FullReport = () => {
       getTotalExpenses()
       getMonthNetTotal()
     }
-  }, [aggregate, buildings.length, buildingYear, reportInfo, yearPicked])
+  }, [stringAgg, buildings.length, buildingYear, reportInfo, yearPicked])
 
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,
@@ -206,14 +208,6 @@ export const FullReport = () => {
   }
   return (
     <>
-      {/* {aggregate && dropDown ? <StyledDiv>
-        <div>generate a report </div>
-        <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => { e.preventDefault(), setYearPicked(e.target.value), setDropDown(false) } }>
-          <option>select a year</option>
-          {yearsAvailable.map((item) => <option>{item}</option>
-          )}
-        </select>
-        </StyledDiv> : null} */}
 
         {aggregate ? <StyledDiv>
         {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked('2022'); }}>generate report </StyledPrintButton> : null}
@@ -341,13 +335,13 @@ const StyledTable = styled.table`
   margin-bottom: 10px;
   margin-left: 30px;
   margin-right: 30px;
-  ${StyledRowUnit}:nth-child(even) {
+  ${StyledRowUnit}:nth-child(odd) {
     background: lightgrey;
   }
-  ${StyledRowEx}:nth-child(even) {
+  ${StyledRowEx}:nth-child(odd) {
     background: lightgrey;
   }
-  ${StyledRowNet}:nth-child(odd) {
+  ${StyledRowNet}:nth-child(even) {
     background: lightgrey;
   }
 `
@@ -356,6 +350,7 @@ const StyleMonthsHeaders = styled.th`
   text-align: center;
   width: 80px;
   padding: 5px;
+  background: #82b0f5;
 `
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
