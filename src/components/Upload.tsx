@@ -315,7 +315,8 @@ const findGastos = (json)=>{
                 Generate Full Report for year:
                 {/* if it doesn't work comment this span out */}
                   <span>
-                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(e.target.value)}>
+                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(() => e.target.value)}>
+                      <option value='default'>default</option>
                     {yearsAvailable.length > 0 ? yearsAvailable.map((item) =>
                         <option value={item}>{item}</option>
                         )
@@ -332,7 +333,9 @@ const findGastos = (json)=>{
         </>
       : null
       }
+      {/* {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true), setYearPicked(() => null)}}>cancel/reset</button> : null} */}
       {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
+
       {showFull ? <FullReport /> : null}
       {showIndividual ? <Report /> : null}
 

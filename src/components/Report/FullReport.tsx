@@ -38,6 +38,19 @@ export const FullReport = () => {
         setBuildingYear(yearPicked)
       }
     }
+
+    // if (buildingYear !== '') {
+    //   getTotalAdmon()
+    //   getTotalGastos()
+    //   getTotalDevol()
+    //   getTotalOtros()
+    //   getTotalE()
+    //   getTotalProfit()
+    //   getTotalRev()
+    //   getTotalExpenses()
+    //   getMonthNetTotal()
+    //   console.log(reportInfo, 'this is report Info')
+    // }
     if (reportInfo[buildingYear]) {
       getTotalAdmon()
       getTotalGastos()
@@ -48,8 +61,9 @@ export const FullReport = () => {
       getTotalRev()
       getTotalExpenses()
       getMonthNetTotal()
+      console.log(reportInfo, 'this is report Info')
     }
-  }, [stringAgg, buildings.length, buildingYear, reportInfo, yearPicked])
+  }, [stringAgg, buildings.length, buildingYear, reportInfo])
 
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,
@@ -261,9 +275,9 @@ export const FullReport = () => {
               {buildings.map((building) =>
                <StyledRowEx>
                    <StyledCell>{building}</StyledCell>
-                   {reportInfo[building][buildingYear]['expense'].map((item) =>
+                   {reportInfo[buildingYear] ? reportInfo[building][buildingYear]['expense'].map((item) =>
                     <StyledCell>{item}</StyledCell>
-                   )}
+                   ) : null}
                 </StyledRowEx>
               )}
 

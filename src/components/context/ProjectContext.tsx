@@ -45,6 +45,22 @@ const AggregateProvider = ({children}) => {
    const [buildingUnits, setBuildingUnits] = useState<any>({})
 
   useEffect(() => {
+    if (aggregate) {
+      setBuildings(() => Object.keys(aggregate))
+    }
+
+    if (buildings) {
+      let tempYear = []
+      buildings.forEach((building) => {
+        Object.keys(aggregate[building]).forEach((year) => {
+          if (tempYear.indexOf(year) === -1) {
+            tempYear.push(year)
+          }
+
+        })
+      })
+      setYearsAvailable(() => tempYear)
+    }
   }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
 
     return (
