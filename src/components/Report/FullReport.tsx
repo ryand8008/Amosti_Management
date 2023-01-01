@@ -30,11 +30,11 @@ export const FullReport = () => {
   const componentToPrint = useRef(null)
 
   useEffect(() => {
-    console.log(yearPicked, 'where??')
     if (aggregate) {
       let tempBuilding = Object.keys(aggregate)
       setBuildings(tempBuilding)
       if (yearPicked) {
+        console.log(yearPicked, ' in Full REPORT')
         setBuildingYear(yearPicked)
       }
     }
@@ -210,7 +210,8 @@ export const FullReport = () => {
     <>
 
         {aggregate ? <StyledDiv>
-        {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked('2022'); }}>generate report </StyledPrintButton> : null}
+        {/* {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked(yearPicked); }}>generate report </StyledPrintButton> : null} */}
+        {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setBuildingYear(yearPicked); }}>generate report </StyledPrintButton> : null}
         </StyledDiv>
 
          : null}
@@ -234,7 +235,7 @@ export const FullReport = () => {
             <>
               <StyledRowUnit>
                 <StyledCell>{reportInfo[item][buildingYear] ? item : null}</StyledCell>
-                {reportInfo[item][buildingYear]['revenue'] ? reportInfo[item][buildingYear]['revenue'].map((item2) => <>
+                {reportInfo[item][buildingYear] ? reportInfo[item][buildingYear]['revenue'].map((item2) => <>
                   <StyledCell>{item2}</StyledCell>
                 </>
                 ) : null}

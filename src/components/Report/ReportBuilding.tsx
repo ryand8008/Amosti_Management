@@ -6,7 +6,7 @@ import styled from "styled-components";
 // This function should receive a building's information, and only that.
 export const ReportBuilding = ({ buildingName }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre','noviem', 'diciem' ]
-  const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo, setYearPicked } = useContext(AggregateContext)
+  const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo, setYearPicked, setYearsAvailable } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   let stringReportInfo = JSON.stringify(reportInfo)
   // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
@@ -51,7 +51,7 @@ export const ReportBuilding = ({ buildingName }) => {
   useEffect( () => {
     // set initial year
     console.log(yearPicked, 'initial, is it undefined?')
-    console.log(years, 'initial years, should be sorted')
+
     console.log(year, 'this is year, not sure what the value is')
     if (!yearPicked) {
       setYearPicked(years[0])
@@ -66,13 +66,16 @@ export const ReportBuilding = ({ buildingName }) => {
         setMonths(Object.keys(aggregate[buildingName][yearPicked]))
       }
     }
-    // years.forEach((item) => {
-    //   if (!yearsAvailable.includes(item)) {
-    //     yearsAvailable.push(item)
-    //   }
-    // })
 
-    // setMonths()
+    setYearsAvailable((yearsAvailable) => {
+      years.forEach((item) => {
+        if (yearsAvailable.indexOf(item) === -1) {
+          yearsAvailable.push(item)
+        }
+      })
+      return yearsAvailable;
+    })
+
 
     buildUnitArrays()
 
@@ -512,7 +515,6 @@ const StyledInvisible = styled.button`
 const StyledRowE = styled.tr`
 `
 const StyledRowUnit = styled.tr`
-
 `
 const StyledCell = styled.td`
   text-align: center;

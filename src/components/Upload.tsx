@@ -40,7 +40,7 @@ interface Testing {
 // TODO: Handle multiple years
 
 export const Upload = () => {
-  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
+  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo, yearsAvailable, setYearPicked } = useContext(AggregateContext)
 
   // stringified aggre
   let stringAgg = JSON.stringify(aggregate)
@@ -77,7 +77,7 @@ export const Upload = () => {
   const [testing, setTesting] = useState<any>({})
 
   useEffect(() => {
-    console.log(testing, 'this is testing')
+    console.log(yearsAvailable, 'this is yearsAvailable')
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
 
@@ -85,7 +85,7 @@ export const Upload = () => {
 
     }
 
-  }, [JSON.stringify(testing), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
+  }, [JSON.stringify(testing), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable.length])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -135,7 +135,7 @@ export const Upload = () => {
           }
         }
       } catch {
-        console.log('testing')
+        console.log('UPLOAD ISSUE')
       }
     })
   }
@@ -311,9 +311,21 @@ const findGastos = (json)=>{
             : null}
           {!showFull && showIndividual ?
             <>
-              <div>Generate Full Report?</div><button onClick={() => setShowFull(!showFull)}>
+              <div>
+                Generate Full Report for year:
+                {/* if it doesn't work comment this span out */}
+                  <span>
+                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(e.target.value)}>
+                    {yearsAvailable.length > 0 ? yearsAvailable.map((item) =>
+                        <option value={item}>{item}</option>
+                        )
+                      : null}
+                    </select>
+                  </span>
+              </div>
+                <button onClick={() => setShowFull(!showFull)}>
                 Confirm
-              </button>
+                </button>
             </>
             : null}
       </Verify>
