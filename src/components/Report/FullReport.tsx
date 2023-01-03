@@ -22,7 +22,7 @@ export const FullReport = ({yr}) => {
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   const [buildings, setBuildings] = useState<string[]>([])
-  const [buildingYear, setBuildingYear] = useState<string>('')
+  const [buildingYear, setBuildingYear] = useState<string>(yr)
 
   // drop down, should remove when picking a year
   const [dropDown, setDropDown] = useState<boolean>(false)
@@ -30,15 +30,28 @@ export const FullReport = ({yr}) => {
   const componentToPrint = useRef(null)
 
   useEffect(() => {
+
+    console.log(reportInfo, 'fullreport reportinfo')
+
+
     if (aggregate) {
       let tempBuilding = Object.keys(aggregate)
-      setBuildings(tempBuilding)
-      if (yearPicked) {
-        console.log(yearPicked, ' in Full REPORT')
-        setBuildingYear(yearPicked)
-      }
+      let temp = [];
+
+      tempBuilding.forEach((building) => {
+        if (aggregate[building][buildingYear]) {
+          temp.push(building)
+        }
+      })
+      setBuildings(() => temp)
+      // if (yearPicked) {
+      //   console.log(yearPicked, ' in Full REPORT')
+      //   setBuildingYear(yearPicked)
+      // }
     }
-    if (reportInfo[buildingYear]) {
+    console.log(buildings, 'this is buildings, should change')
+    if (reportInfo[buildingYear] && buildings.length > 0) {
+      console.log(reportInfo, 'fullreport reportinfo')
       getTotalAdmon()
       getTotalGastos()
       getTotalDevol()
@@ -49,7 +62,7 @@ export const FullReport = ({yr}) => {
       getTotalExpenses()
       getMonthNetTotal()
     }
-  }, [stringAgg, buildings.length, buildingYear, reportInfo, yearPicked])
+  }, [stringAgg, buildingYear, JSON.stringify(buildings), reportInfo, yr, yearPicked])
 
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,
@@ -97,10 +110,13 @@ export const FullReport = ({yr}) => {
 
   const getTotalRev = () => {
     let total = 0;
-    if (!reportInfo[buildingYear]['totalRev']) {
+
+  buildings.forEach((building) => {
+    if (aggregate[building][buildingYear]) {
+
+      if (!reportInfo[buildingYear]['totalRev']) {
       reportInfo[buildingYear]['totalRev'] = Array.from({length:13}).fill('-',0,13)
     }
-    buildings.forEach((building) => {
       reportInfo[building][buildingYear]['revenue'].forEach((item, index) => {
         if (item !== '-') {
           if (reportInfo[buildingYear]['totalRev'][index] === '-') {
@@ -111,6 +127,7 @@ export const FullReport = ({yr}) => {
           }
         }
       })
+   }
     })
   }
 

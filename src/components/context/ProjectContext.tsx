@@ -53,6 +53,9 @@ const AggregateProvider = ({children}) => {
 
   useEffect(() => {
 
+    console.log(reportInfo, 'CONTEXT reportinfo')
+    console.log(yearPicked, 'would this be "default"?')
+
     if (aggregate) {
        setBuildings(() => Object.keys(aggregate));
     }

@@ -27,7 +27,7 @@ useEffect(() => {
   setBuildingNames(buildings)
 
   // find the years!
-  console.log(buildingNames, 'buildingNames!!')
+  console.log(yr, 'yr, does it change?')
   buildingNames.forEach((building) => {
     if (!years[building]) {
       years[building] = Object.keys(aggregate[building])
@@ -37,7 +37,7 @@ useEffect(() => {
   console.log(years, 'this is years, should be an object {}')
   // years = Object.keys(aggregate[buildings])
 
-}, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null])
+}, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null, yr])
 
 // DO NOT TOUCH
 const handlePrint = useReactToPrint({
@@ -48,10 +48,9 @@ const handlePrint = useReactToPrint({
     <>
       <StyledReportTitle>Individual Building Report</StyledReportTitle>
       {aggregate && buildingNames.length > 0 ? buildingNames.map((building) =>
-        <><div ref={componentToPrint}>
-          <ReportBuilding buildingName={building} yr={yearPicked}/>
-        </div>
-          <button onClick={handlePrint}>{`print building: ${building}`}</button>
+        <>{aggregate[building][yr] ? <><div ref={componentToPrint}>
+          <ReportBuilding buildingName={building} yr={yr} />
+        </div><button onClick={handlePrint}>{`print building: ${building}`}</button></> : null}
         </>
         )
          : null}

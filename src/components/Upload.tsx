@@ -85,7 +85,7 @@ export const Upload = () => {
 
     }
 
-  }, [JSON.stringify(testing), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable.length])
+  }, [JSON.stringify(testing), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable.length, yearPicked])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
