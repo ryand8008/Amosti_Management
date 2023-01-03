@@ -4,7 +4,7 @@ import styled from "styled-components";
 
 
 // This function should receive a building's information, and only that.
-export const ReportBuilding = ({ buildingName }) => {
+export const ReportBuilding = ({ buildingName, yr }) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre','noviem', 'diciem' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo, setYearPicked, setYearsAvailable } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
@@ -13,14 +13,14 @@ export const ReportBuilding = ({ buildingName }) => {
 
   // somehow use years available context variable
   let years = Object.keys(aggregate[buildingName]).sort()
-  // const [year, setYear] = useState<string>(yearPicked || years[0] )
-  const [year, setYear] = useState<string>(() => {
-    if (!yearPicked) {
-      return years[0]
-    } else {
-      return yearPicked
-    }
-  })
+  const [year, setYear] = useState<string>(yr )
+  // const [year, setYear] = useState<string>(() => {
+  //   if (!yearPicked) {
+  //     return years[0]
+  //   } else {
+  //     return yearPicked
+  //   }
+  // })
 
   const [months, setMonths] = useState<string[]>(Object.keys(aggregate[buildingName][year]))
   // const [units, setUnits] = useState<string[] | any>([])

@@ -40,7 +40,7 @@ interface Testing {
 // TODO: Handle multiple years
 
 export const Upload = () => {
-  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo, yearsAvailable, setYearPicked } = useContext(AggregateContext)
+  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo, yearsAvailable, setYearPicked, yearPicked } = useContext(AggregateContext)
 
   // stringified aggre
   let stringAgg = JSON.stringify(aggregate)
@@ -316,6 +316,7 @@ const findGastos = (json)=>{
                 {/* if it doesn't work comment this span out */}
                   <span>
                     <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(e.target.value)}>
+                      <option value='default'>select a year</option>
                     {yearsAvailable.length > 0 ? yearsAvailable.map((item) =>
                         <option value={item}>{item}</option>
                         )
@@ -333,8 +334,8 @@ const findGastos = (json)=>{
       : null
       }
       {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
-      {showFull ? <FullReport /> : null}
-      {showIndividual ? <Report /> : null}
+      {showFull && yearPicked ? <FullReport yr={yearPicked}/> : null}
+      {showIndividual && yearPicked ? <Report yr={yearPicked}/> : null}
 
       {/* {aggregate ?
         <>

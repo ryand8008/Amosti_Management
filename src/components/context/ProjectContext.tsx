@@ -33,6 +33,13 @@ const AggregateProvider = ({children}) => {
   let yearsStringified = JSON.stringify(yearsAvailable)
 
   const [buildings, setBuildings] = useState<string[]>([])
+  // const [buildings, setBuildings] = useState<string[]>(() => {
+  //   if (aggregate) {
+  //     return Object.keys(aggregate);
+  //   } else {
+  //     return [];
+  //   }
+  // })
 
   let buildingsStringified = JSON.stringify(buildings)
 
@@ -45,6 +52,23 @@ const AggregateProvider = ({children}) => {
    const [buildingUnits, setBuildingUnits] = useState<any>({})
 
   useEffect(() => {
+
+    if (aggregate) {
+       setBuildings(() => Object.keys(aggregate));
+    }
+
+    if (buildings.length > 0) {
+      let tempYears = [];
+      buildings.forEach((building) => {
+        Object.keys(aggregate[building]).forEach((year) => {
+          if (tempYears.indexOf(year) === -1) {
+            tempYears.push(year)
+          }
+        })
+        setYearsAvailable(() => tempYears)
+      })
+    }
+
   }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
 
     return (

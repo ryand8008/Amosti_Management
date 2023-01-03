@@ -17,7 +17,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
     //
 
 
-export const FullReport = () => {
+export const FullReport = ({yr}) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)

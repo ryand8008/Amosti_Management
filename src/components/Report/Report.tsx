@@ -6,9 +6,9 @@ import { ReportBuilding } from "./ReportBuilding";
 
 
 // GET BUILDING NAMES with Object.keys(aggregate), then iterate through
-export const Report = () => {
+export const Report = ({yr}) => {
 const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
-const { aggregate } = useContext(AggregateContext)
+const { aggregate, yearPicked } = useContext(AggregateContext)
 // building name
 const [buildingNames, setBuildingNames] = useState<string[]>([])
 const [showReport, setShowReport] = useState<boolean>(false)
@@ -49,7 +49,7 @@ const handlePrint = useReactToPrint({
       <StyledReportTitle>Individual Building Report</StyledReportTitle>
       {aggregate && buildingNames.length > 0 ? buildingNames.map((building) =>
         <><div ref={componentToPrint}>
-          <ReportBuilding buildingName={building} />
+          <ReportBuilding buildingName={building} yr={yearPicked}/>
         </div>
           <button onClick={handlePrint}>{`print building: ${building}`}</button>
         </>
