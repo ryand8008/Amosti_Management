@@ -77,7 +77,8 @@ export const Upload = () => {
   const [testing, setTesting] = useState<any>({})
 
   useEffect(() => {
-    console.log(yearsAvailable, 'this is yearsAvailable')
+    // console.log(yearsAvailable, 'this is yearsAvailable')
+    console.log(yearPicked, 'this should eventually be "default" ')
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
 

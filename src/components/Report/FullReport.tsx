@@ -32,8 +32,8 @@ export const FullReport = ({yr}) => {
   useEffect(() => {
 
     console.log(reportInfo, 'fullreport reportinfo')
-
-
+    console.log(yr, buildingYear, yearPicked, 'yr, buildingYear, yearpicked')
+    setBuildingYear((buildingYear) => yr)
     if (aggregate) {
       let tempBuilding = Object.keys(aggregate)
       let temp = [];
