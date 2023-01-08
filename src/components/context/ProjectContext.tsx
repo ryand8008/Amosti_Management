@@ -41,7 +41,7 @@ const AggregateProvider = ({children}) => {
   //   }
   // })
 
-  let buildingsStringified = JSON.stringify(buildings)
+  let buildingsStringified;
 
   const [monthsAvailable, setMonthsAvailable] = useState<string[]>([])
   let monthsStringified = JSON.stringify(monthsAvailable)
@@ -53,11 +53,9 @@ const AggregateProvider = ({children}) => {
 
   useEffect(() => {
 
-    console.log(reportInfo, 'CONTEXT reportinfo')
-    console.log(yearPicked, 'would this be "default"?')
-
     if (aggregate) {
        setBuildings(() => Object.keys(aggregate));
+       buildingsStringified = JSON.stringify(buildings)
     }
 
     if (buildings.length > 0) {
@@ -73,6 +71,24 @@ const AggregateProvider = ({children}) => {
     }
 
   }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     return (
     <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, setYearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>

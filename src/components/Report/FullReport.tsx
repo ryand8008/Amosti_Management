@@ -22,6 +22,8 @@ export const FullReport = ({yr}) => {
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   const [buildings, setBuildings] = useState<string[]>([])
+
+
   const [buildingYear, setBuildingYear] = useState<string>(yr)
 
   // drop down, should remove when picking a year
@@ -31,9 +33,7 @@ export const FullReport = ({yr}) => {
 
   useEffect(() => {
 
-    console.log(reportInfo, 'fullreport reportinfo')
-    console.log(yr, buildingYear, yearPicked, 'yr, buildingYear, yearpicked')
-    setBuildingYear((buildingYear) => yr)
+    setBuildingYear(yr)
     if (aggregate) {
       let tempBuilding = Object.keys(aggregate)
       let temp = [];
@@ -44,14 +44,12 @@ export const FullReport = ({yr}) => {
         }
       })
       setBuildings(() => temp)
-      // if (yearPicked) {
-      //   console.log(yearPicked, ' in Full REPORT')
-      //   setBuildingYear(yearPicked)
-      // }
+
     }
-    console.log(buildings, 'this is buildings, should change')
-    if (reportInfo[buildingYear] && buildings.length > 0) {
-      console.log(reportInfo, 'fullreport reportinfo')
+
+
+    // if (reportInfo[buildingYear] && buildings.length > 0) {
+      if (yr === buildingYear) {
       getTotalAdmon()
       getTotalGastos()
       getTotalDevol()
@@ -62,7 +60,7 @@ export const FullReport = ({yr}) => {
       getTotalExpenses()
       getMonthNetTotal()
     }
-  }, [stringAgg, buildingYear, JSON.stringify(buildings), reportInfo, yr, yearPicked])
+  }, [stringAgg, buildingYear, JSON.stringify(buildings), reportInfo])
 
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,

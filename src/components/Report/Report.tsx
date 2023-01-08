@@ -6,7 +6,7 @@ import { ReportBuilding } from "./ReportBuilding";
 
 
 // GET BUILDING NAMES with Object.keys(aggregate), then iterate through
-export const Report = ({yr}) => {
+export const Report = ({yr, testing}) => {
 const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
 const { aggregate, yearPicked } = useContext(AggregateContext)
 // building name
@@ -20,22 +20,21 @@ const componentToPrint = useRef(null)
 // shape of data => {[buildingName1]: [year, ....], [buildingName2]: [year, ...], ...}
 let years = {};
 
+// testing yr change
+const [buildyr, setBuildYr] = useState(yr)
+
 
 useEffect(() => {
 
   const buildings = Object.keys(aggregate);
   setBuildingNames(buildings)
+  setBuildYr(() => yr)
 
-  // find the years!
-  console.log(yr, 'yr, does it change?')
   buildingNames.forEach((building) => {
     if (!years[building]) {
       years[building] = Object.keys(aggregate[building])
     }
   })
-
-  console.log(years, 'this is years, should be an object {}')
-  // years = Object.keys(aggregate[buildings])
 
 }, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null, yr])
 
@@ -48,8 +47,8 @@ const handlePrint = useReactToPrint({
     <>
       <StyledReportTitle>Individual Building Report</StyledReportTitle>
       {aggregate && buildingNames.length > 0 ? buildingNames.map((building) =>
-        <>{aggregate[building][yr] ? <><div ref={componentToPrint}>
-          <ReportBuilding buildingName={building} yr={yr} />
+        <>{aggregate[building][buildyr] ? <><div ref={componentToPrint}>
+          <ReportBuilding buildingName={building} yr={buildyr} />
         </div><button onClick={handlePrint}>{`print building: ${building}`}</button></> : null}
         </>
         )

@@ -78,7 +78,7 @@ export const Upload = () => {
 
   useEffect(() => {
     // console.log(yearsAvailable, 'this is yearsAvailable')
-    console.log(yearPicked, 'this should eventually be "default" ')
+    // console.log(yearPicked, 'this should eventually be "default" ')
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
 
@@ -244,7 +244,7 @@ const findGastos = (json)=>{
   }
 
   const handleRemoveFile = (file) => {
-
+    console.log(file, 'this is FILE in UPLOAD')
     let year = splitExcel[file]['unitInfo'][0]['Año'];
     let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
     let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
@@ -279,6 +279,12 @@ const findGastos = (json)=>{
     // needed to reset and re-render based off new raw data
     setTesting({})
 
+  }
+
+  const reset = () => {
+    if (!showIndividual) {
+      setYearPicked(() => 'default')
+    }
   }
 
   return (
@@ -316,7 +322,7 @@ const findGastos = (json)=>{
                 Generate Full Report for year:
                 {/* if it doesn't work comment this span out */}
                   <span>
-                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(e.target.value)}>
+                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(() => e.target.value)}>
                       <option value='default'>select a year</option>
                     {yearsAvailable.length > 0 ? yearsAvailable.map((item) =>
                         <option value={item}>{item}</option>
@@ -325,9 +331,9 @@ const findGastos = (json)=>{
                     </select>
                   </span>
               </div>
-                <button onClick={() => setShowFull(!showFull)}>
+                {yearPicked ? <button onClick={() => setShowFull(!showFull)}>
                 Confirm
-                </button>
+                </button> : null}
             </>
             : null}
       </Verify>
@@ -336,7 +342,7 @@ const findGastos = (json)=>{
       }
       {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
       {showFull && yearPicked ? <FullReport yr={yearPicked}/> : null}
-      {showIndividual && yearPicked ? <Report yr={yearPicked}/> : null}
+      {showIndividual && yearPicked ? <Report yr={yearPicked} testing={showIndividual}/> : null}
 
       {/* {aggregate ?
         <>
