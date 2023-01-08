@@ -244,7 +244,7 @@ const findGastos = (json)=>{
   }
 
   const handleRemoveFile = (file) => {
-    console.log(file, 'this is FILE in UPLOAD')
+
     let year = splitExcel[file]['unitInfo'][0]['Año'];
     let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
     let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
@@ -279,12 +279,6 @@ const findGastos = (json)=>{
     // needed to reset and re-render based off new raw data
     setTesting({})
 
-  }
-
-  const reset = () => {
-    if (!showIndividual) {
-      setYearPicked(() => 'default')
-    }
   }
 
   return (

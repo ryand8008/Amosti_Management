@@ -1,24 +1,18 @@
 import { AggregateContext } from "../context/ProjectContext";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+
 
 
 // This function should receive a building's information, and only that.
 export const ReportBuilding = ({ buildingName, yr }) => {
-  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre','noviem', 'diciem' ]
+  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo, setYearPicked, setYearsAvailable } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   let stringReportInfo = JSON.stringify(reportInfo)
-  // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
 
-  // somehow use years available context variable
   let years = Object.keys(aggregate[buildingName]).sort()
   const [year, setYear] = useState<string>(yr)
-  // const [year, setYear] = useState<string>(() => {
-  //   if (aggregate[buildingName][yr]) {
-  //     return yr
-  //   }
-  // })
 
   const [months, setMonths] = useState<string[]>(Object.keys(aggregate[buildingName][year]))
 
@@ -45,17 +39,11 @@ export const ReportBuilding = ({ buildingName, yr }) => {
   const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(defaultReportRow)
   const [totalProfit, setTotalProfit] = useState<number[] | any[]>(defaultReportRow)
 
-
-
   useEffect( () => {
 
     setYear((yr))
 
-
-    // will need to refactor months
-if (year === yr) {
-
-  setMonths(() => Object.keys(aggregate[buildingName][year]))
+    setMonths(() => Object.keys(aggregate[buildingName][year]))
 
     buildUnitArrays()
 
@@ -63,38 +51,23 @@ if (year === yr) {
       if (annualRent[buildingName][year]) {
         getAnnualRentTotal()
       }
-
     }
     if (annualUnitTotal) {
       getMonthCostsTotal(annualUnitTotal)
     }
+
     if (totalTotal) {
       getTotalProfit(totalTotal, totalExpenses)
-      // generateFullReport()
+      generateFullReport(year)
     }
 
-    // if (yearPicked) {
-
-      if (totalTotal) {
-        getTotalProfit(totalTotal, totalExpenses)
-        generateFullReport(year)
-      }
-    }
-
-  // }, [stringAgg, stringReportInfo, aggregate[buildingName][year], months ? months.length : null, units.length,
- }, [aggregate, stringReportInfo, aggregate[buildingName][year], JSON.stringify(annualRent), annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), yr, year, JSON.stringify(months), buildingName])
+ }, [aggregate, stringReportInfo, aggregate[buildingName][year], JSON.stringify(annualRent), annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), yr, year, JSON.stringify(months)])
 
     // build unit array - structure: {buildingname: {year: {units: {[unitname]: [...rent for each month]}}}}
-  const buildUnitArrays = () => {
+  const buildUnitArrays = useCallback(() => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
     let monthsContainer = Object.keys(aggregate[buildingName][year])
-
-    // if (aggregate[buildingName][year]) {
-    //   monthsContainer = Object.keys(aggregate[buildingName][yearPicked])
-    // } else {
-    //   monthsContainer = months;
-    // }
 
     monthsContainer.forEach( (month: string) =>{
         aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
@@ -123,7 +96,7 @@ if (year === yr) {
       })
     });
     setAnnualRent(() => blob)
-  }
+  }, [JSON.stringify(aggregate[buildingName][year])])
 
   // annual total for a specific unit
   const getAnnualRentTotal = async () => {
@@ -160,9 +133,9 @@ if (year === yr) {
     let totalAdmon:any[] = Array.from({length: 13}).fill('-',0, 13)
     let admonAnnual = 0;
     let testGastos:any[] = Array.from({length: 13}).fill('-',0, 13)
-    // devolucion
+
     let totalDevolucion:any[] = Array.from({length: 13}).fill('-',0, 13)
-    //otros
+
     let totalOtros:any[] = Array.from({length: 13}).fill('-',0, 13)
 
     let totalCorretaje:any[] = Array.from({length: 13}).fill('-',0, 13)
@@ -236,8 +209,8 @@ if (year === yr) {
 
     // get total expenses
     if (totalAdmon && totalGastos) {
-      console.log(' HERE')
       getTotalExpenses(totalAdmon, totalGastos, totalDevol, totalOtros)
+      console.log(' HERE')
     }
   }
 
@@ -266,7 +239,8 @@ if (year === yr) {
 
   }
 
-  const getTotalExpenses = (totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
+  // const getTotalExpenses = (totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
+    const getTotalExpenses = useCallback((totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
 
     let totalExpensesArray = Array.from({length: 13}).fill('-', 0, 13)
     let totalExpenses = 0
@@ -281,7 +255,7 @@ if (year === yr) {
     }
   totalExpensesArray[12] = totalExpenses;
   setTotalExpenses((totalExpenses) => totalExpensesArray)
-}
+},[totalAdmon, totalGastos, totalDevol, totalOtros])
 
 const getTotalProfit = (totalTotal, totalExpenses) => {
   let totalNet = Array.from({length: 13}).fill('-', 0, 13);
@@ -373,7 +347,6 @@ const changeYears = (e, change: string, year: string) => {
 
     // testing year picked
     setYearPicked(years[index -1])
-    // console.log(yearPicked)
   }
 
   if (change === 'increase') {
@@ -381,11 +354,9 @@ const changeYears = (e, change: string, year: string) => {
     setYear((year) => newYear)
     setAnnualRent(null)
     setAnnualUnitTotal(null)
-    // let newYear = years[index + 1]
 
     // testing year picked
     setYearPicked(newYear)
-    // console.log(yearPicked)
   }
 }
 
