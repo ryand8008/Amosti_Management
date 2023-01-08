@@ -59,7 +59,7 @@ const AggregateProvider = ({children}) => {
       getYears()
     }
 
-  }, [ aggregate, aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
+  }, [ aggregate, buildings, aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
 
 
   const handleChange = useCallback(() => {
@@ -80,7 +80,7 @@ const AggregateProvider = ({children}) => {
 
   const getBuildings = useCallback(() => {
     setBuildings(() => Object.keys(aggregate))
-  }, [aggregate])
+  }, [aggregate ? Object.keys(aggregate).length : null])
 
 
 

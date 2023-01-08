@@ -45,7 +45,7 @@ const handlePrint = useReactToPrint({
 
   return (
     <>
-      <StyledReportTitle>Individual Building Report</StyledReportTitle>
+      {/* <StyledReportTitle>Individual Building Report</StyledReportTitle> */}
       {aggregate && buildingNames.length > 0 ? buildingNames.map((building) =>
         <>{aggregate[building][buildyr] ? <><div ref={componentToPrint}>
           <ReportBuilding buildingName={building} yr={buildyr} />
