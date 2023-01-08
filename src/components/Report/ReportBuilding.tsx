@@ -52,6 +52,7 @@ export const ReportBuilding = ({ buildingName, yr }) => {
     setYear((yr))
 
 
+    // will need to refactor months
 if (year === yr) {
 
   setMonths(() => Object.keys(aggregate[buildingName][year]))
@@ -383,7 +384,7 @@ const changeYears = (e, change: string, year: string) => {
     // let newYear = years[index + 1]
 
     // testing year picked
-    // setYearPicked(newYear)
+    setYearPicked(newYear)
     // console.log(yearPicked)
   }
 }

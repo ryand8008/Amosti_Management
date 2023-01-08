@@ -23,7 +23,7 @@ export const AggregateContext = React.createContext<ReportType | null>(null)
 const AggregateProvider = ({children}) => {
   // uploaded information
   const [aggregate, setAggregate] = useState<any>()
-  const aggregateStringified = JSON.stringify(aggregate)
+  let aggregateStringified = JSON.stringify(aggregate)
   const [showReport, setShowReport] = useState<boolean>(false)
   // report information
   const [reportInfo, setReportInfo] = useState<any>({})
@@ -33,13 +33,7 @@ const AggregateProvider = ({children}) => {
   let yearsStringified = JSON.stringify(yearsAvailable)
 
   const [buildings, setBuildings] = useState<string[]>([])
-  // const [buildings, setBuildings] = useState<string[]>(() => {
-  //   if (aggregate) {
-  //     return Object.keys(aggregate);
-  //   } else {
-  //     return [];
-  //   }
-  // })
+
 
   let buildingsStringified;
 
@@ -52,10 +46,11 @@ const AggregateProvider = ({children}) => {
    const [buildingUnits, setBuildingUnits] = useState<any>({})
 
   useEffect(() => {
-
     if (aggregate) {
-       setBuildings(() => Object.keys(aggregate));
-       buildingsStringified = JSON.stringify(buildings)
+      // setAggregate(aggregate)
+      setBuildings(() => Object.keys(aggregate));
+      aggregateStringified = JSON.stringify(aggregate)
+      buildingsStringified = JSON.stringify(buildings)
     }
 
     if (buildings.length > 0) {

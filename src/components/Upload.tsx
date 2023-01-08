@@ -323,9 +323,10 @@ const findGastos = (json)=>{
                 {/* if it doesn't work comment this span out */}
                   <span>
                     <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(() => e.target.value)}>
-                      <option value='default'>select a year</option>
+                    {/* <option value='default'>select a year</option> */}
+                      {!yearPicked ? <option value='default'>select a year</option> : <option value={yearPicked}>{yearPicked}</option>}
                     {yearsAvailable.length > 0 ? yearsAvailable.map((item) =>
-                        <option value={item}>{item}</option>
+                        item !== yearPicked ? <option value={item}>{item}</option> : null
                         )
                       : null}
                     </select>
