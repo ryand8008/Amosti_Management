@@ -59,7 +59,7 @@ export const FullReport = ({yr}) => {
       getMonthNetTotal()
     }
 
-  }, [stringAgg, buildingYear, JSON.stringify(buildings), reportInfo])
+  }, [stringAgg, buildingYear, JSON.stringify(buildings), yr])
 
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,

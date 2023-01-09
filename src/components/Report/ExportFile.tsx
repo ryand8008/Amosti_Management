@@ -10,18 +10,20 @@ export const ExportFile = ({report, year}) => {
   const hardCodeHeaders = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre', 'anual' ]
 
   const sheetHeaders = ['Edificio', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre', 'anual']
-  const buildings = Object.keys(report).filter((item) => isNaN(Number(item)) === true)
 
+  let buildings;
   const [rows, setRows] = useState([])
 
 
   useEffect(() => {
-    if (report[year]['totalRev']) {
 
-      createWorkBook()
+    if (report[year]['totalRev']) {
+      buildings = Object.keys(report).filter((item) => isNaN(Number(item)) === true)
+
+      createWorkBook(buildings)
 
     }
-  }, [report, rows.length, year])
+  }, [JSON.stringify(report), rows.length, year])
 
 
   const getTotal = (totalHeader) => {
@@ -34,7 +36,7 @@ export const ExportFile = ({report, year}) => {
         } else if (totalHeader === 'totalProfit') {
           tempTotal = {'Edificio': 'Neto Total'}
         }
-        report[yearPicked][totalHeader].forEach((item, index) => {
+        report[year][totalHeader].forEach((item, index) => {
 
           tempTotal = {...tempTotal, ...{[hardCodeHeaders[index]]: item}}
 
@@ -43,30 +45,35 @@ export const ExportFile = ({report, year}) => {
         return tempTotal;
   }
 
-  const getInfo = (ind) => {
+  const getInfo = (ind, buildings) => {
     let fullReportHeaders = ['revenue', 'expense', 'totalNet']
-      let totalHeaders = ['totalRev', 'totalExpenses', 'totalProfit']
+    let totalHeaders = ['totalRev', 'totalExpenses', 'totalProfit']
     let [header, totalHeader] = [fullReportHeaders[ind], totalHeaders[ind]]
     let tempArray = [];
 
     buildings.forEach((building) => {
+      if (report[building][year]) {
       let tempObj = { 'Edificio': building }
       report[building][year][header].forEach((item, index) => {
         tempObj = { ...tempObj, ...{ [hardCodeHeaders[index]]: item } }
       })
       tempArray.push(tempObj)
+    }
     })
+
+
+
     let totalToAdd = getTotal(totalHeader)
               tempArray.push(totalToAdd)
               tempArray.push([])
     return tempArray;
   }
 
-  const createWorkBook = () => {
+  const createWorkBook = (buildings) => {
     let testRow = []
 
       for (let i = 0; i <= 2; i++ ) {
-        testRow.push(...getInfo(i))
+        testRow.push(...getInfo(i, buildings))
       }
 
       setRows(testRow)
@@ -84,7 +91,8 @@ const exportExcel = async () => {
 
   return (
     <>
-      {rows.length > 0 ? <button onClick={() => {exportExcel()}}>EXPORT FILE</button> : null}
+      {rows.length > 0 ? <button onClick={() => {exportExcel()}}>EXPORT FILE</button> : 'loading...'}
+      {/* {!busy ? <button onClick={() => {exportExcel()}}>EXPORT FILE</button> : 'loading...'} */}
     </>
   )
 }
