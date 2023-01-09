@@ -321,7 +321,7 @@ export const FullReport = ({yr}) => {
           {buildingYear !== '' ? <StyledPrintButton onClick={handlePrint}>{`print report`}</StyledPrintButton> : null}
 
          </StyledDiv>
-              <ExportFile report={reportInfo}/>
+              <ExportFile report={reportInfo} year={buildingYear}/>
     </>
   )
 }

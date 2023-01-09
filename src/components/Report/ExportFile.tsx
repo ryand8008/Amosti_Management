@@ -3,7 +3,7 @@ import { AggregateContext } from "../context/ProjectContext";
 
 var xlsx = require("xlsx");
 
-export const ExportFile = ({report}) => {
+export const ExportFile = ({report, year}) => {
   // can have aggregatecontext as children props instead
   const {reportInfo, yearPicked} = useContext(AggregateContext)
 
@@ -14,14 +14,14 @@ export const ExportFile = ({report}) => {
 
   const [rows, setRows] = useState([])
 
-  useEffect(() => {
 
-    if (report[yearPicked]['totalRev']) {
+  useEffect(() => {
+    if (report[year]['totalRev']) {
 
       createWorkBook()
 
     }
-  }, [JSON.stringify(report), rows.length])
+  }, [report, rows.length, year])
 
 
   const getTotal = (totalHeader) => {
@@ -51,7 +51,7 @@ export const ExportFile = ({report}) => {
 
     buildings.forEach((building) => {
       let tempObj = { 'Edificio': building }
-      report[building][yearPicked][header].forEach((item, index) => {
+      report[building][year][header].forEach((item, index) => {
         tempObj = { ...tempObj, ...{ [hardCodeHeaders[index]]: item } }
       })
       tempArray.push(tempObj)
