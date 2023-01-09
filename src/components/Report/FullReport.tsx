@@ -2,7 +2,7 @@ import { AggregateContext } from "../context/ProjectContext";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-
+import { ExportFile } from './ExportFile';
 // it requires:
 // total for each month (not netprofit)
   // make annual
@@ -18,7 +18,7 @@ import ReactToPrint, { useReactToPrint } from "react-to-print";
 
 
 export const FullReport = ({yr}) => {
-  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
+  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
   const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   const [buildings, setBuildings] = useState<string[]>([])
@@ -26,8 +26,6 @@ export const FullReport = ({yr}) => {
 
   const [buildingYear, setBuildingYear] = useState<string>(yr)
 
-  // drop down, should remove when picking a year
-  const [dropDown, setDropDown] = useState<boolean>(false)
   // print
   const componentToPrint = useRef(null)
 
@@ -60,6 +58,7 @@ export const FullReport = ({yr}) => {
       getTotalExpenses()
       getMonthNetTotal()
     }
+
   }, [stringAgg, buildingYear, JSON.stringify(buildings), reportInfo])
 
   const handlePrint = useReactToPrint({
@@ -235,15 +234,15 @@ export const FullReport = ({yr}) => {
       {buildingYear !== '' && aggregate ?
         <>
         {/* <StyledTitle>Full Report</StyledTitle> */}
-        <h1>Full Report: {buildingYear}</h1>
+        <h1>Reporte Completo: {buildingYear}</h1>
 
           <StyledTable>
 
             <StyledHeaderContainer>
-              <th>Depto</th>
+              <th>Edificio</th>
               {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
               )}
-              <StyleMonthsHeaders>annual</StyleMonthsHeaders>
+              <StyleMonthsHeaders>anual</StyleMonthsHeaders>
             </StyledHeaderContainer>
 
             {buildings.length > 0 ? buildings.map((item) =>
@@ -260,7 +259,7 @@ export const FullReport = ({yr}) => {
 
 
             <StyledTotal>
-              <StyledBold>Total Rev</StyledBold>
+              <StyledBold>Los ingresos totales</StyledBold>
               {reportInfo[buildingYear]['totalRev'] ? reportInfo[buildingYear]['totalRev'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
@@ -283,7 +282,7 @@ export const FullReport = ({yr}) => {
               )}
 
             <StyledTotal>
-            <StyledBold>Total E</StyledBold>
+            <StyledBold>Gastos totales</StyledBold>
               {reportInfo[buildingYear]['totalExpenses'] ? reportInfo[buildingYear]['totalExpenses'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
@@ -306,7 +305,7 @@ export const FullReport = ({yr}) => {
               )}
 
             <StyledTotal>
-            <StyledBold>Total net</StyledBold>
+            <StyledBold>Neto total</StyledBold>
               {reportInfo[buildingYear]['totalProfit'] ? reportInfo[buildingYear]['totalProfit'].map((item2) => <>
                 <StyledCell>{item2}</StyledCell>
               </>
@@ -322,7 +321,7 @@ export const FullReport = ({yr}) => {
           {buildingYear !== '' ? <StyledPrintButton onClick={handlePrint}>{`print report`}</StyledPrintButton> : null}
 
          </StyledDiv>
-
+              <ExportFile report={reportInfo}/>
     </>
   )
 }
