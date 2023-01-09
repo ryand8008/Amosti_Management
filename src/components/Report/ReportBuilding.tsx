@@ -61,7 +61,7 @@ export const ReportBuilding = ({ buildingName, yr }) => {
       generateFullReport(year)
     }
 
- }, [aggregate, stringReportInfo, aggregate[buildingName][year], JSON.stringify(annualRent), annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), yr, year, JSON.stringify(months)])
+ }, [JSON.stringify(aggregate), stringReportInfo,  JSON.stringify(annualRent), JSON.stringify(annualUnitTotal), JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), yr, year, JSON.stringify(months)])
 
     // build unit array - structure: {buildingname: {year: {units: {[unitname]: [...rent for each month]}}}}
   const buildUnitArrays = useCallback(() => {

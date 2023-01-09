@@ -1,5 +1,5 @@
 import { AggregateContext } from "../context/ProjectContext";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { ExportFile } from './ExportFile';
@@ -45,8 +45,6 @@ export const FullReport = ({yr}) => {
 
     }
 
-
-    // if (reportInfo[buildingYear] && buildings.length > 0) {
       if (yr === buildingYear) {
       getTotalAdmon()
       getTotalGastos()
@@ -59,14 +57,17 @@ export const FullReport = ({yr}) => {
       getMonthNetTotal()
     }
 
-  }, [stringAgg, buildingYear, JSON.stringify(buildings), yr])
+}, [stringAgg, buildingYear, JSON.stringify(buildings), yr])
 
+  // DO NOT TOUCH
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,
   });
+  // DO NOT TOUCH
 
   const getTotalAdmon = () => {
     let total = 0;
+    reportInfo[buildingYear]['admon'][12] = 0;
     reportInfo[buildingYear]['admon'].forEach((item) => {
       if (typeof item === 'number') {
         total += item
@@ -77,6 +78,7 @@ export const FullReport = ({yr}) => {
 
   const getTotalGastos = () => {
     let total = 0;
+    reportInfo[buildingYear]['gastos'][12] = 0;
     reportInfo[buildingYear]['gastos'].forEach((item) => {
       if (typeof item === 'number') {
         total += item
@@ -87,6 +89,7 @@ export const FullReport = ({yr}) => {
 
   const getTotalDevol = () => {
     let total = 0;
+    reportInfo[buildingYear]['devol'][12] = 0;
     reportInfo[buildingYear]['devol'].forEach((item) => {
       if (typeof item === 'number') {
         total += item
@@ -97,6 +100,7 @@ export const FullReport = ({yr}) => {
 
   const getTotalOtros = () => {
     let total = 0;
+    reportInfo[buildingYear]['otros'][12] = 0;
     reportInfo[buildingYear]['otros'].forEach((item) => {
       if (typeof item === 'number') {
         total += item
@@ -120,7 +124,7 @@ export const FullReport = ({yr}) => {
             reportInfo[buildingYear]['totalRev'][index] = item
 
           } else {
-            reportInfo[buildingYear]['totalRev'][index] += item
+            reportInfo[buildingYear]['totalRev'][index] = item // changed +=
           }
         }
       })
@@ -132,6 +136,7 @@ export const FullReport = ({yr}) => {
     let total = 0
     let expensesArray = ['admon', 'gastos', 'devol', 'otros']
     reportInfo[buildingYear]['totalE'] = Array.from({length: 13}).fill('-', 0, 13)
+    reportInfo[buildingYear]['totalE'][12] = 0;
 
     expensesArray.forEach((item) => {
       reportInfo[buildingYear][item].forEach((item2, index) => {
@@ -152,6 +157,7 @@ export const FullReport = ({yr}) => {
   }
 
   const getTotalProfit = () => {
+    reportInfo[buildingYear]['totalProfit'][12] = 0;
     buildings.forEach((building) => {
       let annual = 0
       let total = 0
@@ -162,7 +168,7 @@ export const FullReport = ({yr}) => {
             reportInfo[buildingYear]['totalProfit'][index] = tempVal
           } else {
             let tempVal = item - reportInfo[building][buildingYear]['expense'][index]
-            reportInfo[buildingYear]['totalProfit'][index] += tempVal
+            reportInfo[buildingYear]['totalProfit'][index] = tempVal // changed +=
           }
           if (index === 12) {
             annual += item
@@ -179,6 +185,7 @@ export const FullReport = ({yr}) => {
     if (!reportInfo[buildingYear]['totalExpenses']) {
       reportInfo[buildingYear]['totalExpenses'] = Array.from({length: 13}).fill('-',0,13)
     }
+    reportInfo[buildingYear]['totalExpenses'][12] = 0;
     let annual = 0;
     buildings.forEach((building) => {
       let total = 0;
@@ -188,7 +195,7 @@ export const FullReport = ({yr}) => {
             reportInfo[buildingYear]['totalExpenses'][index] = item
             total += item
           } else {
-            reportInfo[buildingYear]['totalExpenses'][index] += item
+            reportInfo[buildingYear]['totalExpenses'][index] = item // changed +=
             total += item
           }
           annual += item
@@ -220,6 +227,8 @@ export const FullReport = ({yr}) => {
       reportInfo[building][buildingYear]['totalNet'][12] = annual
     })
   }
+
+
   return (
     <>
 

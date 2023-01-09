@@ -85,7 +85,7 @@ export const Upload = () => {
 
     }
 
-  }, [JSON.stringify(parsedInfo), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable.length, yearPicked])
+  }, [JSON.stringify(parsedInfo), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable.length, yearPicked, parsedInfo])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -248,6 +248,10 @@ const findGastos = (json)=>{
     let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
     let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
 
+    if (JSON.stringify(aggregate) === '{}') {
+      delete parsedInfo[buildingName][year][month]
+      setAggregate(parsedInfo)
+    }
     setAggregate(current => {
       const copy = {...current};
       delete copy[buildingName][year][month]

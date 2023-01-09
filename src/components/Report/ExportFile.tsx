@@ -92,7 +92,6 @@ const exportExcel = async () => {
   return (
     <>
       {rows.length > 0 ? <button onClick={() => {exportExcel()}}>EXPORT FILE</button> : 'loading...'}
-      {/* {!busy ? <button onClick={() => {exportExcel()}}>EXPORT FILE</button> : 'loading...'} */}
     </>
   )
 }
