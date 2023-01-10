@@ -279,7 +279,6 @@ const generateFullReport = (yr) => {
   }
 
   // HERE should help determine report generation
-  // let yr = yearPicked
   let tempThing = aggregate[buildingName][yr]
   if (tempThing) {
     let monthsContainer = Object.keys(aggregate[buildingName][yr])
@@ -300,7 +299,6 @@ const generateFullReport = (yr) => {
           'otros': Array.from({length: 13}).fill('-', 0, 13),
           'totalProfit': Array.from({length: 13}).fill('-', 0, 13),
         }
-
 
         reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
         reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
@@ -345,7 +343,6 @@ const changeYears = (e, change: string, year: string) => {
     setAnnualRent(null)
     setAnnualUnitTotal(null)
 
-    // testing year picked
     setYearPicked(years[index -1])
   }
 
@@ -355,7 +352,6 @@ const changeYears = (e, change: string, year: string) => {
     setAnnualRent(null)
     setAnnualUnitTotal(null)
 
-    // testing year picked
     setYearPicked(newYear)
   }
 }

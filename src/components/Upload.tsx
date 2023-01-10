@@ -298,14 +298,12 @@ const findGastos = (json)=>{
           // webkitdirectory="" // will allow file upload, but not single files
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
-        {/* <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span onClick={() => handleRemoveFile(item)}> X</span></ul>) : 'upload files' }</DragBox> */}
         <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></ul>) : 'upload files' }</DragBox>
       </form>
 
       {aggregate ?
         <>
         <Verify>
-          {/* {!showIndividual && files.length > 0 ? 'Please verify information is correct' : null} */}
             {files.length > 0 ? <VerifyButton onClick={() => setShowIndividual(!showIndividual)}>
               {showIndividual ? 'close individual buildings report' : 'Please verify information is correct'}
             </VerifyButton>
@@ -317,7 +315,6 @@ const findGastos = (json)=>{
                 {/* if it doesn't work comment this span out */}
                   <span>
                     <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(() => e.target.value)}>
-                    {/* <option value='default'>select a year</option> */}
                       {!yearPicked ? <option value='default'>select a year</option> : <option value={yearPicked}>{yearPicked}</option>}
                     {yearsAvailable.length > 0 ? yearsAvailable.map((item) =>
                         item !== yearPicked ? <option value={item}>{item}</option> : null

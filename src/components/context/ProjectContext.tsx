@@ -49,8 +49,6 @@ const AggregateProvider = ({children}) => {
 
     if (aggregate) {
       handleChange()
-
-      // setBuildings(() => Object.keys(aggregate)); // original
       aggregateStringified = JSON.stringify(aggregate)
       buildingsStringified = JSON.stringify(buildings)
       yearsStringified = JSON.stringify(yearsAvailable)
@@ -81,19 +79,6 @@ const AggregateProvider = ({children}) => {
   const getBuildings = useCallback(() => {
     setBuildings(() => Object.keys(aggregate))
   }, [aggregate ? Object.keys(aggregate).length : null])
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     return (
     <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, setYearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>

@@ -3,12 +3,6 @@ import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } 
 import styled from "styled-components";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { ExportFile } from './ExportFile';
-// it requires:
-// total for each month (not netprofit)
-  // make annual
-// total expenses
-  // make annual
-// sum them all up
 
 // TODO: make sure that generated full report fits print screen
 // TODO: Create error messages
@@ -19,10 +13,9 @@ import { ExportFile } from './ExportFile';
 
 export const FullReport = ({yr}) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
-  const { aggregate, reportInfo, yearsAvailable, yearPicked, setYearPicked } = useContext(AggregateContext)
+  const { aggregate, reportInfo, yearPicked, setYearPicked } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   const [buildings, setBuildings] = useState<string[]>([])
-
 
   const [buildingYear, setBuildingYear] = useState<string>(yr)
 
@@ -45,7 +38,7 @@ export const FullReport = ({yr}) => {
 
     }
 
-      if (yr === buildingYear) {
+    if (yr === buildingYear) {
       getTotalAdmon()
       getTotalGastos()
       getTotalDevol()
