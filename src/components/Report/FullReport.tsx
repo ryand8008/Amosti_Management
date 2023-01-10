@@ -121,7 +121,6 @@ export const FullReport = ({yr}) => {
               reportInfo[buildingYear]['totalRev'][index] = item
 
             } else {
-              console.log(reportInfo[buildingYear]['totalRev'][index], 'WHEN DOES THIS HAPPEN ', item)
               reportInfo[buildingYear]['totalRev'][index] += item // changed +=
             }
           }
@@ -139,9 +138,6 @@ export const FullReport = ({yr}) => {
     if (reportInfo[buildingYear]['totalE'][12] !== 0) {
       reportInfo[buildingYear]['totalE'] = Array.from({length: 13}).fill('-', 0, 13)
     }
-
-
-    // reportInfo[buildingYear]['totalE'][12] = 0; // changed
 
     expensesArray?.forEach((item) => {
 
@@ -226,7 +222,6 @@ export const FullReport = ({yr}) => {
         if (item !== '-' && index !== 12) {
           if (reportInfo[building][buildingYear]['totalNet'][index] === '-') {
           reportInfo[building][buildingYear]['totalNet'][index] = reportInfo[building][buildingYear]['revenue'][index] - reportInfo[building][buildingYear]['expense'][index]
-
 
           let tempVal = reportInfo[building][buildingYear]['revenue'][index] - reportInfo[building][buildingYear]['expense'][index]
           annual += tempVal

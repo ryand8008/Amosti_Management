@@ -128,7 +128,7 @@ export const ReportBuilding = ({ buildingName, yr }) => {
   // })
   }
 
-  const getMonthCostsTotal = async (annualUnitTotal:{unit: number}) => {
+  const getMonthCostsTotal =  useCallback(async (annualUnitTotal:{unit: number}) => {
     let total:any[] = Array.from({length: 13}).fill('-',0, 13)
     let totalAdmon:any[] = Array.from({length: 13}).fill('-',0, 13)
     let admonAnnual = 0;
@@ -212,7 +212,7 @@ export const ReportBuilding = ({ buildingName, yr }) => {
       getTotalExpenses(totalAdmon, totalGastos, totalDevol, totalOtros)
       console.log(' HERE')
     }
-  }
+  }, [annualUnitTotal, aggregate[buildingName][year]])
 
   const getGastosInformation = (gastos, insertionPoint, testGastos) => {
     let gastosTotal = 0;
@@ -239,7 +239,6 @@ export const ReportBuilding = ({ buildingName, yr }) => {
 
   }
 
-  // const getTotalExpenses = (totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
     const getTotalExpenses = useCallback((totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
 
     let totalExpensesArray = Array.from({length: 13}).fill('-', 0, 13)
@@ -259,7 +258,7 @@ export const ReportBuilding = ({ buildingName, yr }) => {
 
 const getTotalProfit = (totalTotal, totalExpenses) => {
   let totalNet = Array.from({length: 13}).fill('-', 0, 13);
-  let total = 0;
+
   for (let index = 0; index < 13; index++) {
     if (totalTotal[index] !== '-' && totalExpenses[index] !== '-') {
       totalNet[index] = totalTotal[index] - totalExpenses[index]
@@ -272,8 +271,6 @@ const getTotalProfit = (totalTotal, totalExpenses) => {
 }
 
 const generateFullReport = (yr) => {
-  // add total profit to array for generated full report
-
   if (!reportInfo[buildingName]) {
     reportInfo[buildingName] = {}
   }
