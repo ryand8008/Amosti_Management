@@ -1,5 +1,5 @@
 import { AggregateContext } from "../context/ProjectContext";
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { ExportFile } from './ExportFile';
@@ -112,42 +112,55 @@ export const FullReport = ({yr}) => {
   const getTotalRev = () => {
     let total = 0;
 
-  buildings.forEach((building) => {
-    if (aggregate[building][buildingYear]) {
-
-      if (!reportInfo[buildingYear]['totalRev']) {
+    if (reportInfo[buildingYear]['totalRev']) {
       reportInfo[buildingYear]['totalRev'] = Array.from({length:13}).fill('-',0,13)
     }
-      reportInfo[building][buildingYear]['revenue'].forEach((item, index) => {
-        if (item !== '-') {
-          if (reportInfo[buildingYear]['totalRev'][index] === '-') {
-            reportInfo[buildingYear]['totalRev'][index] = item
 
-          } else {
-            reportInfo[buildingYear]['totalRev'][index] = item // changed +=
+    buildings.forEach((building) => {
+      if (aggregate[building][buildingYear]) {
+
+        if (!reportInfo[buildingYear]['totalRev']) {
+        reportInfo[buildingYear]['totalRev'] = Array.from({length:13}).fill('-',0,13)
+      }
+        reportInfo[building][buildingYear]['revenue'].forEach((item, index) => {
+          if (item !== '-') {
+            if (reportInfo[buildingYear]['totalRev'][index] === '-') {
+              reportInfo[buildingYear]['totalRev'][index] = item
+
+            } else {
+              console.log(reportInfo[buildingYear]['totalRev'][index], 'WHEN DOES THIS HAPPEN ', item)
+              reportInfo[buildingYear]['totalRev'][index] += item // changed +=
+            }
           }
-        }
-      })
-   }
+        })
+      }
     })
   }
 
   const getTotalE = () => {
     let total = 0
     let expensesArray = ['admon', 'gastos', 'devol', 'otros']
-    reportInfo[buildingYear]['totalE'] = Array.from({length: 13}).fill('-', 0, 13)
-    reportInfo[buildingYear]['totalE'][12] = 0;
 
-    expensesArray.forEach((item) => {
+    reportInfo[buildingYear]['totalE'] = Array.from({length: 13}).fill('-', 0, 13)
+
+    if (reportInfo[buildingYear]['totalE'][12] !== 0) {
+      reportInfo[buildingYear]['totalE'] = Array.from({length: 13}).fill('-', 0, 13)
+    }
+
+
+    // reportInfo[buildingYear]['totalE'][12] = 0; // changed
+
+    expensesArray?.forEach((item) => {
+
       reportInfo[buildingYear][item].forEach((item2, index) => {
         if (typeof item2 === 'number') {
           if (reportInfo[buildingYear]['totalE'][index] === '-') {
-            reportInfo[buildingYear]['totalE'][index] = 0;
-            reportInfo[buildingYear]['totalE'][index] += item2
-            total += item2
+            reportInfo[buildingYear]['totalE'][index] = item2
           } else {
             reportInfo[buildingYear]['totalE'][index] += item2
-            total += item2
+          }
+          if (index === 12) {
+            total += item2;
           }
         }
       })
@@ -157,10 +170,12 @@ export const FullReport = ({yr}) => {
   }
 
   const getTotalProfit = () => {
-    reportInfo[buildingYear]['totalProfit'][12] = 0;
+
+    if (reportInfo[buildingYear]['totalProfit'][12] !== 0) {
+      reportInfo[buildingYear]['totalProfit'] = Array.from({length: 13}).fill('-',0,13)
+    }
+    let annual = 0
     buildings.forEach((building) => {
-      let annual = 0
-      let total = 0
       reportInfo[building][buildingYear]['revenue'].forEach((item, index) => {
         if (typeof item === 'number') {
           if (reportInfo[buildingYear]['totalProfit'][index] === '-') {
@@ -168,26 +183,25 @@ export const FullReport = ({yr}) => {
             reportInfo[buildingYear]['totalProfit'][index] = tempVal
           } else {
             let tempVal = item - reportInfo[building][buildingYear]['expense'][index]
-            reportInfo[buildingYear]['totalProfit'][index] = tempVal // changed +=
+            reportInfo[buildingYear]['totalProfit'][index] += tempVal // changed +=
           }
           if (index === 12) {
             annual += item
-          } else {
-            total += item
-           }
+          }
         }
       })
-      reportInfo[buildingYear]['totalProfit'][12] = annual - reportInfo[buildingYear]['totalE'][12]
+
     })
+    reportInfo[buildingYear]['totalProfit'][12] = annual - reportInfo[buildingYear]['totalE'][12] // save this
   }
 
   const getTotalExpenses = () => {
-    if (!reportInfo[buildingYear]['totalExpenses']) {
-      reportInfo[buildingYear]['totalExpenses'] = Array.from({length: 13}).fill('-',0,13)
-    }
-    reportInfo[buildingYear]['totalExpenses'][12] = 0;
+
+    reportInfo[buildingYear]['totalExpenses'] = Array.from({length: 13}).fill('-',0,13)
+
     let annual = 0;
-    buildings.forEach((building) => {
+    buildings.forEach((building, index) => {
+      reportInfo[building][buildingYear]['expense'][12] = 0;
       let total = 0;
       reportInfo[building][buildingYear]['expense'].forEach((item, index) => {
         if (item !== '-') {
@@ -211,6 +225,8 @@ export const FullReport = ({yr}) => {
       let annual = 0;
       if (!reportInfo[building][buildingYear]['totalNet']) {
         reportInfo[building][buildingYear]['totalNet'] = Array.from({length: 13}).fill('-',0,13)
+      } else {
+        reportInfo[building][buildingYear]['totalNet'] = Array.from({length: 13}).fill('-',0,13)
       }
       // iterate through revenue and expenses
       reportInfo[building][buildingYear]['revenue'].forEach((item,index) => {
@@ -233,7 +249,6 @@ export const FullReport = ({yr}) => {
     <>
 
         {aggregate ? <StyledDiv>
-        {/* {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setYearPicked(yearPicked); }}>generate report </StyledPrintButton> : null} */}
         {buildingYear === '' ? <StyledPrintButton onClick={(e) => {e.preventDefault(), setBuildingYear(yearPicked); }}>generate report </StyledPrintButton> : null}
         </StyledDiv>
 
@@ -242,7 +257,6 @@ export const FullReport = ({yr}) => {
         <StyledSomething ref={componentToPrint}>
       {buildingYear !== '' && aggregate ?
         <>
-        {/* <StyledTitle>Full Report</StyledTitle> */}
         <h1>Reporte Completo: {buildingYear}</h1>
 
           <StyledTable>
