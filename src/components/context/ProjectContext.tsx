@@ -57,7 +57,7 @@ const AggregateProvider = ({children}) => {
       getYears()
     }
 
-  }, [ aggregate, aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
+  }, [ JSON.stringify(aggregate), aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
 
 
   const handleChange = useCallback(() => {

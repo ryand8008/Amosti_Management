@@ -50,6 +50,9 @@ export const FullReport = ({yr}) => {
       getMonthNetTotal()
     }
 
+    // TESTING
+    console.log(reportInfo, 'this is report in FULL REPORT')
+
 }, [stringAgg, buildingYear, JSON.stringify(buildings), yr])
 
   // DO NOT TOUCH
