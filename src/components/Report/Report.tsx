@@ -6,12 +6,11 @@ import { ReportBuilding } from "./ReportBuilding";
 
 
 // GET BUILDING NAMES with Object.keys(aggregate), then iterate through
-export const Report = () => {
+export const Report = ({yr, testing}) => {
 const months = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre',' noviem', 'diciem' ]
 const { aggregate } = useContext(AggregateContext)
-// building name
+
 const [buildingNames, setBuildingNames] = useState<string[]>([])
-const [showReport, setShowReport] = useState<boolean>(false)
 
 // to print things
 const componentToPrint = useRef(null)
@@ -20,24 +19,22 @@ const componentToPrint = useRef(null)
 // shape of data => {[buildingName1]: [year, ....], [buildingName2]: [year, ...], ...}
 let years = {};
 
+const [buildyr, setBuildYr] = useState(yr)
+
 
 useEffect(() => {
 
   const buildings = Object.keys(aggregate);
   setBuildingNames(buildings)
+  setBuildYr(() => yr)
 
-  // find the years!
-  console.log(buildingNames, 'buildingNames!!')
   buildingNames.forEach((building) => {
     if (!years[building]) {
       years[building] = Object.keys(aggregate[building])
     }
   })
 
-  console.log(years, 'this is years, should be an object {}')
-  // years = Object.keys(aggregate[buildings])
-
-}, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null])
+}, [ JSON.stringify(buildingNames), aggregate ? JSON.stringify(aggregate) : null, yr])
 
 // DO NOT TOUCH
 const handlePrint = useReactToPrint({
@@ -46,12 +43,11 @@ const handlePrint = useReactToPrint({
 
   return (
     <>
-      <StyledReportTitle>Individual Building Report</StyledReportTitle>
+      {/* <StyledReportTitle>Individual Building Report</StyledReportTitle> */}
       {aggregate && buildingNames.length > 0 ? buildingNames.map((building) =>
-        <><div ref={componentToPrint}>
-          <ReportBuilding buildingName={building} />
-        </div>
-          <button onClick={handlePrint}>{`print building: ${building}`}</button>
+        <>{aggregate[building][buildyr] ? <><div ref={componentToPrint}>
+          <ReportBuilding buildingName={building} yr={buildyr} />
+        </div><button onClick={handlePrint}>{`print building: ${building}`}</button></> : null}
         </>
         )
          : null}
@@ -77,10 +73,3 @@ const StyleMonthsHeaders = styled.th`
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
 `
-
-
-// notes
-  // all little convulted but it is the final total for this buildingname, year, and month
-  // let final = Object.values(aggregate['Tinoco'][2022]['October']['costs'])[aggregate['Tinoco'][2022]['October']['costs'].length-1]
-  // console.log(final, 'this final')
-  // console.log(Object.values(final)[Object.values(final).length-1], 'values')

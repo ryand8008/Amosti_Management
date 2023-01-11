@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 
 interface ReportType {
@@ -7,6 +7,7 @@ interface ReportType {
   reportInfo: (buildingName: any[]) => void;
   setReportInfo: (any) => any;
   yearsAvailable: string[];
+  setYearsAvailable: (any) => any;
   yearPicked: string
   setYearPicked: (string) => any;
   showReport: boolean;
@@ -22,7 +23,7 @@ export const AggregateContext = React.createContext<ReportType | null>(null)
 const AggregateProvider = ({children}) => {
   // uploaded information
   const [aggregate, setAggregate] = useState<any>()
-  const aggregateStringified = JSON.stringify(aggregate)
+  let aggregateStringified = JSON.stringify(aggregate)
   const [showReport, setShowReport] = useState<boolean>(false)
   // report information
   const [reportInfo, setReportInfo] = useState<any>({})
@@ -33,7 +34,8 @@ const AggregateProvider = ({children}) => {
 
   const [buildings, setBuildings] = useState<string[]>([])
 
-  let buildingsStringified = JSON.stringify(buildings)
+
+  let buildingsStringified;
 
   const [monthsAvailable, setMonthsAvailable] = useState<string[]>([])
   let monthsStringified = JSON.stringify(monthsAvailable)
@@ -44,11 +46,42 @@ const AggregateProvider = ({children}) => {
    const [buildingUnits, setBuildingUnits] = useState<any>({})
 
   useEffect(() => {
-    console.log(yearPicked, 'context year')
-  }, [ aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
+
+    if (aggregate) {
+      handleChange()
+      aggregateStringified = JSON.stringify(aggregate)
+      buildingsStringified = JSON.stringify(buildings)
+      yearsStringified = JSON.stringify(yearsAvailable)
+
+      getBuildings()
+      getYears()
+    }
+
+  }, [ JSON.stringify(aggregate), aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
+
+
+  const handleChange = useCallback(() => {
+    setAggregate(aggregate)
+  }, [JSON.stringify(aggregate)])
+
+  const getYears = useCallback(() => {
+    let tempYears = [];
+    buildings.forEach((building) => {
+      Object.keys(aggregate[building]).forEach((year) => {
+        if (tempYears.indexOf(year) === -1) {
+          tempYears.push(year)
+        }
+      })
+      setYearsAvailable(() => tempYears)
+    })
+  },[buildings])
+
+  const getBuildings = useCallback(() => {
+    setBuildings(() => Object.keys(aggregate))
+  }, [aggregate ? Object.keys(aggregate).length : null])
 
     return (
-    <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
+    <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, setYearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
       {children}
     </AggregateContext.Provider>
   )

@@ -40,7 +40,7 @@ interface Testing {
 // TODO: Handle multiple years
 
 export const Upload = () => {
-  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo } = useContext(AggregateContext)
+  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo, yearsAvailable, setYearPicked, yearPicked } = useContext(AggregateContext)
 
   // stringified aggre
   let stringAgg = JSON.stringify(aggregate)
@@ -48,19 +48,6 @@ export const Upload = () => {
 
   // testing SPLIT EXCEL
   const [splitExcel, setSplitExcel] = useState<any>({})
-
-  // new sheet
-  const [newExcel, setNewExcel] = useState<any>({})
-
-  const [showCosts, setShowCosts] = useState<boolean>(false)
-
-  const [filterBy, setFilterBy] = useState<string>('')
-
-  //testing filtered excel
-  const [filteredExcel, setFilteredExcel] = useState()
-
-  // generate report (boolean) => create separated tables
-  const [generateReport, setGenerateReport] = useState<boolean>(false)
 
   // drag hook
   const [dragActive, setDragActive] = useState<boolean>(false);
@@ -70,22 +57,21 @@ export const Upload = () => {
 
   // two buttons
   const [showIndividual, setShowIndividual] = useState<boolean>(false)
-
   const [showFull, setShowFull] = useState<boolean>(false)
-  let stringSplitExcel = JSON.stringify(splitExcel)
+
   // // checking aggregate
-  const [testing, setTesting] = useState<any>({})
+  const [parsedInfo, setParsedInfo] = useState<any>({})
 
   useEffect(() => {
-    console.log(testing, 'this is testing')
+
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
 
-      setAggregate(() => testing)
+      setAggregate(() => parsedInfo)
 
     }
 
-  }, [JSON.stringify(testing), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual])
+  }, [JSON.stringify(parsedInfo), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable.length, yearPicked])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -98,36 +84,36 @@ export const Upload = () => {
 
       try {
 
-        if (Object.keys(testing).length === 0) {
-          setTesting(current => {
+        if (Object.keys(parsedInfo).length === 0) {
+          setParsedInfo(current => {
             let temp = {}
             temp[buildingName] = {[year]: {}}
             temp[buildingName][year] = {[month]: {}}
             temp[buildingName][year][month] = splitExcel[file]
             return temp;
           })
-        } else if (!testing[buildingName]) {
-          setTesting(current => {
+        } else if (!parsedInfo[buildingName]) {
+          setParsedInfo(current => {
           let temp = {...current}
             temp[buildingName] = {[year]: {}}
             temp[buildingName][year] = {[month]: {}}
             temp[buildingName][year][month] = splitExcel[file]
             return temp;
           })
-        } else if (testing[buildingName]) {
-          if (!testing[buildingName][year]) {
-            setTesting(current => {
+        } else if (parsedInfo[buildingName]) {
+          if (!parsedInfo[buildingName][year]) {
+            setParsedInfo(current => {
               let temp = {...current}
               temp[buildingName] = {...temp[buildingName], ...{[year]: {[month]: splitExcel[file]}}}
-              testing[buildingName] = temp[buildingName]
+              parsedInfo[buildingName] = temp[buildingName]
               return temp;
             })
 
           }
-          else if (testing[buildingName][year]) {
-            setTesting(current => {
+          else if (parsedInfo[buildingName][year]) {
+            setParsedInfo(current => {
               let temp = {...current}
-              temp[buildingName] = testing[buildingName]
+              temp[buildingName] = parsedInfo[buildingName]
               temp[buildingName][year] = {...temp[buildingName][year], ...{[month]: splitExcel[file]}}
 
               return temp;
@@ -135,7 +121,7 @@ export const Upload = () => {
           }
         }
       } catch {
-        console.log('testing')
+        console.log('UPLOAD ISSUE')
       }
     })
   }
@@ -148,12 +134,10 @@ const findGastos = (json)=>{
   json.map((item,index)=>{
       if (item['Año'] === 'Gastos') {
           gastosIndex = index
-      }
+        }
+      })
+    return gastosIndex
   }
-  )
-  return gastosIndex
-
-}
 
   // TODO: handle multiple file upload
   const readUploadFile = async (e) => {
@@ -248,6 +232,10 @@ const findGastos = (json)=>{
     let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
     let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
 
+    if (JSON.stringify(aggregate) === '{}') {
+      delete parsedInfo[buildingName][year][month]
+      setAggregate(parsedInfo)
+    }
     setAggregate(current => {
       const copy = {...current};
       delete copy[buildingName][year][month]
@@ -276,15 +264,13 @@ const findGastos = (json)=>{
     setShowFull(false)
 
     // needed to reset and re-render based off new raw data
-    setTesting({})
+    setParsedInfo({})
 
   }
 
   return (
     <>
       <Window>
-
-        {/* <StyledTitle>Amosti Management</StyledTitle> */}
 
       <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input
@@ -296,24 +282,36 @@ const findGastos = (json)=>{
           // webkitdirectory="" // will allow file upload, but not single files
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
-        <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span onClick={() => handleRemoveFile(item)}> X</span></ul>) : 'upload files' }</DragBox>
+        <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></ul>) : 'upload files' }</DragBox>
       </form>
 
-         {/* Make both visible but not functional when one view is active over the other */}
       {aggregate ?
         <>
         <Verify>
-          {!showIndividual && files.length > 0 ? 'Please verify information is correct' : null}
-
-            {files.length > 0 ? <button onClick={() => setShowIndividual(!showIndividual)}>
-              {showIndividual ? 'close individual buildings report' : 'show individual buildings'}
-            </button>
+            {files.length > 0 ? <VerifyButton onClick={() => setShowIndividual(!showIndividual)}>
+              {showIndividual ? 'close individual buildings report' : 'Please verify information is correct'}
+            </VerifyButton>
             : null}
           {!showFull && showIndividual ?
             <>
-              <div>Generate Full Report?</div><button onClick={() => setShowFull(!showFull)}>
-                Confirm
-              </button>
+              <div>
+                View Report for year:
+                {/* if it doesn't work comment this span out */}
+                  <span>
+                    <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setYearPicked(() => e.target.value)}>
+                      {!yearPicked ? <option value='default'>select a year</option> : <option value={yearPicked}>{yearPicked}</option>}
+                    {yearsAvailable.length > 0 ? yearsAvailable.map((item) =>
+                        item !== yearPicked ? <option value={item}>{item}</option> : null
+                        )
+                      : null}
+                    </select>
+                  </span>
+              </div>
+              <p/>
+                {yearPicked ?
+                <Confirm onClick={() => setShowFull(!showFull)}>
+                  Generate Report
+                </Confirm> : null}
             </>
             : null}
       </Verify>
@@ -321,33 +319,9 @@ const findGastos = (json)=>{
       : null
       }
       {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
-      {showFull ? <FullReport /> : null}
-      {showIndividual ? <Report /> : null}
+      {showFull && yearPicked ? <FullReport yr={yearPicked}/> : null}
+      {showIndividual && yearPicked ? <Report yr={yearPicked} testing={showIndividual}/> : null}
 
-      {/* {aggregate ?
-        <>
-          <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>
-        </>
-          : null}
-      {generateReport ? <div>
-        { files.length > 0 ?
-          <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
-            <option value=''>{filterBy !== '' ? 'show all files' : 'select a file'}</option>
-            {files.length > 0 ? files.map((file) =>
-              <option value={file}>{file}</option>
-            )
-            : null
-          }
-          </select>
-          : null
-        }
-          {Object.values(splitExcel).length > 0?
-           filteredExcel ? <UploadTable exceldata={filteredExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts}/> : <UploadTable exceldata={newExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts} />
-           : null}
-
-          {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
-
-          </div> : null} */}
       </Window>
     </>
   )
@@ -384,8 +358,32 @@ const listitem = styled.ul`
   height: fit-content;
 `
 
-const ContentsButton = styled.button`
-  margin-top: 25px;
+const DeleteButton = styled.button`
+  background-color: #e65555;
+  margin-left: 8px;
+`
+
+const Confirm = styled.button`
+  background-color: #c8f5b8;
+  background-image: linear-gradient(#37ADB2, #329CA0);
+  border: 1px solid #2A8387;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0 1px 1px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: block;
+  font-family: -apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 17px;
+  line-height: 100%;
+  margin: 0;
+  outline: 0;
+  padding: 11px 15px 12px;
+  text-align: center;
+  transition: box-shadow .05s ease-in-out,opacity .05s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
 `
 
 const Verify = styled.div`
@@ -396,5 +394,26 @@ const Verify = styled.div`
 `
 
 const VerifyButton = styled.button`
-  margin-top: 50px;
+
+  background-color: #c8f5b8;
+  background-image: linear-gradient(#37ADB2, #329CA0);
+  border: 1px solid #2A8387;
+  border-radius: 4px;
+  box-shadow: rgba(0, 0, 0, 0.12) 0 1px 1px;
+  color: #FFFFFF;
+  cursor: pointer;
+  display: block;
+  font-family: -apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 17px;
+  line-height: 100%;
+  margin: 0;
+  outline: 0;
+  padding: 11px 15px 12px;
+  text-align: center;
+  transition: box-shadow .05s ease-in-out,opacity .05s ease-in-out;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  width: 100%;
+  margin-bottom: 10px;
 `

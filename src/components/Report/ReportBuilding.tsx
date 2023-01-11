@@ -1,29 +1,21 @@
 import { AggregateContext } from "../context/ProjectContext";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 
 
+
 // This function should receive a building's information, and only that.
-export const ReportBuilding = ({ buildingName }) => {
-  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'sept', 'octubre','noviem', 'diciem' ]
-  const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo, setYearPicked } = useContext(AggregateContext)
+export const ReportBuilding = ({ buildingName, yr }) => {
+  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
+  const { aggregate, reportInfo, yearsAvailable, yearPicked, setReportInfo, setYearPicked, setYearsAvailable } = useContext(AggregateContext)
   let stringAgg = JSON.stringify(aggregate)
   let stringReportInfo = JSON.stringify(reportInfo)
-  // const [years, setYears] = useState<string[]>(Object.keys(aggregate[buildingName]))
 
-  // somehow use years available context variable
   let years = Object.keys(aggregate[buildingName]).sort()
-  // const [year, setYear] = useState<string>(yearPicked || years[0] )
-  const [year, setYear] = useState<string>(() => {
-    if (!yearPicked) {
-      return years[0]
-    } else {
-      return yearPicked
-    }
-  })
+  const [year, setYear] = useState<string>(yr)
 
   const [months, setMonths] = useState<string[]>(Object.keys(aggregate[buildingName][year]))
-  // const [units, setUnits] = useState<string[] | any>([])
+
   const [units, setUnits] = useState<string[] | any>(() => {
     let temp = []
     aggregate[buildingName][year][Object.keys(aggregate[buildingName][year])[0]]['unitInfo'].map((item) => {
@@ -32,6 +24,7 @@ export const ReportBuilding = ({ buildingName }) => {
     temp.splice(temp.length-1, 1)
     return temp;
   })
+
 
   const [annualRent, setAnnualRent] = useState<any>()
   const [annualUnitTotal, setAnnualUnitTotal] = useState<any>()
@@ -46,33 +39,11 @@ export const ReportBuilding = ({ buildingName }) => {
   const [totalExpenses, setTotalExpenses] = useState<number[] | any[]>(defaultReportRow)
   const [totalProfit, setTotalProfit] = useState<number[] | any[]>(defaultReportRow)
 
-
-
   useEffect( () => {
-    // set initial year
-    console.log(yearPicked, 'initial, is it undefined?')
-    console.log(years, 'initial years, should be sorted')
-    console.log(year, 'this is year, not sure what the value is')
-    if (!yearPicked) {
-      setYearPicked(years[0])
-      console.log(yearPicked, 'after setting it')
 
-    }
+    setYear((yr))
 
-    if (yearPicked) {
-      if (!aggregate[buildingName][yearPicked]) {
-        setMonths(Object.keys(aggregate[buildingName][year]))
-      } else {
-        setMonths(Object.keys(aggregate[buildingName][yearPicked]))
-      }
-    }
-    // years.forEach((item) => {
-    //   if (!yearsAvailable.includes(item)) {
-    //     yearsAvailable.push(item)
-    //   }
-    // })
-
-    // setMonths()
+    setMonths(() => Object.keys(aggregate[buildingName][year]))
 
     buildUnitArrays()
 
@@ -80,38 +51,23 @@ export const ReportBuilding = ({ buildingName }) => {
       if (annualRent[buildingName][year]) {
         getAnnualRentTotal()
       }
-
     }
     if (annualUnitTotal) {
       getMonthCostsTotal(annualUnitTotal)
     }
+
     if (totalTotal) {
       getTotalProfit(totalTotal, totalExpenses)
-      // generateFullReport()
+      generateFullReport(year)
     }
 
-    if (yearPicked) {
-
-      if (totalTotal) {
-        getTotalProfit(totalTotal, totalExpenses)
-        generateFullReport()
-      }
-    }
-
-  // }, [stringAgg, stringReportInfo, aggregate[buildingName][year], months ? months.length : null, units.length,
- }, [aggregate, stringReportInfo, aggregate[buildingName][year], annualRent ? annualRent[buildingName][year]['units'].length : null, annualUnitTotal ? Object.keys(annualUnitTotal).length : null, JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), year, years.length, yearPicked, JSON.stringify(months)])
+ }, [JSON.stringify(aggregate), stringReportInfo,  JSON.stringify(annualRent), JSON.stringify(annualUnitTotal), JSON.stringify(totalGastos), JSON.stringify(totalProfit), JSON.stringify(totalExpenses), JSON.stringify(totalOtros), JSON.stringify(totalCorretaje), yr, year, JSON.stringify(months)])
 
     // build unit array - structure: {buildingname: {year: {units: {[unitname]: [...rent for each month]}}}}
-  const buildUnitArrays = () => {
+  const buildUnitArrays = useCallback(() => {
 
     let blob = {[buildingName]: {[year]: {'units': {}}}};
-    let monthsContainer;
-
-    if (yearPicked && aggregate[buildingName][yearPicked]) {
-      monthsContainer = Object.keys(aggregate[buildingName][yearPicked])
-    } else {
-      monthsContainer = months;
-    }
+    let monthsContainer = Object.keys(aggregate[buildingName][year])
 
     monthsContainer.forEach( (month: string) =>{
         aggregate[buildingName][year][month]['unitInfo'].forEach((item, index) => {
@@ -132,15 +88,13 @@ export const ReportBuilding = ({ buildingName }) => {
           let insertionPoint = hardCodeMonths.indexOf(month)
           tempArr[insertionPoint] = !isNaN(Number(item['Renta'])) ?  Number(item['Renta']) : '-';
 
-
           blob[buildingName][year]['units'][tempUnit] = tempArr;
 
         }
-
       })
     });
     setAnnualRent(() => blob)
-  }
+  }, [JSON.stringify(aggregate[buildingName][year])])
 
   // annual total for a specific unit
   const getAnnualRentTotal = async () => {
@@ -172,25 +126,36 @@ export const ReportBuilding = ({ buildingName }) => {
   // })
   }
 
-  const getMonthCostsTotal = async (annualUnitTotal:{unit: number}) => {
+   // TESTING
+  const getCorretaje = (file) => {
+    let box = 0;
+    file.forEach((item) => {
+      if (Number(item['Corretaje'])) {
+        box += item['Corretaje']
+        }
+      })
+      return box;
+    }
+
+  const getMonthCostsTotal =  useCallback(async (annualUnitTotal:{unit: number}) => {
     let total:any[] = Array.from({length: 13}).fill('-',0, 13)
     let totalAdmon:any[] = Array.from({length: 13}).fill('-',0, 13)
-    let admonAnnual = 0;
     let testGastos:any[] = Array.from({length: 13}).fill('-',0, 13)
-    // devolucion
     let totalDevolucion:any[] = Array.from({length: 13}).fill('-',0, 13)
-    //otros
     let totalOtros:any[] = Array.from({length: 13}).fill('-',0, 13)
-
     let totalCorretaje:any[] = Array.from({length: 13}).fill('-',0, 13)
 
+    let admonAnnual = 0;
 
-    months.forEach((month) => {
+    let monthsContainer = Object.keys(aggregate[buildingName][year])
+
+    monthsContainer.forEach((month) => {
       let insertionPoint = hardCodeMonths.indexOf(month)
       let fileToCheck = aggregate[buildingName][year][month]['unitInfo']
       let totalRent = fileToCheck[fileToCheck.length-1]['Renta']
       let gastos = aggregate[buildingName][year][month]['costs']
 
+      totalCorretaje[insertionPoint] = getCorretaje(fileToCheck)
       // devol && otros
       gastos.forEach((item) => {
         if (item['Gastos'] === 'Devolución') {
@@ -201,11 +166,6 @@ export const ReportBuilding = ({ buildingName }) => {
         if (item['Gastos'] === 'Otros') {
           if (item['Cost'] !== '') {
           totalOtros[insertionPoint] = item['Cost']
-          }
-        }
-        if (item['Gastos'] === 'Corretaje') {
-          if (item['Cost'] !== '') {
-            totalCorretaje[insertionPoint] = item['Cost']
           }
         }
       })
@@ -220,6 +180,8 @@ export const ReportBuilding = ({ buildingName }) => {
       testGastos = getGastosInformation(gastos, insertionPoint, testGastos)
 
     })
+    // TESTING
+    // setTotalCorretaje(totalCorretaje) // corretaje
     setTotalDevol(totalDevolucion)
 
     // get total Otros
@@ -252,10 +214,13 @@ export const ReportBuilding = ({ buildingName }) => {
 
     // get total expenses
     if (totalAdmon && totalGastos) {
-      console.log(' HERE')
       getTotalExpenses(totalAdmon, totalGastos, totalDevol, totalOtros)
+      console.log(' HERE')
     }
-  }
+
+    // TEST
+    // console.log(corre, 'this is corretaje, should be a value')
+  }, [annualUnitTotal, aggregate[buildingName][year]])
 
   const getGastosInformation = (gastos, insertionPoint, testGastos) => {
     let gastosTotal = 0;
@@ -282,7 +247,7 @@ export const ReportBuilding = ({ buildingName }) => {
 
   }
 
-  const getTotalExpenses = (totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
+  const getTotalExpenses = useCallback((totalAdmon: number[] | any[], totalGastos:any[], totalDevol:any[], totalOtros:any[]) => {
 
     let totalExpensesArray = Array.from({length: 13}).fill('-', 0, 13)
     let totalExpenses = 0
@@ -292,116 +257,115 @@ export const ReportBuilding = ({ buildingName }) => {
       totalGastos[index] && !isNaN(Number(totalGastos[index])) ? totalE += Number(totalGastos[index]) : null
       totalDevol[index] && !isNaN(Number(totalDevol[index])) ? totalE += Number(totalDevol[index]) : null
       totalOtros[index] && !isNaN(Number(totalOtros[index])) ? totalE += Number(totalOtros[index]) : null
+      // totalCorretaje[index] && !isNaN(Number(totalCorretaje[index])) ? totalE += Number(totalCorretaje[index]) : null // corretaje
       totalExpenses += totalE
       totalExpensesArray[index] = totalE > 0 ? totalE : '-'
     }
-  totalExpensesArray[12] = totalExpenses;
-  setTotalExpenses((totalExpenses) => totalExpensesArray)
-}
+        totalExpensesArray[12] = totalExpenses;
+        setTotalExpenses((totalExpenses) => totalExpensesArray)
+      },[totalAdmon, totalGastos, totalDevol, totalOtros])
 
-const getTotalProfit = (totalTotal, totalExpenses) => {
-  let totalNet = Array.from({length: 13}).fill('-', 0, 13);
-  let total = 0;
-  for (let index = 0; index < 13; index++) {
-    if (totalTotal[index] !== '-' && totalExpenses[index] !== '-') {
-      totalNet[index] = totalTotal[index] - totalExpenses[index]
-    } else {
-      totalNet[index] = '-'
+  const getTotalProfit = (totalTotal, totalExpenses) => {
+    let totalNet = Array.from({length: 13}).fill('-', 0, 13);
+
+    for (let index = 0; index < 13; index++) {
+      if (totalTotal[index] !== '-' && totalExpenses[index] !== '-') {
+        totalNet[index] = totalTotal[index] - totalExpenses[index]
+      } else {
+        totalNet[index] = '-'
+      }
+    }
+
+    setTotalProfit(totalNet)
+  }
+
+  const generateFullReport = (yr) => {
+    if (!reportInfo[buildingName]) {
+      reportInfo[buildingName] = {}
+    }
+
+    // HERE should help determine report generation
+    let tempThing = aggregate[buildingName][yr]
+    if (tempThing) {
+      let monthsContainer = Object.keys(aggregate[buildingName][yr])
+
+      monthsContainer.forEach((month) => {
+        let insertionPoint = hardCodeMonths.indexOf(month)
+
+        if (!reportInfo[buildingName][yr]) {
+          reportInfo[buildingName][yr] = {
+            'revenue': Array.from({length: 13}).fill('-', 0, 13),
+            'expense': Array.from({length: 13}).fill('-', 0, 13)
+          }
+
+          reportInfo[yr] = {
+            'admon': Array.from({length: 13}).fill('-', 0, 13),
+            'gastos': Array.from({length: 13}).fill('-', 0, 13),
+            'devol': Array.from({length: 13}).fill('-', 0, 13),
+            // 'corretaje': Array.from({length: 13}).fill('-', 0, 13), // CORRETAJE
+            'otros': Array.from({length: 13}).fill('-', 0, 13),
+            'totalProfit': Array.from({length: 13}).fill('-', 0, 13),
+          }
+
+          reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
+          reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
+
+          // // create {reportInfo: {year: {admon: []}}}
+          reportInfo[yr]['admon'][insertionPoint] = 0
+          reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
+
+          reportInfo[yr]['gastos'][insertionPoint] = 0
+          reportInfo[yr]['gastos'][insertionPoint] += totalGastos[insertionPoint]
+
+          reportInfo[yr]['devol'][insertionPoint] = 0
+          reportInfo[yr]['devol'][insertionPoint] += totalDevol[insertionPoint]
+
+          // reportInfo[yr]['corretaje'][insertionPoint] = 0 // CORRETAJE
+          // reportInfo[yr]['corretaje'][insertionPoint] += totalCorretaje[insertionPoint] // CORRETAJE
+
+          reportInfo[yr]['otros'][insertionPoint] = 0
+          reportInfo[yr]['otros'][insertionPoint] += totalOtros[insertionPoint]
+
+
+        } else {
+          reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
+          reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
+
+
+          reportInfo[yr]['admon'][insertionPoint] = totalAdmon[insertionPoint]
+          reportInfo[yr]['gastos'][insertionPoint] = totalGastos[insertionPoint]
+          reportInfo[yr]['devol'][insertionPoint] = totalDevol[insertionPoint]
+          // reportInfo[yr]['corretaje'][insertionPoint] = totalCorretaje[insertionPoint] // CORRETAJE
+          reportInfo[yr]['otros'][insertionPoint] = totalOtros[insertionPoint]
+        }
+        reportInfo[buildingName][yr]['revenue'][12] = totalTotal[12]
+        setReportInfo(reportInfo)
+      })
+    }
+
+  }
+
+  const changeYears = (e, change: string, year: string) => {
+    e.preventDefault()
+    let index = years.indexOf(year)
+
+    if (change === 'decrease'){
+      setYear((year) => years[index -1])
+      setAnnualRent(null)
+      setAnnualUnitTotal(null)
+
+      setYearPicked(years[index -1])
+    }
+
+    if (change === 'increase') {
+      let newYear = years[index + 1]
+      setYear((year) => newYear)
+      setAnnualRent(null)
+      setAnnualUnitTotal(null)
+
+      setYearPicked(newYear)
     }
   }
-
-  setTotalProfit(totalNet)
-}
-
-const generateFullReport = () => {
-  // add total profit to array for generated full report
-
-  if (!reportInfo[buildingName]) {
-    reportInfo[buildingName] = {}
-  }
-
-  // HERE should help determine report generation
-  let yr = yearPicked
-  let tempThing = aggregate[buildingName][yr]
-  if (tempThing) {
-
-    months.forEach((month) => {
-      let insertionPoint = hardCodeMonths.indexOf(month)
-
-      if (!reportInfo[buildingName][yr]) {
-        reportInfo[buildingName][yr] = {
-          'revenue': Array.from({length: 13}).fill('-', 0, 13),
-          'expense': Array.from({length: 13}).fill('-', 0, 13)
-        }
-
-        reportInfo[yr] = {
-          'admon': Array.from({length: 13}).fill('-', 0, 13),
-          'gastos': Array.from({length: 13}).fill('-', 0, 13),
-          'devol': Array.from({length: 13}).fill('-', 0, 13),
-          'otros': Array.from({length: 13}).fill('-', 0, 13),
-          'totalProfit': Array.from({length: 13}).fill('-', 0, 13),
-        }
-
-
-        reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
-        reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
-
-        // // create {reportInfo: {year: {admon: []}}}
-        reportInfo[yr]['admon'][insertionPoint] = 0
-        reportInfo[yr]['admon'][insertionPoint] += totalAdmon[insertionPoint]
-
-        reportInfo[yr]['gastos'][insertionPoint] = 0
-        reportInfo[yr]['gastos'][insertionPoint] += totalGastos[insertionPoint]
-
-        reportInfo[yr]['devol'][insertionPoint] = 0
-        reportInfo[yr]['devol'][insertionPoint] += totalDevol[insertionPoint]
-
-        reportInfo[yr]['otros'][insertionPoint] = 0
-        reportInfo[yr]['otros'][insertionPoint] += totalOtros[insertionPoint]
-
-
-      } else {
-        reportInfo[buildingName][yr]['revenue'][insertionPoint] = totalTotal[insertionPoint]
-        reportInfo[buildingName][yr]['expense'][insertionPoint] = totalExpenses[insertionPoint]
-
-
-        reportInfo[yr]['admon'][insertionPoint] = totalAdmon[insertionPoint]
-        reportInfo[yr]['gastos'][insertionPoint] = totalGastos[insertionPoint]
-        reportInfo[yr]['devol'][insertionPoint] = totalDevol[insertionPoint]
-        reportInfo[yr]['otros'][insertionPoint] = totalOtros[insertionPoint]
-      }
-      reportInfo[buildingName][yr]['revenue'][12] = totalTotal[12]
-      setReportInfo(reportInfo)
-    })
-  }
-
-}
-
-const changeYears = (e, change: string, year: string) => {
-  e.preventDefault()
-  let index = years.indexOf(year)
-
-  if (change === 'decrease'){
-    setYear((year) => years[index -1])
-    setAnnualRent(null)
-    setAnnualUnitTotal(null)
-
-    // testing year picked
-    setYearPicked(years[index -1])
-    console.log(yearPicked)
-  }
-
-  if (change === 'increase') {
-    setYear((year) => newYear)
-    setAnnualRent(null)
-    setAnnualUnitTotal(null)
-    let newYear = years[index + 1]
-
-    // testing year picked
-    setYearPicked(newYear)
-    console.log(yearPicked)
-  }
-}
 
   return (
     <>
@@ -420,7 +384,7 @@ const changeYears = (e, change: string, year: string) => {
             </StyledHeaderContainer>
             {annualRent ? units.map((unit, index) => <StyledRowUnit>
               {unit !== buildingName ? <StyledCell>{unit} </StyledCell> : null}
-              {index !== 0 ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) => <StyledCell>{item2}</StyledCell>
+              {index !== 0 && annualRent[buildingName][year] ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) => <StyledCell>{item2}</StyledCell>
               )
                 : null}
               <StyledCell>{annualUnitTotal && unit !== buildingName ? annualUnitTotal[unit] : null}</StyledCell>
@@ -441,7 +405,7 @@ const changeYears = (e, change: string, year: string) => {
             </tr>
             <StyledRowE>
               <StyledCell>corretaje</StyledCell>
-              {totalCorretaje ? totalCorretaje.map((admon) => <StyledCell>{admon}</StyledCell>
+              {totalCorretaje ? totalCorretaje.map((item) => <StyledCell>{item}</StyledCell>
               ) : null}
             </StyledRowE>
             <StyledRowE>
@@ -512,7 +476,6 @@ const StyledInvisible = styled.button`
 const StyledRowE = styled.tr`
 `
 const StyledRowUnit = styled.tr`
-
 `
 const StyledCell = styled.td`
   text-align: center;
