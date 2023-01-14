@@ -57,7 +57,7 @@ const AggregateProvider = ({children}) => {
       getYears()
     }
 
-  }, [ aggregate, aggregateStringified, buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked])
+  }, [ JSON.stringify(aggregate), buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked, buildings.length])
 
 
   const handleChange = useCallback(() => {
@@ -74,7 +74,7 @@ const AggregateProvider = ({children}) => {
       })
       setYearsAvailable(() => tempYears)
     })
-  },[buildings])
+  },[buildings.length])
 
   const getBuildings = useCallback(() => {
     setBuildings(() => Object.keys(aggregate))
