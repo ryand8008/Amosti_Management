@@ -71,7 +71,7 @@ export const Upload = () => {
 
     }
 
-  }, [JSON.stringify(parsedInfo), JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable.length, yearPicked])
+  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable, yearPicked])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -272,7 +272,7 @@ const findGastos = (json)=>{
     <>
       <Window>
 
-      <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
+      { !showFull ? <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
         <input
           type='file'
           multiple={true}
@@ -282,8 +282,8 @@ const findGastos = (json)=>{
           // webkitdirectory="" // will allow file upload, but not single files
           />
         <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
-        <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></ul>) : 'upload files' }</DragBox>
-      </form>
+         <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></ul>) : 'upload files' }</DragBox>
+      </form> : null}
 
       {aggregate ?
         <>
@@ -309,7 +309,7 @@ const findGastos = (json)=>{
               </div>
               <p/>
                 {yearPicked ?
-                <Confirm onClick={() => setShowFull(!showFull)}>
+                <Confirm onClick={() => {setShowFull(!showFull), setShowIndividual(!showIndividual)}}>
                   Generate Report
                 </Confirm> : null}
             </>
