@@ -49,19 +49,6 @@ export const Upload = () => {
   // testing SPLIT EXCEL
   const [splitExcel, setSplitExcel] = useState<any>({})
 
-  // new sheet
-  const [newExcel, setNewExcel] = useState<any>({})
-
-  const [showCosts, setShowCosts] = useState<boolean>(false)
-
-  const [filterBy, setFilterBy] = useState<string>('')
-
-  //testing filtered excel
-  const [filteredExcel, setFilteredExcel] = useState()
-
-  // generate report (boolean) => create separated tables
-  const [generateReport, setGenerateReport] = useState<boolean>(false)
-
   // drag hook
   const [dragActive, setDragActive] = useState<boolean>(false);
 
@@ -70,9 +57,8 @@ export const Upload = () => {
 
   // two buttons
   const [showIndividual, setShowIndividual] = useState<boolean>(false)
-
   const [showFull, setShowFull] = useState<boolean>(false)
-  let stringSplitExcel = JSON.stringify(splitExcel)
+
   // // checking aggregate
   const [parsedInfo, setParsedInfo] = useState<any>({})
 
@@ -148,12 +134,10 @@ const findGastos = (json)=>{
   json.map((item,index)=>{
       if (item['Año'] === 'Gastos') {
           gastosIndex = index
-      }
+        }
+      })
+    return gastosIndex
   }
-  )
-  return gastosIndex
-
-}
 
   // TODO: handle multiple file upload
   const readUploadFile = async (e) => {
@@ -338,30 +322,6 @@ const findGastos = (json)=>{
       {showFull && yearPicked ? <FullReport yr={yearPicked}/> : null}
       {showIndividual && yearPicked ? <Report yr={yearPicked} testing={showIndividual}/> : null}
 
-      {/* {aggregate ?
-        <>
-          <ContentsButton onClick={() => setGenerateReport(!generateReport)}>{!generateReport ? 'show uploaded file contents' : 'close'}</ContentsButton>
-        </>
-          : null}
-      {generateReport ? <div>
-        { files.length > 0 ?
-          <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterBy(filterBy =>e.target.value)}>filter by
-            <option value=''>{filterBy !== '' ? 'show all files' : 'select a file'}</option>
-            {files.length > 0 ? files.map((file) =>
-              <option value={file}>{file}</option>
-            )
-            : null
-          }
-          </select>
-          : null
-        }
-          {Object.values(splitExcel).length > 0?
-           filteredExcel ? <UploadTable exceldata={filteredExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts}/> : <UploadTable exceldata={newExcel} testing={splitExcel} fileName={filterBy} showCosts={showCosts} />
-           : null}
-
-          {filterBy !== '' ? <button onClick={() => setShowCosts(() => !showCosts)}>{showCosts ? 'show unit info' : 'show costs'}</button> : null}
-
-          </div> : null} */}
       </Window>
     </>
   )
