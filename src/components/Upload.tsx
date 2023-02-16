@@ -62,6 +62,9 @@ export const Upload = () => {
   // // checking aggregate
   const [parsedInfo, setParsedInfo] = useState<any>({})
 
+  // button choice: individual or full report
+  const [buttonChoice, setButtonChoice] = useState<boolean>(false)
+
   useEffect(() => {
 
     if (Object.keys(splitExcel).length > 0) {
@@ -71,7 +74,7 @@ export const Upload = () => {
 
     }
 
-  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable, yearPicked])
+  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, showFull, showIndividual, yearsAvailable, yearPicked, buttonChoice])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -149,6 +152,9 @@ const findGastos = (json)=>{
 
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
+
+      // ADD POP UP TO CONFIRM
+
       filesToRead.map((file: any, index) => {
         const fileName = file['name']
         holding[fileName] = {'unitInfo': [], 'costs': []}
@@ -203,7 +209,7 @@ const findGastos = (json)=>{
             }
           }
         }
-
+          // ADD HERE A POP UP
             setSplitExcel({...splitExcel, ...holding})
         };
         reader.readAsArrayBuffer(file);
@@ -273,26 +279,35 @@ const findGastos = (json)=>{
       <Window>
 
       { !showFull ? <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
-        <input
-          type='file'
-          multiple={true}
-          name='uploads'
-          id='uploads'
-          onChange={readUploadFile}
-          // webkitdirectory="" // will allow file upload, but not single files
-          />
-        <label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''}/>
-         <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></ul>) : 'upload files' }</DragBox>
+      { !showIndividual ? <><input
+            type='file'
+            multiple={true}
+            name='uploads'
+            id='uploads'
+            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''} /><DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></ul>) : 'upload files'}</DragBox></> : null}
       </form> : null}
 
       {aggregate ?
         <>
         <Verify>
-            {files.length > 0 ? <VerifyButton onClick={() => setShowIndividual(!showIndividual)}>
-              {showIndividual ? 'close individual buildings report' : 'Please verify information is correct'}
+            {files.length > 0 && !showFull ? <VerifyButton onClick={() => {setShowIndividual(!showIndividual); setButtonChoice(!buttonChoice)}}>
+              {showIndividual ? 'show upload box' : 'Upload Files'}
             </VerifyButton>
             : null}
-          {!showFull && showIndividual ?
+
+            {/* create button div holder */}
+            {/* create 'show Individual' button and 'generate report' button */}
+            {/* {buttonChoice ? <div>
+              <VerifyButton>test1</VerifyButton>
+              <VerifyButton>test2</VerifyButton>
+            </div> : null} */}
+
+{/* ** note:
+decouple 'showIndividual' button function. Upload files button should show two options. */}
+
+
+            {/* {!buttonChoice  ? */}
+          {!showFull && showIndividual  ?
             <>
               <div>
                 View Report for year:
@@ -308,6 +323,26 @@ const findGastos = (json)=>{
                   </span>
               </div>
               <p/>
+
+
+              {/* new buttons */}
+
+              {/* {
+              buttonChoice && yearPicked ?
+
+              <div>
+
+              <Confirm onClick={() => {setShowFull(!showFull), setShowIndividual(!showIndividual)}}>
+                  Generate Report
+                </Confirm>
+              <VerifyButton onClick={() => {setShowIndividual(true); setButtonChoice(!buttonChoice)}}>Show Individual Buildings</VerifyButton>
+            </div>
+
+            : null
+            } */}
+
+
+            {/* ORIGINAL */}
                 {yearPicked ?
                 <Confirm onClick={() => {setShowFull(!showFull), setShowIndividual(!showIndividual)}}>
                   Generate Report
@@ -318,10 +353,12 @@ const findGastos = (json)=>{
         </>
       : null
       }
-      {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>cancel/reset</button> : null}
+      {showFull ? <button onClick={() => {setShowFull(false), setShowIndividual(true)}}>close report</button> : null}
       {showFull && yearPicked ? <FullReport yr={yearPicked}/> : null}
       {showIndividual && yearPicked ? <Report yr={yearPicked} testing={showIndividual}/> : null}
 
+      {/* consider using buttonchoice as a way to determine what shows
+      report needs to be execute in order for the values to be populated for Full Report */}
       </Window>
     </>
   )
