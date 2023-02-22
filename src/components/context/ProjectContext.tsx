@@ -87,6 +87,4 @@ const AggregateProvider = ({children}) => {
   )
 }
 
-// NEW STUFF
-
 export default AggregateProvider;

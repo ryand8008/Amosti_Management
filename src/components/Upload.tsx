@@ -6,6 +6,9 @@ import { FullReport } from "./Report/FullReport";
 import { Report } from "./Report/Report";
 import { UploadTable } from "./UploadTable";
 
+// testing Individual function
+import { Individual } from "./Report/IndividualBuild";
+
 var xlsx = require("xlsx");
 
 declare module 'react' {
@@ -60,7 +63,7 @@ export const Upload = () => {
   const [showFull, setShowFull] = useState<boolean>(false)
 
   // // checking aggregate
-  const [parsedInfo, setParsedInfo] = useState<any>({})
+   const [parsedInfo, setParsedInfo] = useState<any>({})
 
   // button choice: individual or full report
   const [buttonChoice, setButtonChoice] = useState<boolean>(false)
@@ -84,6 +87,13 @@ export const Upload = () => {
     filesNames.forEach((file, index) => {
       let fileInfo = splitExcel[file]['unitInfo'];
       let [year, month, buildingName] =  [fileInfo[0]['Año'], fileInfo[0]['Mes'].toLowerCase(), fileInfo[0]['Depto']]
+
+      // // TESTING INDIVIDUAL
+      // console.log(JSON.stringify(aggregate) === JSON.stringify(parsedInfo), 'is this equal or not equal?')
+
+      // console.log(aggregate, 'this is agg')
+      // console.log(parsedInfo, 'this is parsedInfo')
+      // console.log(Individual(parsedInfo, buildingName, year))
 
       try {
 
@@ -274,6 +284,19 @@ const findGastos = (json)=>{
 
   }
 
+  // TEST: handle 'upload files' button function
+  const handleUploadFiles = () => {
+    setShowIndividual(!showIndividual)
+    setButtonChoice(!buttonChoice) // only necessary for showing two buttons => individual report or full report options
+
+    if (aggregate) {
+      Individual(aggregate)
+    }
+
+
+  }
+
+
   return (
     <>
       <Window>
@@ -284,13 +307,13 @@ const findGastos = (json)=>{
             multiple={true}
             name='uploads'
             id='uploads'
-            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''} /><DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <ul>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></ul>) : 'upload files'}</DragBox></> : null}
+            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''} /><DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox></> : null}
       </form> : null}
 
       {aggregate ?
         <>
         <Verify>
-            {files.length > 0 && !showFull ? <VerifyButton onClick={() => {setShowIndividual(!showIndividual); setButtonChoice(!buttonChoice)}}>
+            {files.length > 0 && !showFull ? <VerifyButton onClick={() => handleUploadFiles()}>
               {showIndividual ? 'show upload box' : 'Upload Files'}
             </VerifyButton>
             : null}
@@ -364,6 +387,10 @@ decouple 'showIndividual' button function. Upload files button should show two o
   )
 }
 
+
+const StyledTest = styled.div`
+  display: flex;
+`
 const StyledTitle = styled.h1`
   display: flex;
   text-align: center;
