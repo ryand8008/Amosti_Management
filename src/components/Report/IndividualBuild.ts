@@ -19,11 +19,13 @@ export const Individual = (aggregate,  building = null, year = null) => {
     let yearSet = new Set(yearsArray)
 
     if (buildings.length > 0 && yearsArray.length > 0) {
-      let testClass = new Building(buildings[0], yearsArray[0])
+      let testClass = new Building(buildings[0], yearsArray[1])
 
       console.log(testClass, 'this is new testclass ')
 
       console.log(testClass.getUnits(aggregate), 'this should return the units')
+
+      console.log(testClass.getAllMonths(aggregate), 'this should be a months array')
 
 }
 

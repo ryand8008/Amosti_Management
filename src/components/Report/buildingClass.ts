@@ -11,6 +11,12 @@ export class Building {
 
   }
 
+  // methods
+  // getMonths => string[]
+  // getRent(month) => not sure
+  // getTotals | expenses or revenue?
+
+
   getUnits(aggregate: any) {
     let temp: string[] = []
     if (aggregate[this.buildingName][this.year]) {
@@ -21,4 +27,12 @@ export class Building {
       return temp;
     }
   }
+
+  getAllMonths(aggregate: any) {
+    // let months: string[] = [];
+
+    return Object.keys(aggregate[this.buildingName][this.year])
+  }
+
+
 }
