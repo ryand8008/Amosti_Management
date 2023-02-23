@@ -29,6 +29,43 @@ export const Individual = (aggregate,  building = null, year = null) => {
 
       console.log(testClass.getRentSingle(aggregate, testClass.getAllMonths(aggregate)[0]))
 
+      console.log(testClass.getTotalRent(aggregate), 'total rent???')
+
+      // TESTING TO MERGE MULTIPLE MONTHS
+      // let testing;
+
+      // const months = testClass.getAllMonths(aggregate);
+
+
+
+      // months.forEach((month, index) => {
+      //   let info: any = testClass.getRentSingle(aggregate, month)
+      //   if (!testing) {
+      //     testing = {...info}
+
+      //   } else {
+
+      //     testing = {...testing, ...info}
+
+      //   }
+      // })
+
+      // console.log(testing, 'what does this look like?')
+
+
+
+
+
+      // let testArray = []
+      // months.forEach((month, index) => {
+      //   let info: any = testClass.getRentSingle(aggregate, month);
+
+      // })
+
+
+
+
+
 }
 
 
