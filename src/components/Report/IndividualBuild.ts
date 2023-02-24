@@ -27,7 +27,7 @@ export const Individual = (aggregate,  building = null, year = null) => {
 
       console.log(testClass.getAllMonths(aggregate), 'this should be a months array')
 
-      console.log(testClass.getRentSingle(aggregate, testClass.getAllMonths(aggregate)[0]))
+      // console.log(testClass.getRentSingle(aggregate, testClass.getAllMonths(aggregate)[0]))
 
       console.log(testClass.getTotalRent(aggregate), 'total rent???')
 
