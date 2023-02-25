@@ -31,7 +31,7 @@ export const Individual = (aggregate,  building = null, year = null) => {
 
 
       // TESTING
-      let testBuilding = new Building('Dragón', '2022')
+      let testBuilding = new Building('Dragón', '2023')
       let testMonth = testBuilding.getAllMonths(aggregate)[0]
 
 

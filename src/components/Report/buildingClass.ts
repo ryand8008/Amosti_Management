@@ -159,36 +159,78 @@ export class Building {
       tempObj.units[tempUnit][insertionPoint] = !isNaN(val) ? val : '-';
       tempObj.units[tempUnit][tempObj.units[tempUnit].length - 1] = !isNaN(val) ? val : '-';
     }
-    tempObj.units['total'] = Array.from({length: 13}).fill('-', 0, 13);
-    tempObj.units['total'][insertionPoint] = total;
-    tempObj.units['total'][tempObj.units['total'].length - 1]  = total;
-    return tempObj;
+      tempObj.units['total'] = Array.from({length: 13}).fill('-', 0, 13);
+      tempObj.units['total'][insertionPoint] = total;
+      tempObj.units['total'][tempObj.units['total'].length - 1]  = total;
+      return tempObj;
   }
 
-  mergeStuff(oldArr, newArr) {
-    // let units: string[] = this.getUnits(aggregate);
+  mergeStuff(aggregate, oldUnits, newUnits) {
+    const units: string[] = this.getUnits(aggregate);
+    units.push('total')
+    const testObj: any = {};
 
+    for (let i = 1; i < units.length; i++) {
+      const unit: string = units[i];
 
+      const mergedArr: (number | string)[] = [];
+      let total = 0;
+      for (let j = 0; j < 13; j++) {
+        const oldVal: number = +oldUnits[unit][j];
+        const newVal: number = +newUnits[unit][j];
+        const value = oldVal || newVal || '-';
+        mergedArr.push(value);
 
-  }
-
-  getStuffTotal(aggregate: any, thing: string ) {
-    const months = this.getAllMonths(aggregate);
-    let container;
-
-    months.forEach((month => {
-      const info = this.getStuff(aggregate, month, thing)
-      console.log(info, 'INFO')
-
-      // if (!container) {
-      //   container[this.buildingName][this.year][thing]
-      // } else {
-
-      //   }
-
+        if (j === 12) {
+          total += +oldUnits[unit][j] || 0;
+          total += +newUnits[unit][j] || 0;
+        }
       }
-    ))
+
+      mergedArr[12] = total;
+      testObj[unit] = mergedArr;
+    }
+
+    return testObj;
   }
+
+
+  // TESTING
+  getStuffTotal(aggregate: any, thing: string) {
+    const months = this.getAllMonths(aggregate);
+    let container = null;
+
+    months.forEach((month) => {
+      const info = this.getStuff(aggregate, month, thing);
+
+      if (!container) {
+        container = {
+          [this.buildingName]: {
+            [this.year]: {
+              [thing]: {
+                units: info.units,
+              },
+            },
+          },
+        };
+      } else {
+        const oldUnits = container[this.buildingName][this.year][thing].units;
+        const newUnits = info.units;
+        const mergedUnits = this.mergeStuff(aggregate, oldUnits, newUnits);
+
+        container[this.buildingName][this.year][thing].units = mergedUnits;
+      }
+    });
+
+    return container;
+  }
+
+
+
+
+
+
+
 
 
 
@@ -199,13 +241,3 @@ export class Building {
 
 
 } // end
-
-
-
-
-// use this to access all the unit info || rewrite functions that start from fileToCheck variable
-
-// const units: string[] = this.getUnits(aggregate);
-//     const hardCodeMonths = this.hardCodeMonths();
-//     const insertionPoint = hardCodeMonths.indexOf(month);
-//     let fileToCheck = aggregate[this.buildingName][this.year][month]['unitInfo']
