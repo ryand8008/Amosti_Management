@@ -1,3 +1,10 @@
+interface MonthlyData {
+  units: {
+    [key: string]: Array<number | "-">;
+  };
+}
+
+
 export class Building {
   buildingName: string;
   year: string;
@@ -20,7 +27,7 @@ export class Building {
   // getTotals | expenses or revenue?
 
 
-  // CHECK to see if valid
+  // Validation
   isValid(aggregate: any) {
     return aggregate[this.buildingName][this.year] ? true : false;
   }
@@ -77,29 +84,6 @@ export class Building {
     return blob;
   }
 
-  // // TEST
-  // getRentSingle(aggregate: any, month: string) {
-  //   const units: string[] = this.getUnits(aggregate);
-  //   const hardCodeMonths = this.hardCodeMonths();
-  //   const insertionPoint = hardCodeMonths.indexOf(month);
-  //   const blob = {[this.buildingName]: {[this.year]: {'units': {}}}};
-
-  //   units.forEach((unit: string) => {
-  //     if (unit !== this.buildingName) {
-  //       const rents = aggregate[this.buildingName][this.year][month]['unitInfo']
-  //         .filter((item: any) => item.Unit === unit)
-  //         .map((item: any) => Number(item['Renta']))
-  //         .filter((rent: number) => !isNaN(rent));
-  //       const totalRent = rents.reduce((acc, rent) => acc + rent, 0);
-  //       const rentArray = Array.from({length: 12}).fill('-', 0, 12);
-  //       rentArray[insertionPoint] = totalRent;
-  //       blob[this.buildingName][this.year]['units'][unit] = rentArray;
-  //       blob[this.buildingName][this.year]['units'][`${unit}_total`] = totalRent;
-  //     }
-  //   });
-
-  //   return blob;
-  // }
 
 
 
@@ -156,10 +140,47 @@ export class Building {
   }
 
   // COSTS methods
-  getTotalAdmon() {
+  // used for Amon, Corretaje, Devol or anything that is un 'unitInfo" like Rent
+  getStuff(aggregate: any, month: string, thing: string) {
+    let units: string[] = this.getUnits(aggregate);
+    units.push('total')
+    const hardCodeMonths = this.hardCodeMonths();
+    const insertionPoint = hardCodeMonths.indexOf(month);
+    let tempObj = {units: {}}
+    let fileToCheck = aggregate[this.buildingName][this.year][month]['unitInfo']
 
+    let total = 0;
+
+    for (let i = 1; i < units.length - 1; i++) {
+      const tempUnit = units[i];
+      const val = Number(aggregate[this.buildingName][this.year][month].unitInfo[i][thing]);
+      total += val || 0;
+      tempObj.units[tempUnit] = new Array(12).fill('-');
+      tempObj.units[tempUnit][insertionPoint] = !isNaN(val) ? val : '-';
+    }
+    tempObj.units['total'] = Array.from({length: 12}).fill('-', 0, 12);
+    tempObj.units['total'][insertionPoint] = total;
+    return tempObj;
   }
 
 
 
+
+
+
+
+
+
+
+
 } // end
+
+
+
+
+// use this to access all the unit info || rewrite functions that start from fileToCheck variable
+
+// const units: string[] = this.getUnits(aggregate);
+//     const hardCodeMonths = this.hardCodeMonths();
+//     const insertionPoint = hardCodeMonths.indexOf(month);
+//     let fileToCheck = aggregate[this.buildingName][this.year][month]['unitInfo']

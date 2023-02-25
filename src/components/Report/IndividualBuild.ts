@@ -15,9 +15,6 @@ export const Individual = (aggregate,  building = null, year = null) => {
       yearsArray = [...yearsArray, ...Object.keys(aggregate[building])]
     })
 
-    // console.log(yearsArray, 'what values are here?')
-    let yearSet = new Set(yearsArray)
-
     if (buildings.length > 0 && yearsArray.length > 0) {
 
       let testYear: string = yearsArray[0]
@@ -32,6 +29,16 @@ export const Individual = (aggregate,  building = null, year = null) => {
       })
 
 
+
+      // TESTING
+      let testBuilding = new Building('Dragón', '2022')
+      let testMonth = testBuilding.getAllMonths(aggregate)[0]
+
+
+      let testStuff = 'Admon' // corretaje
+
+      console.log(testBuilding.getStuff(aggregate, testMonth, testStuff))
+      console.log(testBuilding.getStuff(aggregate, testMonth, 'Corretaje'))
 
 
 }
