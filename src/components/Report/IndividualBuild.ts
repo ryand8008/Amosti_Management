@@ -15,53 +15,21 @@ export const Individual = (aggregate,  building = null, year = null) => {
       yearsArray = [...yearsArray, ...Object.keys(aggregate[building])]
     })
 
-    console.log(yearsArray, 'what values are here?')
+    // console.log(yearsArray, 'what values are here?')
     let yearSet = new Set(yearsArray)
 
     if (buildings.length > 0 && yearsArray.length > 0) {
-      let testClass = new Building(buildings[0], yearsArray[1])
 
-      console.log(testClass, 'this is new testclass ')
+      let testYear: string = yearsArray[0]
+      let classContainer: any[] = [];
 
-      console.log(testClass.getUnits(aggregate), 'this should return the units')
+      buildings.forEach((building) => {
+        let buildTest = new Building(building, testYear)
 
-      console.log(testClass.getAllMonths(aggregate), 'this should be a months array')
-
-      // console.log(testClass.getRentSingle(aggregate, testClass.getAllMonths(aggregate)[0]))
-
-      console.log(testClass.getTotalRent(aggregate), 'total rent???')
-
-      // TESTING TO MERGE MULTIPLE MONTHS
-      // let testing;
-
-      // const months = testClass.getAllMonths(aggregate);
-
-
-
-      // months.forEach((month, index) => {
-      //   let info: any = testClass.getRentSingle(aggregate, month)
-      //   if (!testing) {
-      //     testing = {...info}
-
-      //   } else {
-
-      //     testing = {...testing, ...info}
-
-      //   }
-      // })
-
-      // console.log(testing, 'what does this look like?')
-
-
-
-
-
-      // let testArray = []
-      // months.forEach((month, index) => {
-      //   let info: any = testClass.getRentSingle(aggregate, month);
-
-      // })
-
+        if (buildTest.isValid(aggregate)) {
+          classContainer.push(buildTest)
+        }
+      })
 
 
 

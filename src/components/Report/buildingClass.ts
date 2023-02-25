@@ -20,6 +20,10 @@ export class Building {
   // getTotals | expenses or revenue?
 
 
+  // CHECK to see if valid
+  isValid(aggregate: any) {
+    return aggregate[this.buildingName][this.year] ? true : false;
+  }
 
   getUnits(aggregate: any) {
     let temp: string[] = []
@@ -70,7 +74,6 @@ export class Building {
     });
     totalArr[insertionPoint] = total;
     blob[this.buildingName][this.year]['units']['total'] = totalArr;
-    console.log(blob, 'this is blob?')
     return blob;
   }
 
@@ -152,6 +155,10 @@ export class Building {
     return container;
   }
 
+  // COSTS methods
+  getTotalAdmon() {
+
+  }
 
 
 
