@@ -155,15 +155,40 @@ export class Building {
       const tempUnit = units[i];
       const val = Number(aggregate[this.buildingName][this.year][month].unitInfo[i][thing]);
       total += val || 0;
-      tempObj.units[tempUnit] = new Array(12).fill('-');
+      tempObj.units[tempUnit] = new Array(13).fill('-');
       tempObj.units[tempUnit][insertionPoint] = !isNaN(val) ? val : '-';
+      tempObj.units[tempUnit][tempObj.units[tempUnit].length - 1] = !isNaN(val) ? val : '-';
     }
-    tempObj.units['total'] = Array.from({length: 12}).fill('-', 0, 12);
+    tempObj.units['total'] = Array.from({length: 13}).fill('-', 0, 13);
     tempObj.units['total'][insertionPoint] = total;
+    tempObj.units['total'][tempObj.units['total'].length - 1]  = total;
     return tempObj;
   }
 
+  mergeStuff(oldArr, newArr) {
+    // let units: string[] = this.getUnits(aggregate);
 
+
+
+  }
+
+  getStuffTotal(aggregate: any, thing: string ) {
+    const months = this.getAllMonths(aggregate);
+    let container;
+
+    months.forEach((month => {
+      const info = this.getStuff(aggregate, month, thing)
+      console.log(info, 'INFO')
+
+      // if (!container) {
+      //   container[this.buildingName][this.year][thing]
+      // } else {
+
+      //   }
+
+      }
+    ))
+  }
 
 
 

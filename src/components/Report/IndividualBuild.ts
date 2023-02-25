@@ -37,8 +37,9 @@ export const Individual = (aggregate,  building = null, year = null) => {
 
       let testStuff = 'Admon' // corretaje
 
-      console.log(testBuilding.getStuff(aggregate, testMonth, testStuff))
-      console.log(testBuilding.getStuff(aggregate, testMonth, 'Corretaje'))
+      // console.log(testBuilding.getStuff(aggregate, testMonth, testStuff))
+      // console.log(testBuilding.getStuff(aggregate, testMonth, 'Corretaje'))
+      console.log(testBuilding.getStuffTotal(aggregate, testStuff))
 
 
 }
