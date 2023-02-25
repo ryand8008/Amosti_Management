@@ -20,6 +20,7 @@ export class Building {
   // getTotals | expenses or revenue?
 
 
+
   getUnits(aggregate: any) {
     let temp: string[] = []
     if (aggregate[this.buildingName][this.year]) {
@@ -31,9 +32,17 @@ export class Building {
     }
   }
 
-  getAllMonths(aggregate: any) {
-    // let months: string[] = [];
+  // CLEAN
+  // getUnits(aggregate: any): string[] {
+  //   if (!aggregate[this.buildingName]?.[this.year]) return [];
 
+  //   return aggregate[this.buildingName][this.year][Object.keys(aggregate[this.buildingName][this.year])[0]]['unitInfo']
+  //     .map(item => item['Depto'])
+  //     .slice(0, -1);
+  // }
+
+
+  getAllMonths(aggregate: any) {
     return Object.keys(aggregate[this.buildingName][this.year])
   }
 
@@ -43,26 +52,58 @@ export class Building {
     const hardCodeMonths = this.hardCodeMonths();
     const insertionPoint = hardCodeMonths.indexOf(month);
     const blob = {[this.buildingName]: {[this.year]: {'units': {}}}};
-
+    let totalArr: any[] = Array.from({length: 12}).fill('-', 0, 12);
+    let total: number = 0
     aggregate[this.buildingName][this.year][month]['unitInfo'].forEach((item: any, index: number) => {
       const tempUnit = units[index];
 
+
       if (index !== 0 && index !== aggregate[this.buildingName][this.year][month]['unitInfo'].length - 1) {
         const tempArr = Array.from({length: 12}).fill('-', 0, 12);
+        const val: number = Number(item['Renta'])
 
-        tempArr[insertionPoint] = !isNaN(Number(item['Renta'])) ?  Number(item['Renta']) : '-';
+        tempArr[insertionPoint] = !isNaN(val) ?  val : '-';
+        !isNaN(val) ? total += val : null
         blob[this.buildingName][this.year]['units'][tempUnit] = tempArr;
       }
-    });
 
+    });
+    totalArr[insertionPoint] = total;
+    blob[this.buildingName][this.year]['units']['total'] = totalArr;
+    console.log(blob, 'this is blob?')
     return blob;
   }
-  //end
+
+  // // TEST
+  // getRentSingle(aggregate: any, month: string) {
+  //   const units: string[] = this.getUnits(aggregate);
+  //   const hardCodeMonths = this.hardCodeMonths();
+  //   const insertionPoint = hardCodeMonths.indexOf(month);
+  //   const blob = {[this.buildingName]: {[this.year]: {'units': {}}}};
+
+  //   units.forEach((unit: string) => {
+  //     if (unit !== this.buildingName) {
+  //       const rents = aggregate[this.buildingName][this.year][month]['unitInfo']
+  //         .filter((item: any) => item.Unit === unit)
+  //         .map((item: any) => Number(item['Renta']))
+  //         .filter((rent: number) => !isNaN(rent));
+  //       const totalRent = rents.reduce((acc, rent) => acc + rent, 0);
+  //       const rentArray = Array.from({length: 12}).fill('-', 0, 12);
+  //       rentArray[insertionPoint] = totalRent;
+  //       blob[this.buildingName][this.year]['units'][unit] = rentArray;
+  //       blob[this.buildingName][this.year]['units'][`${unit}_total`] = totalRent;
+  //     }
+  //   });
+
+  //   return blob;
+  // }
+
 
 
   // merge units + rent
   mergeRent(aggregate: any, oldArr: any, newArr: any): any {
-    const units: string[] = this.getUnits(aggregate);
+    let units: string[] = this.getUnits(aggregate);
+    units.push('total')
     const testObj: any = {};
 
     for (let i = 1; i < units.length; i++) {
@@ -78,7 +119,6 @@ export class Building {
       testObj[unit] = mergedArr;
     }
 
-    console.log(testObj, 'wat dis??');
     return testObj;
   }
 
@@ -89,19 +129,19 @@ export class Building {
   // nested merge objects
   getTotalRent(aggregate) {
     const months = this.getAllMonths(aggregate);
-    let testing;
+    let container;
 
     months.forEach(month => {
       const info = this.getRentSingle(aggregate, month);
 
-      if (!testing) {
-        testing = info;
+      if (!container) {
+        container = info;
       } else {
-        const oldUnits = testing[this.buildingName][this.year]['units'];
+        const oldUnits = container[this.buildingName][this.year]['units'];
         const newUnits = info[this.buildingName][this.year]['units'];
         const mergedUnits = this.mergeRent(aggregate, oldUnits, newUnits);
 
-        testing = {
+        container = {
           [this.buildingName]: {
             [this.year]: { units: mergedUnits }
           }
@@ -109,7 +149,7 @@ export class Building {
       }
     });
 
-    return testing;
+    return container;
   }
 
 
