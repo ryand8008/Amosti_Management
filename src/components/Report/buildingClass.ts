@@ -95,14 +95,17 @@ export class Building {
 
     for (let i = 1; i < units.length; i++) {
       const unit: string = units[i];
+      let total = 0;
 
       const mergedArr: (number | string)[] = [];
       for (let j = 0; j < 12; j++) {
         const oldVal: number = +oldArr[unit][j];
         const newVal: number = +newArr[unit][j];
         mergedArr.push(oldVal || newVal || '-');
+        total += +oldVal || 0;
+        total += +newVal || 0;
       }
-
+      mergedArr.push(total)
       testObj[unit] = mergedArr;
     }
 
@@ -148,7 +151,7 @@ export class Building {
     const insertionPoint = hardCodeMonths.indexOf(month);
     let tempObj = {units: {}}
     let fileToCheck = aggregate[this.buildingName][this.year][month]['unitInfo']
-
+    console.log(aggregate[this.buildingName][this.year][month]['costs']) // DELETE ME
     let total = 0;
 
     for (let i = 1; i < units.length - 1; i++) {
@@ -223,6 +226,10 @@ export class Building {
     });
 
     return container;
+  }
+
+  getCosts() {
+    console.log()
   }
 
 

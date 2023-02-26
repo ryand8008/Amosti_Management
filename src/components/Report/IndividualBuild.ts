@@ -34,6 +34,7 @@ export const Individual = (aggregate,  building = null, year = null) => {
       let testBuilding = new Building('Dragón', '2023')
       let testMonth = testBuilding.getAllMonths(aggregate)[0]
 
+      console.log(testBuilding.getTotalRent(aggregate), 'this is total rent?')
 
       let testStuff = 'Admon' // corretaje
 
