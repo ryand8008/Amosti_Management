@@ -68,38 +68,42 @@ export class Building {
     const hardCodeMonths = this.hardCodeMonths();
     const insertionPoint = hardCodeMonths.indexOf(month);
     const blob = {[this.buildingName]: {[this.year]: {'units': {}}}};
-    let totalArr: any[] = Array.from({length: 12}).fill('-', 0, 12);
-    let total: number = 0
+    let totalArr: any[] = Array.from({length: 13}).fill('-', 0, 13);
+    totalArr[12] = 0;
+
     aggregate[this.buildingName][this.year][month]['unitInfo'].forEach((item: any, index: number) => {
       const tempUnit = units[index];
-
+      const tempArr = Array.from({length: 13}).fill('-', 0, 13);
+      const val: number = Number(item['Renta'])
 
       if (index !== 0 && index !== aggregate[this.buildingName][this.year][month]['unitInfo'].length - 1) {
-        const tempArr = Array.from({length: 12}).fill('-', 0, 12);
-        const val: number = Number(item['Renta'])
-
-        tempArr[insertionPoint] = !isNaN(val) ?  val : '-';
-        !isNaN(val) ? total += val : null
+        tempArr[insertionPoint] = !isNaN(val) ? val : '-';
+        tempArr[12] = val || 0;
         blob[this.buildingName][this.year]['units'][tempUnit] = tempArr;
-      }
 
+        if (!isNaN(val)) {
+          totalArr[12] += val;
+        }
+      }
     });
-    totalArr[insertionPoint] = total;
+
+    totalArr[insertionPoint] = totalArr[12];
     blob[this.buildingName][this.year]['units']['total'] = totalArr;
     return blob;
   }
 
+
   // merge units + rent
   mergeRent(aggregate: any, oldArr: any, newArr: any): any {
     let units: string[] = this.getUnits(aggregate);
-    units.push('total')
+    units.push('total');
     const testObj: any = {};
 
     for (let i = 1; i < units.length; i++) {
       const unit: string = units[i];
       let total = 0;
 
-      const mergedArr: (number | string)[] = [];
+      let mergedArr: (number | string)[] = [];
       for (let j = 0; j < 12; j++) {
         const oldVal: number = +oldArr[unit][j];
         const newVal: number = +newArr[unit][j];
@@ -107,12 +111,13 @@ export class Building {
         total += +oldVal || 0;
         total += +newVal || 0;
       }
-      mergedArr.push(total)
+      mergedArr.push(total);
       testObj[unit] = mergedArr;
     }
 
     return testObj;
   }
+
 
 
 
