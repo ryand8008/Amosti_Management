@@ -21,16 +21,9 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
 
   const information = new Building(buildingName, selectedYear)
   let units = information.getUnits(aggregate)
-  units.push('total r')
+  units.push('total')
   const rent = information.getTotalRent(aggregate)
-
-  console.log(rent, 'this is the rent') // DELETE ME
-
-  // useEffect(() => {
-  //   // const information = new Building(buildingName, selectedYear)
-  // }, [selectedYear])
-
-  console.log(information.getTotalRent(aggregate), `this is information for ${buildingName}`)
+  const rentInfo = rent[buildingName][selectedYear]['units']
 
   const handleClickYear = (e, num) => {
     e.preventDefault()
@@ -41,36 +34,52 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
 
   return (
     <>
-      <h1>hello from New Building</h1>
-      <h2>{`building is: ${buildingName}`}</h2>
+      <StyledTitle>{`building: ${buildingName}`}</StyledTitle>
       {
-      <>
+      <StyledYearArrows>
         { years.indexOf(selectedYear) > 0 ? <button onClick={(e) => handleClickYear(e, -1) }>-</button> : null}
           <span>{selectedYear}</span>
           { years.indexOf(selectedYear) < years.length - 1 ? <button onClick={(e) => handleClickYear(e, 1) }>+</button> : null}
-      </>
+      </StyledYearArrows>
       }
 
       {
         <>
-          <StyledHeaderContainer>
+          <StyledTable>
+            <StyledHeaderContainer>
               <th>Depto</th>
-              {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
-              )}
+              {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>)}
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
             {units.map((unit, index) =>
               <StyledRowUnit>
-              {unit !== buildingName ? <StyledCell>{unit} </StyledCell> : null}
-
-            </StyledRowUnit>
+                {unit !== buildingName ? <StyledCell>{unit} </StyledCell> : null}
+                {unit !== buildingName && rentInfo[unit] &&
+                  rentInfo[unit].map((item:any, index:number) =>
+                    <StyledCell>{item}</StyledCell>
+                )}
+              </StyledRowUnit>
             )}
+          </StyledTable>
         </>
       }
+
+
 
     </>
   )
 }
+
+const StyledTitle = styled.h2`
+  display: flex;
+  justify-content: center;
+`
+
+const StyledYearArrows = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+`
 
 const StyledRowE = styled.tr`
 `
@@ -88,12 +97,12 @@ const StyledTable = styled.table`
   margin-bottom: 10px;
   margin-left: 30px;
   margin-right: 30px;
-  // ${StyledRowE}:nth-child(even) {
-  //   background: lightgrey;
-  // }
-  // ${StyledRowUnit}:nth-child(even) {
-  //   background: lightgrey;
-  // }
+  ${StyledRowE}:nth-child(even) {
+    background: lightgrey;
+  }
+  ${StyledRowUnit}:nth-child(even) {
+    background: lightgrey;
+  }
 `
 const StyleMonthsHeaders = styled.th`
   border: 1px solid black;
