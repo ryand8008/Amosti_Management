@@ -12,10 +12,6 @@ export const NewReport = () => {
     return []
   }, [aggregate])
 
-  useEffect(() => {
-    console.log(buildings, 'useeffect buildings')
-  }, [buildings])
-
   return (
     <>
       <h1>It's me, from NewReport</h1>

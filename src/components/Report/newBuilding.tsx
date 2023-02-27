@@ -7,6 +7,10 @@ interface NewBuildingProps {
   aggregate: any
 }
 
+interface StyledRowUnitProps {
+  end: boolean;
+}
+
 export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
 
@@ -52,7 +56,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
             {units.map((unit, index) =>
-              <StyledRowUnit>
+              <StyledRowUnit end={unit === 'total'}>
                 {unit !== buildingName ? <StyledCell>{unit} </StyledCell> : null}
                 {unit !== buildingName && rentInfo[unit] &&
                   rentInfo[unit].map((item:any, index:number) =>
@@ -82,9 +86,11 @@ const StyledYearArrows = styled.div`
 `
 
 const StyledRowE = styled.tr`
+
 `
-const StyledRowUnit = styled.tr`
-`
+const StyledRowUnit = styled.tr<StyledRowUnitProps>`
+  border-top: ${props => props.end ? '3px solid black' : 'none'}
+`;
 const StyledCell = styled.td`
   text-align: center;
 `
