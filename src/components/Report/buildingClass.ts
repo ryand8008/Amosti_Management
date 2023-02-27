@@ -29,7 +29,12 @@ export class Building {
 
   // Validation
   isValid(aggregate: any) {
-    return aggregate[this.buildingName][this.year] ? true : false;
+    if(aggregate[this.buildingName][this.year]){
+      return true;
+    }else{
+      console.log('Validation error: [buildingName][year] does not exist in aggregate')
+      return false;
+    }
   }
 
   getUnits(aggregate: any) {
@@ -83,9 +88,6 @@ export class Building {
     blob[this.buildingName][this.year]['units']['total'] = totalArr;
     return blob;
   }
-
-
-
 
   // merge units + rent
   mergeRent(aggregate: any, oldArr: any, newArr: any): any {
