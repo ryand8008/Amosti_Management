@@ -5,7 +5,8 @@
   "main": "index.ts",
   "scripts": {
     "build": "webpack -w",
-    "start": "nodemon src/server.ts 'webpack-dev-server --mode development --open --port 3000'",
+    "start": "nodemon src/server.ts",
+    "start:dev": "nodemon src/server.ts 'webpack-dev-server --mode development --open --port 3000'",
     "server": "nodemon ./src/server.ts --watch src --exec 'webpack-dev-server --mode development --open --port 3000'",
     "buildTest": "react-scripts build"
   },

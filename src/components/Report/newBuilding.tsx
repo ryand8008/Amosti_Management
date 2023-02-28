@@ -52,16 +52,16 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
         <StyledContainer>
           <StyledTable>
             <StyledHeaderContainer>
-              <th>Depto</th>
+              <StyleMonthsHeaders>Depto</StyleMonthsHeaders>
               {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>)}
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
             {units.map((unit, index) =>
               <StyledRowUnit end={unit === 'total'}>
-                {unit !== buildingName ? <StyledCell>{unit} </StyledCell> : null}
+                {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
                 {unit !== buildingName && rentInfo[unit] &&
                   rentInfo[unit].map((item:any, index:number) =>
-                    <StyledCell>{item}</StyledCell>
+                    <StyledCellNum>{item}</StyledCellNum>
                 )}
               </StyledRowUnit>
             )}
@@ -91,8 +91,11 @@ const StyledRowE = styled.tr`
 const StyledRowUnit = styled.tr<StyledRowUnitProps>`
   border-top: ${props => props.end ? '3px solid black' : 'none'}
 `;
-const StyledCell = styled.td`
-  text-align: center;
+const StyledCellText = styled.td`
+  text-align: left;
+`
+const StyledCellNum = styled.td`
+  text-align: right;
 `
 
 const StyledTable = styled.table`
@@ -112,9 +115,9 @@ const StyledTable = styled.table`
 `
 const StyleMonthsHeaders = styled.th`
   border-bottom: 1px solid black;
-  text-align: center;
+  text-align: left;
   width: 80px;
-  padding: 5px;
+  padding-left: 5px;
   background: #82b0f5;
 `
 const StyledHeaderContainer = styled.tr`
