@@ -11,10 +11,11 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
   const [reportingYear, setReportingYear] = useState<string | null>(null);
   const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
+
   const [totalObj, setTotalObj] = useState(null)
+
   useEffect(() => {
     if (reportingYear) {
-      console.log(generateFull(reportingYear), 'what dis look like?')
        setTotalObj((prev) => generateFull(reportingYear))
     }
 
@@ -91,8 +92,8 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
   return (
     <>
-      <StyledH1>Hello from New FullReport</StyledH1>
       <StyledContainer>
+        <span>Select a year</span>
       <select onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setReportingYear(e.target.value)}>
         {reportingYear && (
           <option value={reportingYear}>{reportingYear}</option>
@@ -105,13 +106,11 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
             </option>
           )):null}
       </select>
-
-        {/* FOR TESTS PURPOSES | DELETE ME LATER */}
-        {reportingYear ? <div>TESTING {reportingYear}</div> : null}
       </StyledContainer>
 
       {
         <>
+        <StyledContainer>
           <StyledTable>
             <StyledHeaderContainer>
               <th>Edificio</th>
@@ -139,6 +138,7 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
             ) : null}
 
           </StyledTable>
+          </StyledContainer>
         </>
       }
     </>

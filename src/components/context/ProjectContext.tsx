@@ -55,9 +55,6 @@ const AggregateProvider = ({children}) => {
 
       getBuildings()
       getYears()
-
-      // DELETE ME
-      console.log(reportInfo, 'this is report')
     }
 
   }, [ JSON.stringify(aggregate), buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked, buildings.length])

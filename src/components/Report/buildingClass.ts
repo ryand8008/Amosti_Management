@@ -35,7 +35,7 @@ export class Building {
     if(aggregate[this.buildingName][this.year]){
       return true;
     }else{
-      console.log('Validation error: [buildingName][year] does not exist in aggregate')
+      console.log(`Validation error: [${this.buildingName}][${this.year}] does not exist in aggregate`)
       return false;
     }
   }

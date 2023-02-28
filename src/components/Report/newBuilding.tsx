@@ -49,6 +49,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
 
       {
         <>
+        <StyledContainer>
           <StyledTable>
             <StyledHeaderContainer>
               <th>Depto</th>
@@ -65,6 +66,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
               </StyledRowUnit>
             )}
           </StyledTable>
+          </StyledContainer>
         </>
       }
 
@@ -94,7 +96,7 @@ const StyledCell = styled.td`
 `
 
 const StyledTable = styled.table`
-  border: thin solid black;
+  // border: thin solid black;
   border-radius: 5px
   margin: auto;
   margin-top: 10px;
@@ -109,7 +111,7 @@ const StyledTable = styled.table`
   }
 `
 const StyleMonthsHeaders = styled.th`
-  border: 1px solid black;
+  border-bottom: 1px solid black;
   text-align: center;
   width: 80px;
   padding: 5px;
@@ -118,3 +120,8 @@ const StyleMonthsHeaders = styled.th`
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
   `
+
+  const StyledContainer = styled.div`
+    display: flex;
+    justify-content: center;
+`
