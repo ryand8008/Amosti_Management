@@ -24,11 +24,12 @@ export const NewReport = () => {
 
   const handleClickFullReport = (e) => {
     e.preventDefault()
-    setShowFullReport(() => !showFullReport)
-    console.log(showFullReport, showIndividual, 'report|individual')
-    if (showFullReport) {
-      setShowIndividual(false)
-    }
+    setShowFullReport((showFullReport) => !showFullReport)
+    setShowIndividual(() => false)
+    // console.log(showFullReport, showIndividual, 'report|individual')
+    // if (showFullReport) {
+    //   setShowIndividual(() => false)
+    // }
   }
 
 
