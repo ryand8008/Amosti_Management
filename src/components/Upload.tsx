@@ -1,10 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import styled from "styled-components";
 import { AggregateContext } from "./context/ProjectContext";
-import { Filtered } from "./filtered/Filtered";
-import { FullReport } from "./Report/FullReport";
-import { Report } from "./Report/Report";
-import { UploadTable } from "./UploadTable";
 
 var xlsx = require("xlsx");
 

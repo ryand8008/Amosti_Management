@@ -2,7 +2,7 @@ import React from "react";
 import AggregateProvider from "./context/ProjectContext";
 import { Header } from "./Header";
 import { Upload } from "./Upload";
-import { NewReport } from "./Report/newReport";
+import { Report } from "./Report/Report";
 
 export const App = () => {
 
@@ -11,7 +11,7 @@ export const App = () => {
       <Header />
       <AggregateProvider>
         <Upload />
-        <NewReport />
+        <Report />
       </AggregateProvider>
     </>
   )
