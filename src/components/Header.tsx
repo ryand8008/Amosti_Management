@@ -2,29 +2,11 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 export const Header = () => {
-  let testingNum = 3;
-  // let testingArr = []
-
-  const [testingArr, setTestingArr] = useState<string[]>([])
-
-  for (let i = 1; i < testingNum; i++) {
-    testingArr.push(`testing${i}`)
-  }
-
-  useEffect(() => {
-
-  }, [testingArr.length])
 
   return (
     <>
     <StyledHeader>
-      <StyledTitle> Amosti Management </StyledTitle>
-      {/* <StyledTabHolder>
-        <StyledTab onClick={() => setTestingArr((testingArr) => [...testingArr, `testing${testingArr.length + 1}`])}>Add a button tab</StyledTab>
-        {testingArr.map((name) =>
-          <StyledTab>{name}</StyledTab>
-        )}
-      </StyledTabHolder> */}
+      <StyledTitle> Amosti Management</StyledTitle>
     </StyledHeader>
     </>
 

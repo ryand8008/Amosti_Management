@@ -33,20 +33,22 @@ module.exports = {
   // File extensions to support resolving
   resolve: {
     extensions: [".ts", ".tsx", ".js", ".gz"],
-    // fallback: {
-    //   "fs": false,
-    //   "tls": false,
-    //   "net": false,
-    //   "path": false,
-    //   "zlib": false,
-    //   "http": false,
-    //   "https": false,
-    //   "stream": false,
-    //   "crypto": false,
-    //   "url": false,
-    //   "util": false,
-    //   "querystring": false,
-    //   // "crypto-browserify": require.resolve('crypto-browserify'), //if you want to use this module also don't forget npm i crypto-browserify
-    // }
+    fallback: {
+      "fs": false,
+      "tls": false,
+      "net": false,
+      "path": false,
+      "zlib": false,
+      "http": false,
+      "https": false,
+      "stream": false,
+      "crypto": false,
+      "url": false,
+      "util": false,
+      "querystring": false,
+      "os": false,
+      "async_hooks": require.resolve("async_hooks")
+      // "crypto-browserify": require.resolve('crypto-browserify'), //if you want to use this module also don't forget npm i crypto-browserify
+    }
   },
 };
