@@ -195,6 +195,7 @@ const StyledRowE = styled.tr`
 
 `
 const StyledRowUnit = styled.tr`
+
 `;
 const StyledCell = styled.td`
   text-align: center;
@@ -208,12 +209,11 @@ const StyledTable = styled.table`
   margin-bottom: 10px;
   margin-left: 30px;
   margin-right: 30px;
-  ${StyledRowE}:nth-child(even) {
-    background: lightgrey;
-  }
   ${StyledRowUnit}:nth-child(even) {
     background: lightgrey;
   }
+  border-collapse: collapse;
+
 `
 const StyleMonthsHeaders = styled.th`
   border: 1px solid black;

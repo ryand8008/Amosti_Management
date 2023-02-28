@@ -117,6 +117,7 @@ const StyledTable = styled.table`
   ${StyledRowUnit}:nth-child(even) {
     background: lightgrey;
   }
+  border-collapse: collapse;
 `
 const StyleMonthsHeaders = styled.th`
   border-bottom: 1px solid black;
@@ -124,6 +125,8 @@ const StyleMonthsHeaders = styled.th`
   width: fit-content;
   padding: 16px 16px 5px 5px;
   background: #82b0f5;
+  resize: horizontal; /* Allows the header cell to be resized horizontally */
+  overflow: auto; /* Ensures that content is not hidden when the cell is resized */
 `
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
