@@ -157,7 +157,13 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
             ) : null}
 
           </StyledTable>
-          {totalObj ? <button onClick={(e) => exportToExcel(e)}>Export File</button> : null}
+          </StyledContainer>
+          <StyledContainer>
+            {totalObj ?
+              <button onClick={(e) => exportToExcel(e)}>
+                <img src={'https://img.icons8.com/ios/32/export.png'}/>
+              </button>
+            : null}
           </StyledContainer>
         </>
       }

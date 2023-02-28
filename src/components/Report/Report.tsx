@@ -55,7 +55,7 @@ export const Report = () => {
             <NewBuilding aggregate={aggregate} buildingName={building} />
           </div>
           <StyledTemp>
-            <StyledButton onClick={handlePrint}>{`print building: ${building}`}</StyledButton>
+            <StyledButton onClick={handlePrint}><img src={'https://img.icons8.com/ios/32/printer-door-open.png'}/>{building}</StyledButton>
           </StyledTemp>
         </>
       ) : null}
@@ -66,7 +66,7 @@ export const Report = () => {
           <NewFullReport aggregate={aggregate} buildings={buildings} />
         </div>
         <StyledTemp>
-          <StyledButton onClick={handlePrint}>{`print full report`}</StyledButton>
+          <StyledButton onClick={handlePrint}><img src={'https://img.icons8.com/ios/32/printer-door-open.png'}/></StyledButton>
 
         </StyledTemp>
         </>
@@ -89,6 +89,9 @@ const StyledH2 = styled.h2`
 const StyledButton = styled.button`
   display: flex;
   justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
 `
 
 const StyledTemp = styled.div`

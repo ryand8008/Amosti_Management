@@ -57,7 +57,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
             {units.map((unit, index) =>
-              <StyledRowUnit end={unit === 'total'}>
+              <StyledRowUnit end={index === units.length}>
                 {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
                 {unit !== buildingName && rentInfo[unit] &&
                   rentInfo[unit].map((item:any, index:number) =>
@@ -74,6 +74,9 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
   )
 }
 
+const StyledWindow = styled.div`
+  width: 100%;
+`
 const StyledTitle = styled.h2`
   display: flex;
   justify-content: center;
@@ -93,9 +96,11 @@ const StyledRowUnit = styled.tr<StyledRowUnitProps>`
 `;
 const StyledCellText = styled.td`
   text-align: left;
+  padding: 16px 16px 2px 5px;
 `
 const StyledCellNum = styled.td`
   text-align: right;
+  padding: 16px 5px 2px 16px;
 `
 
 const StyledTable = styled.table`
@@ -116,8 +121,8 @@ const StyledTable = styled.table`
 const StyleMonthsHeaders = styled.th`
   border-bottom: 1px solid black;
   text-align: left;
-  width: 80px;
-  padding-left: 5px;
+  width: fit-content;
+  padding: 16px 16px 5px 5px;
   background: #82b0f5;
 `
 const StyledHeaderContainer = styled.tr`
