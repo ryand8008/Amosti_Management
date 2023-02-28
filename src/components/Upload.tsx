@@ -116,7 +116,7 @@ export const Upload = () => {
           }
         }
       } catch {
-        console.log('UPLOAD ISSUE')
+        console.log('ERROR: UPLOAD ISSUE')
       }
     })
   }

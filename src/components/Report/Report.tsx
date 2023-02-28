@@ -19,9 +19,6 @@ export const Report = () => {
   const handlePrint = useReactToPrint({
     content: () => componentToPrint.current,
   });
-  useEffect(() => {
-
-  }, [showIndividual, showFullReport])
 
   const buildings = useMemo(() => {
     if (aggregate) {
@@ -29,6 +26,11 @@ export const Report = () => {
     }
     return []
   }, [aggregate])
+
+  useEffect(() => {
+
+  }, [showIndividual, showFullReport, buildings])
+
 
   const handleClickFullReport = (e) => {
     e.preventDefault()

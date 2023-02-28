@@ -12,13 +12,12 @@ var XLSX = require("xlsx");
 export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
   const [reportingYear, setReportingYear] = useState<string | null>(null);
-  const hardCodeMonths = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
+  const hardCodeMonths: string[] = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
 
   const [totalObj, setTotalObj] = useState(null)
 
   useEffect(() => {
       setTotalObj((prev) => generateFull(reportingYear))
-    console.log('is this rendering a lot?')
   }, [reportingYear])
 
   const years = useMemo(() => {
@@ -61,14 +60,7 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
 
   // merge and create a full report depending on the 'reportedYear'
-  // {
-  //   buildingName: {
-  //     enero: [],
-  //     febrero: [],
-  //      ...
-  //   }
-  // }
-  const generateFull = (year) => {
+  const generateFull = (year: string) => {
     let totalArr = new Array(13).fill('-')
     let dataObj = {total: [...totalArr]}
 
