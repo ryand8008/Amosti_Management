@@ -15,7 +15,7 @@ module.exports = {
   // Where to compile the bundle
   // By default the output directory is `dist`
   output: {
-    filename: "bundle.js",
+    filename: "bundle[chunkhash].js",
     path: path.resolve(__dirname, "dist")
   },
 
@@ -29,6 +29,11 @@ module.exports = {
     ]
   },
   plugins: [new CompressionPlugin()],
+  optimization: {
+    splitChunks: {
+      chunks: 'all',
+    },
+  },
 
   // File extensions to support resolving
   resolve: {
