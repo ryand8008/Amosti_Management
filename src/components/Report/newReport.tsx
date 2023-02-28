@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
+import ReactToPrint, { useReactToPrint } from "react-to-print";
 import { AggregateContext } from "../context/ProjectContext";
 import { NewBuilding } from "./newBuilding";
 import { NewFullReport } from "./NewFullReport";
@@ -11,6 +12,13 @@ export const NewReport = () => {
   const [showIndividual, setShowIndividual] = useState(false)
   const [showFullReport, setShowFullReport] = useState(false)
 
+  // to print things
+  const componentToPrint = useRef(null)
+
+  // DO NOT TOUCH
+  const handlePrint = useReactToPrint({
+    content: () => componentToPrint.current,
+  });
   useEffect(() => {
 
   }, [showIndividual, showFullReport])
@@ -41,10 +49,25 @@ export const NewReport = () => {
         </StyledButtonDiv></> : null}
       <p />
       {showIndividual ? buildings.map((building) =>
-        <NewBuilding aggregate={aggregate} buildingName={building} />
+        <>
+          <div ref={componentToPrint}>
+            <NewBuilding aggregate={aggregate} buildingName={building} />
+          </div>
+            <StyledButton onClick={handlePrint}>{`print building: ${building}`}</StyledButton>
+        </>
       ) : null}
 
-      {showFullReport ? <NewFullReport aggregate={aggregate} buildings={buildings}/> : null}
+      {showFullReport ?
+        <>
+        <div ref={componentToPrint}>
+          <NewFullReport aggregate={aggregate} buildings={buildings} />
+        </div>
+        <div>
+          <StyledButton onClick={handlePrint}>{`print full report`}</StyledButton>
+
+        </div>
+        </>
+        : null}
     </>
   )
 }
@@ -56,6 +79,11 @@ const StyledButtonDiv = styled.div`
 `
 
 const StyledH2 = styled.h2`
+  display: flex;
+  justify-content: center;
+`
+
+const StyledButton = styled.button`
   display: flex;
   justify-content: center;
 `

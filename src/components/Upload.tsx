@@ -6,9 +6,6 @@ import { FullReport } from "./Report/FullReport";
 import { Report } from "./Report/Report";
 import { UploadTable } from "./UploadTable";
 
-// testing Individual function
-import { Individual } from "./Report/IndividualBuild";
-
 var xlsx = require("xlsx");
 
 declare module 'react' {
@@ -45,8 +42,6 @@ interface Testing {
 export const Upload = () => {
   const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo, yearsAvailable, setYearPicked, yearPicked } = useContext(AggregateContext)
 
-  // stringified aggre
-  let stringAgg = JSON.stringify(aggregate)
   const [excel, setExcel] = useState<newSheet[]>()
 
   // testing SPLIT EXCEL
@@ -61,16 +56,16 @@ export const Upload = () => {
   // // checking aggregate
    const [parsedInfo, setParsedInfo] = useState<any>({})
 
-  useEffect(() => {
+   const showIndividual = false; // temp DELETE AFTER REFACTOR
+   const showFull = false; // temp DELETE AFTER REFACTOR
 
+   useEffect(() => {
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
-
       setAggregate(() => parsedInfo)
-
     }
+  }, [parsedInfo, splitExcel, setAggregate])
 
-  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, yearsAvailable, yearPicked])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -260,10 +255,6 @@ const findGastos = (json)=>{
     if (Object.keys(reportInfo).length > 0) {
       setReportInfo({})
     }
-
-    // set to false to close window for rerender
-    setShowIndividual(false)
-    setShowFull(false)
 
     // needed to reset and re-render based off new raw data
     setParsedInfo({})

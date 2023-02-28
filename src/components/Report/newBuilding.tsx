@@ -96,7 +96,7 @@ const StyledCell = styled.td`
 `
 
 const StyledTable = styled.table`
-  // border: thin solid black;
+  border: thin solid black;
   border-radius: 5px
   margin: auto;
   margin-top: 10px;
