@@ -375,14 +375,16 @@ export const ReportBuilding = ({ buildingName, yr }) => {
             <h2>{buildingName}: {year}</h2>
           </StyledTitle>
           {years.length > 1 && years.indexOf(year) !== years.length - 1 ? <StyledYearArrows onClick={(e) => { e.preventDefault(); changeYears(e, 'increase', year); } }>{'>'}</StyledYearArrows> : <StyledInvisible>   </StyledInvisible>}
-        </StyledTop><StyledTable>
+        </StyledTop>
+        <StyledTable>
             <StyledHeaderContainer>
               <th>Depto</th>
               {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>
               )}
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
-            {annualRent ? units.map((unit, index) => <StyledRowUnit>
+            {annualRent ? units.map((unit, index) =>
+              <StyledRowUnit>
               {unit !== buildingName ? <StyledCell>{unit} </StyledCell> : null}
               {index !== 0 && annualRent[buildingName][year] ? Object.values(annualRent[buildingName][year]['units'][unit]).map((item2: string) => <StyledCell>{item2}</StyledCell>
               )

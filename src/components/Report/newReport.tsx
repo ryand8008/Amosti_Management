@@ -2,13 +2,18 @@ import React, { useContext, useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { AggregateContext } from "../context/ProjectContext";
 import { NewBuilding } from "./newBuilding";
+import { NewFullReport } from "./NewFullReport";
 
 export const NewReport = () => {
   const { aggregate } = useContext(AggregateContext)
 
   // boolean to show individual Report
   const [showIndividual, setShowIndividual] = useState(false)
-  const [showFullReport, setShowReport] = useState(false)
+  const [showFullReport, setShowFullReport] = useState(false)
+
+  useEffect(() => {
+
+  }, [showIndividual, showFullReport])
 
   const buildings = useMemo(() => {
     if (aggregate) {
@@ -17,22 +22,32 @@ export const NewReport = () => {
     return []
   }, [aggregate])
 
-  useEffect(() => {
+  const handleClickFullReport = (e) => {
+    e.preventDefault()
+    setShowFullReport(() => !showFullReport)
+    console.log(showFullReport, showIndividual, 'report|individual')
+    if (showFullReport) {
+      setShowIndividual(false)
+    }
+  }
 
-  }, [showIndividual])
 
   return (
     <>
       {/* <h1>It's me, from NewReport</h1> */}
-      <StyledH2>What do you want to do?</StyledH2>
-      <StyledButtonDiv>
-        <button onClick={()=>setShowIndividual(() => !showIndividual)}>{showIndividual ? 'close individual report' : 'See individual Report'}</button>
-        <button>Generate a full report</button>
-      </StyledButtonDiv>
+      {aggregate ?
+      <>
+        <StyledH2>What do you want to do?</StyledH2>
+        <StyledButtonDiv>
+          <button onClick={() => setShowIndividual(() => !showIndividual)}>{showIndividual ? 'close individual report' : 'See individual Report'}</button>
+          <button onClick={(e) => handleClickFullReport(e)}>{showFullReport ? 'close full report' : 'Generate a full report'}</button>
+        </StyledButtonDiv></> : null}
       <p />
       {showIndividual ? buildings.map((building) =>
         <NewBuilding aggregate={aggregate} buildingName={building} />
       ) : null}
+
+      {showFullReport ? <NewFullReport aggregate={aggregate} buildings={buildings}/> : null}
     </>
   )
 }

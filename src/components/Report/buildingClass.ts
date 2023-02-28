@@ -21,6 +21,9 @@ export class Building {
     return ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre','noviembre', 'diciembre' ]
   }
 
+  getAllYears(aggregate: any) {
+    return Object.keys(aggregate[this.buildingName])
+  }
   // methods
   // getAllMonths => string[]
   // getRent(month) => not sure

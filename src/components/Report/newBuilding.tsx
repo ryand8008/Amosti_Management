@@ -36,6 +36,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
     setSelectedYear((selectedYear) => years[position])
   }
 
+  console.log(years, 'this is years') // DELETE ME
   return (
     <>
       <StyledTitle>{`building: ${buildingName}`}</StyledTitle>
@@ -67,8 +68,6 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
           </StyledTable>
         </>
       }
-
-
 
     </>
   )
