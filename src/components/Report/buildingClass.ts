@@ -157,8 +157,6 @@ export class Building {
     const hardCodeMonths = this.hardCodeMonths();
     const insertionPoint = hardCodeMonths.indexOf(month);
     let tempObj = {units: {}}
-    let fileToCheck = aggregate[this.buildingName][this.year][month]['unitInfo']
-    console.log(aggregate[this.buildingName][this.year][month]['costs']) // DELETE ME
     let total = 0;
 
     for (let i = 1; i < units.length - 1; i++) {
@@ -235,6 +233,7 @@ export class Building {
     return container;
   }
 
+  // save for later
   getCosts() {
     console.log()
   }
