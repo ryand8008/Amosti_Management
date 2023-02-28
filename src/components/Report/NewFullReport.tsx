@@ -7,6 +7,8 @@ interface NewReportProps {
   aggregate: any
 }
 
+var XLSX = require("xlsx");
+
 export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
   const [reportingYear, setReportingYear] = useState<string | null>(null);
@@ -15,10 +17,8 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
   const [totalObj, setTotalObj] = useState(null)
 
   useEffect(() => {
-    if (reportingYear) {
-       setTotalObj((prev) => generateFull(reportingYear))
-    }
-
+      setTotalObj((prev) => generateFull(reportingYear))
+    console.log('is this rendering a lot?')
   }, [reportingYear])
 
   const years = useMemo(() => {
@@ -88,6 +88,33 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
     return dataObj
   }
 
+  // EXPORT FILE
+  const exportToExcel = (e) => {
+    const sheetHeaders = ['Edificio', 'enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre', 'anual'];
+
+  const headers = sheetHeaders.map(h => ({ v: h }));
+  // const dataRows = Object.entries(totalObj).map(([key, value]) => ([{ v: key }, ...(value as unknown[]).map(v => ({ v }))]));
+  let dataRows = Object.entries(totalObj).map(([key, value]) => ([{ v: key }, ...(value as unknown[]).map(v => ({ v }))]));
+
+  // Find the row index for 'total'
+  const totalRowIndex = dataRows.findIndex(row => row[0].v === 'total');
+  // Remove the 'total' row from its current position
+  const totalRow = dataRows.splice(totalRowIndex, 1)[0];
+  // Add the 'total' row to the end of the dataRows array
+  dataRows.push(totalRow);
+  // Move the 'total' value to the first column of the row
+  totalRow[0] = { v: 'total' };
+  totalRow.push({ v: '' }); // add an empty cell at the end
+
+
+
+
+  const ws = XLSX.utils.aoa_to_sheet([headers, ...dataRows]);
+
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+    XLSX.writeFile(wb, `Full_Report_${reportingYear}.xlsx`);
+  }
 
 
   return (
@@ -138,6 +165,7 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
             ) : null}
 
           </StyledTable>
+          {totalObj ? <button onClick={(e) => exportToExcel(e)}>Export File</button> : null}
           </StyledContainer>
         </>
       }

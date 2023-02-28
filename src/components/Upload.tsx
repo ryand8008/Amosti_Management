@@ -42,6 +42,8 @@ interface Testing {
 export const Upload = () => {
   const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo, yearsAvailable, setYearPicked, yearPicked } = useContext(AggregateContext)
 
+  // stringified aggre
+  let stringAgg = JSON.stringify(aggregate)
   const [excel, setExcel] = useState<newSheet[]>()
 
   // testing SPLIT EXCEL
@@ -59,13 +61,16 @@ export const Upload = () => {
    const showIndividual = false; // temp DELETE AFTER REFACTOR
    const showFull = false; // temp DELETE AFTER REFACTOR
 
-   useEffect(() => {
+  useEffect(() => {
+
     if (Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel)
-      setAggregate(() => parsedInfo)
-    }
-  }, [parsedInfo, splitExcel, setAggregate])
 
+      setAggregate(() => parsedInfo)
+
+    }
+
+  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, yearsAvailable, yearPicked])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
