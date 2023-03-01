@@ -5,6 +5,10 @@ import { AggregateContext } from "../context/ProjectContext";
 import { NewBuilding } from "./newBuilding";
 import { NewFullReport } from "./NewFullReport";
 
+interface Button {
+  active: boolean
+}
+
 export const Report = () => {
   const { aggregate } = useContext(AggregateContext)
 
@@ -45,8 +49,8 @@ export const Report = () => {
       <>
         <StyledH2>What do you want to do?</StyledH2>
         <StyledButtonDiv>
-          <TestButton onClick={() => {setShowIndividual(() => !showIndividual); setShowFullReport(() => false)}}>{showIndividual ? 'close individual report' : 'See individual Report'}</TestButton>
-          <TestButton onClick={(e) => handleClickFullReport(e)}>{showFullReport ? 'close full report' : 'Generate a full report'}</TestButton>
+          <TestButton active={showIndividual} onClick={() => {setShowIndividual(() => !showIndividual); setShowFullReport(() => false)}}>{showIndividual ? 'close individual report' : 'See individual Report'}</TestButton>
+          <TestButton active={showFullReport} onClick={(e) => handleClickFullReport(e)}>{showFullReport ? 'close full report' : 'Generate a full report'}</TestButton>
         </StyledButtonDiv></> : null}
       <p />
       {showIndividual ? buildings.map((building) =>
@@ -98,12 +102,12 @@ const StyledTemp = styled.div`
   justify-content: center;
 `
 
-const TestButton = styled.button`
+const TestButton = styled.button<Button>`
   display: inline-block;
   padding: 0.5rem 1rem;
   font-size: 1rem;
   color: #fff;
-  background-color: #0077cc;
+  // background-color: #0077cc;
   border-radius: 4px;
   cursor: pointer;
 
@@ -111,4 +115,5 @@ const TestButton = styled.button`
     background-color: #005fa3;
   }
   margin: 5px;
+  background-color: ${props => props.active ? '#53f563' : '#0077cc'}
 `
