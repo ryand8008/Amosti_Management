@@ -10,7 +10,6 @@ export const AggregateContext = React.createContext<ReportType | null>(null)
 
 const AggregateProvider = ({children}) => {
   const [aggregate, setAggregate] = useState<any>()
-  let aggregateStringified = JSON.stringify(aggregate)
 
 
   useEffect(() => {

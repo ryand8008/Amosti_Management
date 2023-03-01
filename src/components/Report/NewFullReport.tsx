@@ -141,8 +141,13 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
               return (
                 <StyledRowUnit key={item}>
                   <StyledCellText>{item}</StyledCellText>
-                  {totalObj[item].map((item) =>
-                    <StyledCellNum>{item}</StyledCellNum>
+                  {totalObj[item].map((item) => {
+                    if (!isNaN(item)) {
+                      return <StyledCellNum>{item}</StyledCellNum>
+                    } else {
+                      return <StyledCellHyphen>{item}</StyledCellHyphen>
+                    }
+                  }
                   )}
                 </StyledRowUnit>
               );
@@ -150,8 +155,13 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
             {totalObj && totalObj.total ? (
               <StyledRowUnitTotal key="total">
                 <StyledCellText>total</StyledCellText>
-                {totalObj.total.map((item) =>
-                  <StyledCellNum>{item}</StyledCellNum>
+                {totalObj.total.map((item) => {
+                  if (!isNaN(item)) {
+                    return <StyledCellNum>{item}</StyledCellNum>
+                  } else {
+                    return <StyledCellHyphen>{item}</StyledCellHyphen>
+                  }
+                }
                 )}
               </StyledRowUnitTotal>
             ) : null}
@@ -189,6 +199,10 @@ const StyledCellText = styled.td`
 `
 const StyledCellNum = styled.td`
   text-align: right;
+  padding: 16px;
+`
+const StyledCellHyphen = styled.td`
+  text-align: center;
   padding: 16px;
 `
 
