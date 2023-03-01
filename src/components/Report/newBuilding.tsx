@@ -40,12 +40,28 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
     <>
       <StyledTitle>{`building: ${buildingName}`}</StyledTitle>
       {
-      <StyledYearArrows>
-        { years.indexOf(selectedYear) > 0 ? <button onClick={(e) => handleClickYear(e, -1) }>-</button> : null}
+        <StyledYearArrows>
+          { years.indexOf(selectedYear) > 0 ? (
+            <StyledArrowButton onClick={(e) => handleClickYear(e, -1)}>
+              <img src={'https://img.icons8.com/ios-glyphs/16/left.png'}/>
+            </StyledArrowButton>
+          ) : (
+            <StyledArrowButton style={{ visibility: "hidden" }}><img src={'https://img.icons8.com/ios-glyphs/16/left.png'}/></StyledArrowButton>
+          )}
           <span>{selectedYear}</span>
-          { years.indexOf(selectedYear) < years.length - 1 ? <button onClick={(e) => handleClickYear(e, 1) }>+</button> : null}
-      </StyledYearArrows>
+          { years.indexOf(selectedYear) < years.length - 1 ? (
+            <StyledArrowButton onClick={(e) => handleClickYear(e, 1)}>
+              <img src={'https://img.icons8.com/ios-glyphs/16/right.png'}/>
+            </StyledArrowButton>
+          ) : (
+            <StyledArrowButton style={{ visibility: "hidden" }}><img src={'https://img.icons8.com/ios-glyphs/16/right.png'}/></StyledArrowButton>
+          )}
+        </StyledYearArrows>
       }
+
+
+
+
 
       {
         <>
@@ -57,7 +73,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
             {units.map((unit, index) =>
-              <StyledRowUnit end={index === units.length}>
+              <StyledRowUnit end={unit === 'total'}>
                 {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
                 {unit !== buildingName && rentInfo[unit] &&
                   rentInfo[unit].map((item:any, index:number) =>
@@ -73,6 +89,12 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
     </>
   )
 }
+
+const StyledArrowButton = styled.button`
+  background: none;
+  border: none;
+  display: ${({ hidden }) => (hidden ? "none" : "block")};
+`;
 
 const StyledWindow = styled.div`
   width: 100%;
@@ -92,39 +114,47 @@ const StyledRowE = styled.tr`
 
 `
 const StyledRowUnit = styled.tr<StyledRowUnitProps>`
-  border-top: ${props => props.end ? '3px solid black' : 'none'}
+  background-color: ${props => props.end ? '#4f5e50' : 'none'};
+  color: ${props => props.end ? '#cde6d5' : 'none'};
 `;
+
 const StyledCellText = styled.td`
   text-align: left;
-  padding: 16px 16px 2px 5px;
+  padding: 16px 16px 10px 16px;
 `
 const StyledCellNum = styled.td`
   text-align: right;
-  padding: 16px 5px 2px 16px;
+  padding: 16px;
 `
 
-const StyledTable = styled.table`
-  border: thin solid black;
-  border-radius: 5px
-  margin: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  margin-left: 30px;
-  margin-right: 30px;
-  ${StyledRowE}:nth-child(even) {
-    background: lightgrey;
-  }
-  ${StyledRowUnit}:nth-child(even) {
-    background: lightgrey;
-  }
-  border-collapse: collapse;
+const StyledCellHypen = styled.td`
+  text-align: center;
+  padding: 16px
 `
+
+// const StyledTable = styled.table`
+  // border: thin solid black;
+  // border-radius: 5px
+  // margin: auto;
+  // margin-top: 10px;
+  // margin-bottom: 10px;
+  // margin-left: 30px;
+  // margin-right: 30px;
+  // ${StyledRowE}:nth-child(even) {
+  //   background: lightgrey;
+  // }
+  // ${StyledRowUnit}:nth-child(even) {
+  //   background: lightgrey;
+  // }
+//   border-collapse: collapse;
+// `
 const StyleMonthsHeaders = styled.th`
   border-bottom: 1px solid black;
   text-align: left;
-  width: fit-content;
-  padding: 16px 16px 5px 5px;
-  background: #82b0f5;
+  width: 125px;
+  padding: 16px;
+  background: #2b382c;
+  color: #cde6d5;
   resize: horizontal; /* Allows the header cell to be resized horizontally */
   overflow: auto; /* Ensures that content is not hidden when the cell is resized */
 `
@@ -136,3 +166,48 @@ const StyledHeaderContainer = styled.tr`
     display: flex;
     justify-content: center;
 `
+
+const StyledTable = styled.table`
+  border-collapse: collapse;
+  margin: auto;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  margin-left: 30px;
+  margin-right: 30px;
+  ${StyledRowUnit}:nth-child(even) {
+    background: lightgrey;
+  }
+
+  th {
+    position: relative;
+    padding-right: 10px;
+  }
+
+  th::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: col-resize;
+    background-color: transparent;
+    z-index: 1;
+  }
+
+  th:hover::after {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  th::-webkit-resizer {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: col-resize;
+    z-index: 2;
+    background-color: transparent;
+  }
+`;
