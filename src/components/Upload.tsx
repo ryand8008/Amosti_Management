@@ -40,7 +40,7 @@ export const Upload = () => {
 
   // stringified aggre
   let stringAgg = JSON.stringify(aggregate)
-  const [excel, setExcel] = useState<newSheet[]>()
+
 
   // testing SPLIT EXCEL
   const [splitExcel, setSplitExcel] = useState<any>({})
@@ -56,6 +56,9 @@ export const Upload = () => {
 
    const showIndividual = false; // temp DELETE AFTER REFACTOR
    const showFull = false; // temp DELETE AFTER REFACTOR
+
+   // SHOW MORE FILES
+   const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
 
@@ -201,26 +204,10 @@ const findGastos = (json)=>{
             }
           }
         }
-          // ADD HERE A POP UP
             setSplitExcel({...splitExcel, ...holding})
         };
         reader.readAsArrayBuffer(file);
-
       })
-
-    }
-
-  }
-  // testing drag drop
-  // XLSX is a global from the standalone script
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    if (e.type === 'dragenter' || e.type === 'dragover') {
-      setDragActive(true)
-    } else if (e.type === 'dragleave') {
-      setDragActive(false)
     }
   }
 
@@ -267,14 +254,19 @@ const findGastos = (json)=>{
     <>
       <Window>
 
-      { !showFull ? <form onDragEnter={handleDrag} onSubmit={(e) => e.preventDefault()}>
+      { !showFull ? <form onSubmit={(e) => e.preventDefault()}>
       { !showIndividual ? <><input
             type='file'
             multiple={true}
             name='uploads'
             id='uploads'
-            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" className={dragActive ? 'drag-active' : ''} /><DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox></> : null}
+            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" /><DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox></> : null}
       </form> : null}
+
+
+
+
+
       </Window>
     </>
   )
@@ -283,11 +275,26 @@ const findGastos = (json)=>{
 
 const StyledTest = styled.div`
   display: flex;
-`
-const StyledTitle = styled.h1`
-  display: flex;
-  text-align: center;
-`
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 5px;
+  // background-color: #f2f2f2;
+  margin: 5px 0;
+
+  span {
+    display: flex;
+    align-items: center;
+  }
+`;
+
+const DeleteButton = styled.button`
+  background-color: transparent;
+  border: dotted;
+  // color: #ff0000;
+  cursor: pointer;
+`;
+
 
 const Window = styled.div`
   display: flex;
@@ -308,6 +315,8 @@ const DragBox = styled.div`
   border-radius: 3px;
   flex-direction: column;
   height: fit-content;
+  padding-left: 5px;
+  padding-right: 5px;
 `
 const listitem = styled.ul`
   margin: auto;
@@ -315,62 +324,3 @@ const listitem = styled.ul`
   height: fit-content;
 `
 
-const DeleteButton = styled.button`
-  background-color: #e65555;
-  margin-left: 8px;
-`
-
-const Confirm = styled.button`
-  background-color: #c8f5b8;
-  background-image: linear-gradient(#37ADB2, #329CA0);
-  border: 1px solid #2A8387;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.12) 0 1px 1px;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: block;
-  font-family: -apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 17px;
-  line-height: 100%;
-  margin: 0;
-  outline: 0;
-  padding: 11px 15px 12px;
-  text-align: center;
-  transition: box-shadow .05s ease-in-out,opacity .05s ease-in-out;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: 100%;
-`
-
-const Verify = styled.div`
-  display: flex;
-  margin-top: 50px;
-  flex-direction: column;
-  align-items: center;
-`
-
-const VerifyButton = styled.button`
-
-  background-color: #c8f5b8;
-  background-image: linear-gradient(#37ADB2, #329CA0);
-  border: 1px solid #2A8387;
-  border-radius: 4px;
-  box-shadow: rgba(0, 0, 0, 0.12) 0 1px 1px;
-  color: #FFFFFF;
-  cursor: pointer;
-  display: block;
-  font-family: -apple-system,".SFNSDisplay-Regular","Helvetica Neue",Helvetica,Arial,sans-serif;
-  font-size: 17px;
-  line-height: 100%;
-  margin: 0;
-  outline: 0;
-  padding: 11px 15px 12px;
-  text-align: center;
-  transition: box-shadow .05s ease-in-out,opacity .05s ease-in-out;
-  user-select: none;
-  -webkit-user-select: none;
-  touch-action: manipulation;
-  width: 100%;
-  margin-bottom: 10px;
-`
