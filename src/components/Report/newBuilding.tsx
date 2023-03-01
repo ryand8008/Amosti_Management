@@ -118,14 +118,23 @@ const StyledRowUnit = styled.tr<StyledRowUnitProps>`
 const StyledCellText = styled.td`
   text-align: left;
   padding: 16px 16px 10px 16px;
+  @media only screen and (max-width: 1000px) {
+    padding: 8px 8px 5px 8px;
+  }
 `
 const StyledCellNum = styled.td`
   text-align: right;
   padding: 16px;
+  @media only screen and (max-width: 1000px) {
+    padding: 8px;
+  }
 `
 const StyledCellHyphen = styled.td`
   text-align: center;
   padding: 16px;
+  @media only screen and (max-width: 1000px) {
+    padding: 8px;
+  }
 `
 
 const StyleMonthsHeaders = styled.th`
@@ -137,6 +146,9 @@ const StyleMonthsHeaders = styled.th`
   color: #cde6d5;
   resize: horizontal; /* Allows the header cell to be resized horizontally */
   overflow: auto; /* Ensures that content is not hidden when the cell is resized */
+  @media only screen and (max-width: 1000px) {
+    padding: 8px;
+  }
 `
 const StyledHeaderContainer = styled.tr`
   border: 1px solid black;
@@ -189,5 +201,12 @@ const StyledTable = styled.table`
     cursor: col-resize;
     z-index: 2;
     background-color: transparent;
+  }
+  @media only screen and (max-width: 1000px) {
+    /* adjust styles for screens with a width of 600px or less */
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    padding: 10px;
   }
 `;

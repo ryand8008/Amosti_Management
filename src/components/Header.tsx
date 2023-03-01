@@ -15,15 +15,23 @@ export const Header = () => {
 
 const StyledHeader = styled.header`
   background-color: #C9F3BA;
-  width: 100%;
   height: 100px;
-  top: 0px;
+  width: 100%;
   margin: 0;
   padding: 0;
   display: flex;
   border-radius: 5px;
-  align-items: baseline; /* align items to the baseline */
-`
+  align-items: baseline;
+
+  @media only screen and (max-width: 1000px) {
+    /* adjust styles for screens with a width of 600px or less */
+    flex-direction: column;
+    width: auto;
+    height: auto;
+    padding: 10px;
+  }
+`;
+
 
 const StyledTitle = styled.h1`
   display: relative;
