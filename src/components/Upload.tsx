@@ -141,8 +141,6 @@ const findGastos = (json)=>{
     if (e.target.files) {
       const filesToRead = Object.values(e.target.files)
 
-      // ADD POP UP TO CONFIRM
-
       filesToRead.map((file: any, index) => {
         const fileName = file['name']
         holding[fileName] = {'unitInfo': [], 'costs': []}
@@ -249,8 +247,24 @@ const findGastos = (json)=>{
             multiple={true}
             name='uploads'
             id='uploads'
-            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" /><DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox></> : null}
+            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" />
+            {/* <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox> */}
+
+            </> : null}
       </form> : null}
+
+      {files.length > 0 ?
+        <StyledFileDiv>
+
+          { showAll ? <DragBox>
+            {files.map((item) =>
+              <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
+            )}
+          </DragBox> : null}
+          <StyledShowFiles onClick={() => setShowAll(!showAll)}>{showAll ? 'hide file window' : 'show files'}</StyledShowFiles>
+        </StyledFileDiv>
+
+      : null}
 
 
 
@@ -262,6 +276,17 @@ const findGastos = (json)=>{
   )
 }
 
+const StyledFileDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 10px;
+`
+const StyledShowFiles = styled.button`
+  display: flex;
+  justify-content: center;
+  align-self: center;
+
+`
 
 const StyledTest = styled.div`
   display: flex;
