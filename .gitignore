@@ -2,4 +2,5 @@
 notepad.txt
 /node_modules
 BuildingList.tsx
+.eslintrc.js
 copy.txt

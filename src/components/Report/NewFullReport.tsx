@@ -7,7 +7,7 @@ interface NewReportProps {
   aggregate: any
 }
 
-var XLSX = require("xlsx");
+const XLSX = require("xlsx");
 
 export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
@@ -61,15 +61,15 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
   // merge and create a full report depending on the 'reportedYear'
   const generateFull = (year: string) => {
-    let totalArr = new Array(13).fill('-')
-    let dataObj = {total: [...totalArr]}
+    const totalArr = new Array(13).fill('-')
+    const dataObj = {total: [...totalArr]}
 
     buildings.forEach((building) => {
-      let testBuilding = new Building(building, year)
+      const testBuilding = new Building(building, year)
       if (testBuilding.isValid(aggregate)) {
 
-        let rentInfo = testBuilding.getTotalRent(aggregate)
-        let newRentInfo = rentInfo[building][year]['units']['total']
+        const rentInfo = testBuilding.getTotalRent(aggregate)
+        const newRentInfo = rentInfo[building][year]['units']['total']
 
         dataObj[building] = newRentInfo;
         dataObj['total'] = mergeTotals(dataObj['total'], newRentInfo);
@@ -86,7 +86,7 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
 
   const headers = sheetHeaders.map(h => ({ v: h }));
   // const dataRows = Object.entries(totalObj).map(([key, value]) => ([{ v: key }, ...(value as unknown[]).map(v => ({ v }))]));
-  let dataRows = Object.entries(totalObj).map(([key, value]) => ([{ v: key }, ...(value as unknown[]).map(v => ({ v }))]));
+  const dataRows = Object.entries(totalObj).map(([key, value]) => ([{ v: key }, ...(value as unknown[]).map(v => ({ v }))]));
 
   // Find the row index for 'total'
   const totalRowIndex = dataRows.findIndex(row => row[0].v === 'total');
