@@ -36,17 +36,10 @@ interface Testing {
 // TODO: Handle multiple years
 
 export const Upload = () => {
-  const { aggregate, setAggregate,  showReport, setShowReport, reportInfo, setReportInfo, yearsAvailable, setYearPicked, yearPicked } = useContext(AggregateContext)
-
-  // stringified aggre
-  let stringAgg = JSON.stringify(aggregate)
-
+  const { aggregate, setAggregate} = useContext(AggregateContext)
 
   // testing SPLIT EXCEL
   const [splitExcel, setSplitExcel] = useState<any>({})
-
-  // drag hook
-  const [dragActive, setDragActive] = useState<boolean>(false);
 
   // display file names
   const [files, setFiles] = useState<string[]>([])
@@ -69,7 +62,7 @@ export const Upload = () => {
 
     }
 
-  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), stringAgg, Object.keys(splitExcel).length, files.length, yearsAvailable, yearPicked])
+  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), Object.keys(splitExcel).length, files.length])
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -239,10 +232,6 @@ const findGastos = (json)=>{
       return copy;
     })
 
-    // need to handle if reportInfo is {} or not
-    if (Object.keys(reportInfo).length > 0) {
-      setReportInfo({})
-    }
 
     // needed to reset and re-render based off new raw data
     setParsedInfo({})
@@ -262,6 +251,7 @@ const findGastos = (json)=>{
             id='uploads'
             onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" /><DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox></> : null}
       </form> : null}
+
 
 
 

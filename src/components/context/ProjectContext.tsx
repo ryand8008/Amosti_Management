@@ -4,15 +4,8 @@ import React, { useCallback, useEffect, useState } from "react";
 interface ReportType {
   aggregate: any
   setAggregate: (newInformation) => any;
-  reportInfo: (buildingName: any[]) => void;
-  setReportInfo: (any) => any;
   yearsAvailable: string[];
   setYearsAvailable: (any) => any;
-  yearPicked: string
-  setYearPicked: (string) => any;
-  showReport: boolean;
-  setShowReport: (bool) => any;
-
 }
 // reportInfo = {
 //   buildingName = {}
@@ -24,11 +17,6 @@ const AggregateProvider = ({children}) => {
   // uploaded information
   const [aggregate, setAggregate] = useState<any>()
   let aggregateStringified = JSON.stringify(aggregate)
-  const [showReport, setShowReport] = useState<boolean>(false)
-  // report information
-  const [reportInfo, setReportInfo] = useState<any>({})
-
-  const [yearPicked, setYearPicked] = useState<string>()
   const [yearsAvailable, setYearsAvailable] = useState<string[]>([])
   let yearsStringified = JSON.stringify(yearsAvailable)
 
@@ -39,11 +27,6 @@ const AggregateProvider = ({children}) => {
 
   const [monthsAvailable, setMonthsAvailable] = useState<string[]>([])
   let monthsStringified = JSON.stringify(monthsAvailable)
-
-   const [testReport, setTestReport] = useState<any>({})
-
-   //testing units
-   const [buildingUnits, setBuildingUnits] = useState<any>({})
 
   useEffect(() => {
 
@@ -57,7 +40,7 @@ const AggregateProvider = ({children}) => {
       getYears()
     }
 
-  }, [ JSON.stringify(aggregate), buildingsStringified, reportInfo, yearsStringified, monthsStringified, yearPicked, buildings.length])
+  }, [ JSON.stringify(aggregate), buildingsStringified, yearsStringified, monthsStringified, buildings.length])
 
 
   const handleChange = useCallback(() => {
@@ -81,7 +64,7 @@ const AggregateProvider = ({children}) => {
   }, [aggregate ? Object.keys(aggregate).length : null])
 
     return (
-    <AggregateContext.Provider value={{aggregate, setAggregate, reportInfo, setReportInfo, yearsAvailable, setYearsAvailable, yearPicked, setYearPicked, showReport, setShowReport}}>
+    <AggregateContext.Provider value={{aggregate, setAggregate, yearsAvailable, setYearsAvailable}}>
       {children}
     </AggregateContext.Provider>
   )
