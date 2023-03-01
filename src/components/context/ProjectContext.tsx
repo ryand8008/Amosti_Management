@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 
 
 interface ReportType {
@@ -19,7 +19,7 @@ const AggregateProvider = ({children}) => {
       handleChange()
     }
 
-  }, [ JSON.stringify(aggregate)])
+  }, [JSON.stringify(aggregate)])
 
 
   const handleChange = useCallback(() => {
@@ -33,5 +33,6 @@ const AggregateProvider = ({children}) => {
     </AggregateContext.Provider>
   )
 }
+
 
 export default AggregateProvider;
