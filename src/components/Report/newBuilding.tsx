@@ -59,10 +59,6 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
         </StyledYearArrows>
       }
 
-
-
-
-
       {
         <>
         <StyledContainer>
@@ -96,9 +92,6 @@ const StyledArrowButton = styled.button`
   display: ${({ hidden }) => (hidden ? "none" : "block")};
 `;
 
-const StyledWindow = styled.div`
-  width: 100%;
-`
 const StyledTitle = styled.h2`
   display: flex;
   justify-content: center;
@@ -108,10 +101,6 @@ const StyledYearArrows = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-end;
-`
-
-const StyledRowE = styled.tr`
-
 `
 const StyledRowUnit = styled.tr<StyledRowUnitProps>`
   background-color: ${props => props.end ? '#4f5e50' : 'none'};
@@ -127,27 +116,6 @@ const StyledCellNum = styled.td`
   padding: 16px;
 `
 
-const StyledCellHypen = styled.td`
-  text-align: center;
-  padding: 16px
-`
-
-// const StyledTable = styled.table`
-  // border: thin solid black;
-  // border-radius: 5px
-  // margin: auto;
-  // margin-top: 10px;
-  // margin-bottom: 10px;
-  // margin-left: 30px;
-  // margin-right: 30px;
-  // ${StyledRowE}:nth-child(even) {
-  //   background: lightgrey;
-  // }
-  // ${StyledRowUnit}:nth-child(even) {
-  //   background: lightgrey;
-  // }
-//   border-collapse: collapse;
-// `
 const StyleMonthsHeaders = styled.th`
   border-bottom: 1px solid black;
   text-align: left;
@@ -180,7 +148,7 @@ const StyledTable = styled.table`
 
   th {
     position: relative;
-    padding-right: 10px;
+    // padding-right: 10px;
   }
 
   th::after {
