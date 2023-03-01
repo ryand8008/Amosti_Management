@@ -72,8 +72,13 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
               <StyledRowUnit end={unit === 'total'}>
                 {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
                 {unit !== buildingName && rentInfo[unit] &&
-                  rentInfo[unit].map((item:any, index:number) =>
-                    <StyledCellNum>{item}</StyledCellNum>
+                  rentInfo[unit].map((item:any, index:number) => {
+                    if (!isNaN(item)) {
+                      return <StyledCellNum>{item}</StyledCellNum>
+                    } else {
+                      return <StyledCellHyphen>{item}</StyledCellHyphen>
+                    }
+                  }
                 )}
               </StyledRowUnit>
             )}
@@ -113,6 +118,10 @@ const StyledCellText = styled.td`
 `
 const StyledCellNum = styled.td`
   text-align: right;
+  padding: 16px;
+`
+const StyledCellHyphen = styled.td`
+  text-align: center;
   padding: 16px;
 `
 

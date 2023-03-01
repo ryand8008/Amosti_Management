@@ -9,6 +9,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(compression()); // Enable gzip compression
+
 // Serve static files from the build directory
 app.use(express.static(path.join(__dirname, '../dist')));
 

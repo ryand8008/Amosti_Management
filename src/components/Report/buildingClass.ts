@@ -12,9 +12,6 @@ export class Building {
   constructor(buildingName: string, year: string) {
     this.buildingName = buildingName;
     this.year = year;
-
-    // testing ideas
-
   }
 
   hardCodeMonths() {
@@ -24,11 +21,6 @@ export class Building {
   getAllYears(aggregate: any) {
     return Object.keys(aggregate[this.buildingName])
   }
-  // methods
-  // getAllMonths => string[]
-  // getRent(month) => not sure
-  // getTotals | expenses or revenue?
-
 
   // Validation
   isValid(aggregate: any) {
@@ -50,16 +42,6 @@ export class Building {
       return temp;
     }
   }
-
-  // CLEAN
-  // getUnits(aggregate: any): string[] {
-  //   if (!aggregate[this.buildingName]?.[this.year]) return [];
-
-  //   return aggregate[this.buildingName][this.year][Object.keys(aggregate[this.buildingName][this.year])[0]]['unitInfo']
-  //     .map(item => item['Depto'])
-  //     .slice(0, -1);
-  // }
-
 
   getAllMonths(aggregate: any) {
     return Object.keys(aggregate[this.buildingName][this.year])
@@ -240,20 +222,5 @@ export class Building {
   getCosts() {
     console.log()
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 } // end

@@ -21,8 +21,6 @@ const StyledHeader = styled.header`
   margin: 0;
   padding: 0;
   display: flex;
-  // justify-content: center;
-  // align-items: flex-end;
   border-raduis: 5px;
 `
 

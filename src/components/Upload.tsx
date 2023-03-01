@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { AggregateContext } from "./context/ProjectContext";
+
 
 var xlsx = require("xlsx");
 
@@ -10,20 +11,6 @@ declare module 'react' {
     directory?: boolean | undefined
     webkitdirectory?: string;
   }
-}
-interface newSheet {
-  Depto: string
-  Nombre: string
-  Renta: number
-  Deposito: string
-  Corretaje: string
-  Admon: number
-  Gastos: string
-  Cost: number
-  Banknotes: number
-  Count: number
-  Totals: string
-  Amount: number
 }
 
 interface Testing {
@@ -46,9 +33,6 @@ export const Upload = () => {
 
   // // checking aggregate
    const [parsedInfo, setParsedInfo] = useState<any>({})
-
-   const showIndividual = false; // temp DELETE AFTER REFACTOR
-   const showFull = false; // temp DELETE AFTER REFACTOR
 
    // SHOW MORE FILES
    const [showAll, setShowAll] = useState(false)
@@ -241,17 +225,15 @@ const findGastos = (json)=>{
     <>
       <Window>
 
-      { !showFull ? <form onSubmit={(e) => e.preventDefault()}>
-      { !showIndividual ? <><input
+      <form onSubmit={(e) => e.preventDefault()}>
+        <input
             type='file'
             multiple={true}
             name='uploads'
             id='uploads'
             onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" />
             {/* <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox> */}
-
-            </> : null}
-      </form> : null}
+      </form>
 
       {files.length > 0 ?
         <StyledFileDiv>
@@ -265,11 +247,6 @@ const findGastos = (json)=>{
         </StyledFileDiv>
 
       : null}
-
-
-
-
-
 
       </Window>
     </>
@@ -332,10 +309,5 @@ const DragBox = styled.div`
   height: fit-content;
   padding-left: 5px;
   padding-right: 5px;
-`
-const listitem = styled.ul`
-  margin: auto;
-  flex-direction: column;
-  height: fit-content;
 `
 

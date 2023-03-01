@@ -7,10 +7,6 @@ interface NewReportProps {
   aggregate: any
 }
 
-interface StyledRowUnitProps {
-  end: boolean;
-}
-
 var XLSX = require("xlsx");
 
 export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
