@@ -7,6 +7,10 @@ interface NewReportProps {
   aggregate: any
 }
 
+interface StyledRowUnitProps {
+  end: boolean;
+}
+
 var XLSX = require("xlsx");
 
 export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
@@ -132,28 +136,28 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
         <StyledContainer>
           <StyledTable>
             <StyledHeaderContainer>
-              <th>Edificio</th>
+              <StyleMonthsHeaders>Edificio</StyleMonthsHeaders>
               {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>)}
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
-            {totalObj ? Object.keys(totalObj).map((item) => {
+            {totalObj ? Object.keys(totalObj).map((item, index) => {
               if (item === 'total') return null; // skip rendering the 'total' row here
               return (
                 <StyledRowUnit key={item}>
-                  <StyledCell>{item}</StyledCell>
+                  <StyledCellText>{item}</StyledCellText>
                   {totalObj[item].map((item) =>
-                    <StyledCell>{item}</StyledCell>
+                    <StyledCellNum>{item}</StyledCellNum>
                   )}
                 </StyledRowUnit>
               );
             }) : null}
             {totalObj && totalObj.total ? (
-              <StyledRowUnit key="total">
-                <StyledCell>total</StyledCell>
+              <StyledRowUnitTotal key="total">
+                <StyledCellText>total</StyledCellText>
                 {totalObj.total.map((item) =>
-                  <StyledCell>{item}</StyledCell>
+                  <StyledCellNum>{item}</StyledCellNum>
                 )}
-              </StyledRowUnit>
+              </StyledRowUnitTotal>
             ) : null}
 
           </StyledTable>
@@ -175,53 +179,79 @@ const StyledContainer = styled.div`
   display: flex;
   justify-content: center;
 `
-
-const StyledH1 = styled.div`
-  margin: auto
-`
-
-const StyledTitle = styled.h2`
-  display: flex;
-  justify-content: center;
-`
-
-const StyledYearArrows = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: flex-end;
-`
-
-const StyledRowE = styled.tr`
-
-`
 const StyledRowUnit = styled.tr`
 
-`;
-const StyledCell = styled.td`
-  text-align: center;
+`
+const StyledRowUnitTotal = styled.tr`
+  background-color: #4f5e50;
+  color: #cde6d5;
+  `;
+
+const StyledCellText = styled.td`
+  text-align: left;
+  padding: 16px 16px 10px 16px;
+`
+const StyledCellNum = styled.td`
+  text-align: right;
+  padding: 16px;
 `
 
+const StyleMonthsHeaders = styled.th`
+  border-bottom: 1px solid black;
+  text-align: left;
+  width: 125px;
+  padding: 16px;
+  background: #2b382c;
+  color: #cde6d5;
+  resize: horizontal; /* Allows the header cell to be resized horizontally */
+  overflow: auto; /* Ensures that content is not hidden when the cell is resized */
+`
+const StyledHeaderContainer = styled.tr`
+  border: 1px solid black;
+  border-radius: 10px;
+  `
+
 const StyledTable = styled.table`
-  border: thin solid black;
-  border-radius: 5px
+  border-collapse: collapse;
   margin: auto;
   margin-top: 10px;
   margin-bottom: 10px;
   margin-left: 30px;
   margin-right: 30px;
-  ${StyledRowUnit}:nth-child(even) {
+  ${StyledRowUnit}:nth-child(odd) {
     background: lightgrey;
   }
-  border-collapse: collapse;
 
-`
-const StyleMonthsHeaders = styled.th`
-  border: 1px solid black;
-  text-align: center;
-  width: 80px;
-  padding: 5px;
-  background: #82b0f5;
-`
-const StyledHeaderContainer = styled.tr`
-  border: 1px solid black;
-  `
+  th {
+    position: relative;
+    padding-right: 10px;
+  }
+
+  th::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: col-resize;
+    background-color: transparent;
+    z-index: 1;
+  }
+
+  th:hover::after {
+    background-color: rgba(0, 0, 0, 0.1);
+  }
+
+  th::-webkit-resizer {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    width: 8px;
+    cursor: col-resize;
+    z-index: 2;
+    background-color: transparent;
+  }
+`;
