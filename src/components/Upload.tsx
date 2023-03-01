@@ -221,19 +221,51 @@ const findGastos = (json)=>{
   }
 
 
+    const handleDrop = (event) => {
+      event.preventDefault();
+      const fileList = event.dataTransfer.files;
+      // Do something with the dropped files
+    };
+
+    const handleDragOver = (event) => {
+      event.preventDefault();
+    };
+
+
   return (
     <>
       <Window>
 
-      <form onSubmit={(e) => e.preventDefault()}>
+      <form>
+        <UploadLabel htmlFor="uploads" >
+          Upload files
         <input
-            type='file'
-            multiple={true}
-            name='uploads'
-            id='uploads'
-            onChange={readUploadFile} /><label id='label-file-upload' htmlFor="uploads" />
-            {/* <DragBox id="drop_dom_element">{files.length >= 1 ? files.map((item) => <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>) : 'upload files'}</DragBox> */}
+          type='file'
+          multiple={true}
+          name='uploads'
+          id='uploads'
+          onChange={readUploadFile} />
+        </UploadLabel>
       </form>
+
+{/* <UploadForm>
+      <UploadLabel htmlFor="file-upload">Choose file(s)</UploadLabel>
+      <UploadContainer
+        onDrop={readUploadFile}
+        onDragOver={handleDragOver}
+        id="file-upload-container"
+      >
+        <UploadText>Drag and drop files here</UploadText>
+      </UploadContainer>
+      <input
+        type="file"
+        id="file-upload"
+        name="file-upload"
+        multiple
+        onChange={readUploadFile}
+        style={{ display: 'none' }}
+      />
+    </UploadForm> */}
 
       {files.length > 0 ?
         <StyledFileDiv>
@@ -242,6 +274,7 @@ const findGastos = (json)=>{
             {files.map((item) =>
               <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
             )}
+            <button>delete all</button>
           </DragBox> : null}
           <StyledShowFiles onClick={() => setShowAll(!showAll)}>{showAll ? 'hide file window' : 'show files'}</StyledShowFiles>
         </StyledFileDiv>
@@ -253,6 +286,46 @@ const findGastos = (json)=>{
   )
 }
 
+const UploadText = styled.p`
+  font-size: 1rem;
+  color: #aaa;
+`;
+
+const UploadForm = styled.form`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+const UploadLabel = styled.label`
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #0077cc;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #005fa3;
+  }
+
+  input[type='file'] {
+    position: absolute;
+    left: -99999px;
+  }
+`;
+
+const UploadContainer = styled.div`
+  width: 100%;
+  height: 10rem;
+  border: 2px dashed #aaa;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
 const StyledFileDiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -262,7 +335,18 @@ const StyledShowFiles = styled.button`
   display: flex;
   justify-content: center;
   align-self: center;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #0077cc;
+  border-radius: 4px;
+  cursor: pointer;
 
+  &:hover {
+    background-color: #005fa3;
+  }
+  margin: 5px;
 `
 
 const StyledTest = styled.div`
@@ -299,15 +383,16 @@ const Window = styled.div`
 const DragBox = styled.div`
   display: flex;
   margin: auto;
-  border: 1px solid black;
+  border: 2px solid black;
   min-width: 300px;
   width: fit-content;
   justify-content: center;
   align-items: center;
-  border-radius: 3px;
+  border-radius: 6px;
   flex-direction: column;
   height: fit-content;
-  padding-left: 5px;
-  padding-right: 5px;
+  // padding-left: 5px;
+  // padding-right: 5px;
+  padding: 16px;
 `
 

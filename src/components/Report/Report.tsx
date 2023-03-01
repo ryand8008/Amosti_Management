@@ -45,8 +45,8 @@ export const Report = () => {
       <>
         <StyledH2>What do you want to do?</StyledH2>
         <StyledButtonDiv>
-          <button onClick={() => {setShowIndividual(() => !showIndividual); setShowFullReport(() => false)}}>{showIndividual ? 'close individual report' : 'See individual Report'}</button>
-          <button onClick={(e) => handleClickFullReport(e)}>{showFullReport ? 'close full report' : 'Generate a full report'}</button>
+          <TestButton onClick={() => {setShowIndividual(() => !showIndividual); setShowFullReport(() => false)}}>{showIndividual ? 'close individual report' : 'See individual Report'}</TestButton>
+          <TestButton onClick={(e) => handleClickFullReport(e)}>{showFullReport ? 'close full report' : 'Generate a full report'}</TestButton>
         </StyledButtonDiv></> : null}
       <p />
       {showIndividual ? buildings.map((building) =>
@@ -91,10 +91,24 @@ const StyledButton = styled.button`
   justify-content: center;
   flex-direction: column;
   align-items: center;
-
 `
 
 const StyledTemp = styled.div`
   display: flex;
   justify-content: center;
+`
+
+const TestButton = styled.button`
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  color: #fff;
+  background-color: #0077cc;
+  border-radius: 4px;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #005fa3;
+  }
+  margin: 5px;
 `
