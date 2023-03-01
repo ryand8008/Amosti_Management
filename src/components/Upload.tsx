@@ -37,23 +37,11 @@ export const Upload = () => {
    // SHOW MORE FILES
    const [showAll, setShowAll] = useState(false)
 
-  // useEffect(() => {
-
-  //   if (Object.keys(splitExcel).length > 0) {
-  //     splittingFunction(splitExcel)
-
-  //     setAggregate(() => parsedInfo)
-
-  //   }
-
-  // }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), Object.keys(splitExcel).length, files.length])
   useEffect(() => {
     if (splitExcel !== undefined && Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel);
       setAggregate(parsedInfo);
     }
-    console.log(files.length, 'file length')
-    console.log(files, 'files')
   }, [JSON.stringify(parsedInfo), JSON.stringify(aggregate), JSON.stringify(splitExcel), files.length]);
 
   // parses aggregate information
@@ -240,19 +228,6 @@ const findGastos = (json)=>{
     }
   }
 
-
-    // const handleDrop = (event) => {
-    //   event.preventDefault();
-    //   const fileList = event.dataTransfer.files;
-    //   // Do something with the dropped files
-    // };
-
-    // const handleDragOver = (event) => {
-    //   event.preventDefault();
-
-    // };
-
-
   return (
     <>
       <Window>
@@ -269,35 +244,18 @@ const findGastos = (json)=>{
         </UploadLabel>
       </form>
 
-{/* <UploadForm>
-      <UploadLabel htmlFor="file-upload">Choose file(s)</UploadLabel>
-      <UploadContainer
-        onDrop={readUploadFile}
-        onDragOver={handleDragOver}
-        id="file-upload-container"
-      >
-        <UploadText>Drag and drop files here</UploadText>
-      </UploadContainer>
-      <input
-        type="file"
-        id="file-upload"
-        name="file-upload"
-        multiple
-        onChange={readUploadFile}
-        style={{ display: 'none' }}
-      />
-    </UploadForm> */}
-
       {files.length > 0 ?
         <StyledFileDiv>
 
-          { showAll ? <DragBox>
-            {files.map((item) =>
-              <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
-            )}
-            {files.length === 1 ? null : <DeleteButton onClick={(e) => handleDeleteAll(e)}>delete all</DeleteButton>}
-          </DragBox> : null}
+          { showAll ?
+            <DragBox>
+              {files.map((item) =>
+                <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
+              )}
+              {files.length === 1 ? null : <DeleteButton onClick={(e) => handleDeleteAll(e)}>delete all</DeleteButton>}
+            </DragBox> : null}
           <StyledShowFiles onClick={() => setShowAll(!showAll)}>{showAll ? 'hide file window' : 'show files'}</StyledShowFiles>
+
         </StyledFileDiv>
 
       : null}
