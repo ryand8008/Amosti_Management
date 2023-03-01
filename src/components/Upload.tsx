@@ -37,16 +37,24 @@ export const Upload = () => {
    // SHOW MORE FILES
    const [showAll, setShowAll] = useState(false)
 
+  // useEffect(() => {
+
+  //   if (Object.keys(splitExcel).length > 0) {
+  //     splittingFunction(splitExcel)
+
+  //     setAggregate(() => parsedInfo)
+
+  //   }
+
+  // }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), Object.keys(splitExcel).length, files.length])
   useEffect(() => {
-
-    if (Object.keys(splitExcel).length > 0) {
-      splittingFunction(splitExcel)
-
-      setAggregate(() => parsedInfo)
-
+    if (splitExcel !== undefined && Object.keys(splitExcel).length > 0) {
+      splittingFunction(splitExcel);
+      setAggregate(parsedInfo);
     }
-
-  }, [JSON.stringify(parsedInfo).length, JSON.stringify(aggregate), Object.keys(splitExcel).length, files.length])
+    console.log(files.length, 'file length')
+    console.log(files, 'files')
+  }, [JSON.stringify(parsedInfo), JSON.stringify(aggregate), JSON.stringify(splitExcel), files.length]);
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -220,16 +228,29 @@ const findGastos = (json)=>{
 
   }
 
+  const handleDeleteAll = (e) => {
+    e.preventDefault()
+    setParsedInfo((prev) => {})
+    setFiles((prev) => [])
+    setAggregate((prev) => {})
+    setSplitExcel((prev) => {})
+    const fileInput = document.getElementById('uploads') as HTMLInputElement;
+    if (fileInput) {
+      fileInput.value = ''
+    }
+  }
 
-    const handleDrop = (event) => {
-      event.preventDefault();
-      const fileList = event.dataTransfer.files;
-      // Do something with the dropped files
-    };
 
-    const handleDragOver = (event) => {
-      event.preventDefault();
-    };
+    // const handleDrop = (event) => {
+    //   event.preventDefault();
+    //   const fileList = event.dataTransfer.files;
+    //   // Do something with the dropped files
+    // };
+
+    // const handleDragOver = (event) => {
+    //   event.preventDefault();
+
+    // };
 
 
   return (
@@ -274,7 +295,7 @@ const findGastos = (json)=>{
             {files.map((item) =>
               <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
             )}
-            <button>delete all</button>
+            {files.length === 1 ? null : <DeleteButton onClick={(e) => handleDeleteAll(e)}>delete all</DeleteButton>}
           </DragBox> : null}
           <StyledShowFiles onClick={() => setShowAll(!showAll)}>{showAll ? 'hide file window' : 'show files'}</StyledShowFiles>
         </StyledFileDiv>
