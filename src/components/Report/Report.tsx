@@ -95,6 +95,7 @@ const StyledButton = styled.button`
   justify-content: center;
   flex-direction: column;
   align-items: center;
+  margin-bottom: 20px;
 `
 
 const StyledTemp = styled.div`

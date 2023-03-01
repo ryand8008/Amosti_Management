@@ -43,18 +43,18 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
         <StyledYearArrows>
           { years.indexOf(selectedYear) > 0 ? (
             <StyledArrowButton onClick={(e) => handleClickYear(e, -1)}>
-              <img src={'https://img.icons8.com/ios-glyphs/16/left.png'}/>
+              <img src={'https://img.icons8.com/ios-glyphs/32/left--v1.png'}/>
             </StyledArrowButton>
           ) : (
-            <StyledArrowButton style={{ visibility: "hidden" }}><img src={'https://img.icons8.com/ios-glyphs/16/left.png'}/></StyledArrowButton>
+            <StyledArrowButton style={{ visibility: "hidden" }}><img src={'https://img.icons8.com/ios-glyphs/32/left--v1.png'}/></StyledArrowButton>
           )}
-          <span>{selectedYear}</span>
+          <YearSpan>{selectedYear}</YearSpan>
           { years.indexOf(selectedYear) < years.length - 1 ? (
             <StyledArrowButton onClick={(e) => handleClickYear(e, 1)}>
-              <img src={'https://img.icons8.com/ios-glyphs/16/right.png'}/>
+              <img src={'https://img.icons8.com/ios-glyphs/32/right--v1.png'}/>
             </StyledArrowButton>
           ) : (
-            <StyledArrowButton style={{ visibility: "hidden" }}><img src={'https://img.icons8.com/ios-glyphs/16/right.png'}/></StyledArrowButton>
+            <StyledArrowButton style={{ visibility: "hidden" }}><img src={'https://img.icons8.com/ios-glyphs/32/right--v1.png'}/></StyledArrowButton>
           )}
         </StyledYearArrows>
       }
@@ -91,6 +91,9 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
   )
 }
 
+const YearSpan = styled.span`
+  font-size: 25px;
+`
 const StyledArrowButton = styled.button`
   background: none;
   border: none;
