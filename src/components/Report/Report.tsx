@@ -9,7 +9,7 @@ interface Button {
   active: boolean
 }
 
-export const Report = () => {
+const Report = () => {
   const { aggregate } = useContext(AggregateContext)
 
   // boolean to show individual Report
@@ -118,3 +118,5 @@ const TestButton = styled.button<Button>`
   margin: 5px;
   background-color: ${props => props.active ? '#53f563' : '#0077cc'}
 `
+
+export default Report;

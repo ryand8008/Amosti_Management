@@ -1,22 +1,20 @@
-import React from "react";
+import React, { lazy, Suspense } from "react";
 import AggregateProvider from "./context/ProjectContext";
 import { Header } from "./Header";
 import { Upload } from "./Upload";
-import { Report } from "./Report/Report";
+
+const Report = lazy(() => import("./Report/Report"));
 
 export const App = () => {
-
   return (
     <>
       <Header />
       <AggregateProvider>
         <Upload />
-        <Report />
+        <Suspense fallback={<div>Loading Report...</div>}>
+          <Report />
+        </Suspense>
       </AggregateProvider>
     </>
-  )
-}
-
-
-
-
+  );
+};
