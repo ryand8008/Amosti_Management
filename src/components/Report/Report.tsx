@@ -32,9 +32,7 @@ const Report = () => {
   }, [aggregate])
 
   useEffect(() => {
-
-    console.log(aggregate, 'what is this after deleting?')
-    if (aggregate && JSON.stringify(aggregate) == '{}' ) {
+    if (aggregate && JSON.stringify(aggregate) === '{}' ) {
       setShowFullReport(false);
       setShowIndividual(false);
     }

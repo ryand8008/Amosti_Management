@@ -29,7 +29,6 @@ export const Upload = () => {
    const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
-    console.log(splitExcel, 'what happens to split excel?')
     if (splitExcel !== undefined && Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel);
       setAggregate(parsedInfo);
@@ -242,7 +241,7 @@ const findGastos = (json)=>{
           { showAll ?
             <DragBox>
               {files.map((item) =>
-                <StyledTest>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
+                <StyledTest key={item}>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
               )}
               {files.length === 1 ? null : <DeleteButton onClick={(e) => handleDeleteAll(e)}>delete all</DeleteButton>}
             </DragBox> : null}
