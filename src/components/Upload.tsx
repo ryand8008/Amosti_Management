@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { AggregateContext } from "./context/ProjectContext";
 
@@ -29,6 +29,7 @@ export const Upload = () => {
    const [showAll, setShowAll] = useState(false)
 
   useEffect(() => {
+    console.log(splitExcel, 'what happens to split excel?')
     if (splitExcel !== undefined && Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel);
       setAggregate(parsedInfo);
@@ -202,16 +203,17 @@ const findGastos = (json)=>{
     })
 
     // needed to reset and re-render based off new raw data
-    setParsedInfo({})
+    setParsedInfo((prevState) => {})
 
   }
 
   const handleDeleteAll = (e) => {
     e.preventDefault()
-    setParsedInfo((prev) => {})
-    setFiles((prev) => [])
-    setAggregate((prev) => {})
-    setSplitExcel((prev) => {})
+    setParsedInfo({})
+    setFiles([])
+    setAggregate({})
+    setSplitExcel({})
+    setShowAll(false)
     const fileInput = document.getElementById('uploads') as HTMLInputElement;
     if (fileInput) {
       fileInput.value = ''

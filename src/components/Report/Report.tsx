@@ -33,7 +33,12 @@ const Report = () => {
 
   useEffect(() => {
 
-  }, [showIndividual, showFullReport, buildings])
+    console.log(aggregate, 'what is this after deleting?')
+    if (aggregate && JSON.stringify(aggregate) == '{}' ) {
+      setShowFullReport(false);
+      setShowIndividual(false);
+    }
+  }, [showIndividual, showFullReport, buildings, aggregate])
 
 
   const handleClickFullReport = (e) => {
@@ -45,7 +50,7 @@ const Report = () => {
 
   return (
     <>
-      {aggregate ?
+      {aggregate && JSON.stringify(aggregate) !== '{}' ?
       <>
         <StyledH2>What do you want to do?</StyledH2>
         <StyledButtonDiv>
