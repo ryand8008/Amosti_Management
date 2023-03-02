@@ -83,26 +83,71 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
                 </StyledHeaderContainer>
               </thead>
               <tbody>
-                {units.map((unit, index) =>
-                  <StyledRowUnit key={unit} end={unit === 'total'}>
-                    {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
-                    {unit !== buildingName && rentInfo[unit] &&
-                      rentInfo[unit].map((item:any, index:number) => {
-                        if (!isNaN(item)) {
-                          return <StyledCellNum key={index}>{item}</StyledCellNum>
-                        } else {
-                          return <StyledCellHyphen key={index}>{item}</StyledCellHyphen>
-                        }
-                      }
-                    )}
+              {units.map((unit, index) => {
+                if (unit === 'total') return null;
+                return (
+                  <StyledRowUnit key={unit}>
+                    {unit !== buildingName ? <StyledCellText>{unit}</StyledCellText> : null}
+                    {unit !== buildingName &&
+                      rentInfo[unit] &&
+                      rentInfo[unit].map((item: any, index: number) =>
+                        !isNaN(item) ? (
+                          <StyledCellNum key={index}>{item}</StyledCellNum>
+                        ) : (
+                          <StyledCellHyphen key={index}>{item}</StyledCellHyphen>
+                        ),
+                      )}
                   </StyledRowUnit>
+                );
+              })}
+              {units && rentInfo && rentInfo.total ? (
+              <StyledRowUnitTotal key={"total"}>
+                <StyledCellText>total</StyledCellText>
+                {rentInfo.total.map((item) => {
+                  if (!isNaN(item)) {
+                    return <StyledCellNum>{item}</StyledCellNum>
+                  } else {
+                    return <StyledCellHyphen>{item}</StyledCellHyphen>
+                  }
+                }
                 )}
-              </tbody>
+              </StyledRowUnitTotal>
+            ) : null}
+            </tbody>
+
             </StyledTable>
           </StyledContainer>
 
         </>
       }
+
+{/* {
+        <>
+        <StyledContainer>
+          <StyledTable>
+            <StyledHeaderContainer>
+              <StyleMonthsHeaders>Depto</StyleMonthsHeaders>
+              {hardCodeMonths.map((item) => <StyleMonthsHeaders key={item}>{item}</StyleMonthsHeaders>)}
+              <StyleMonthsHeaders>annual</StyleMonthsHeaders>
+            </StyledHeaderContainer>
+            {units.map((unit, index) =>
+              <StyledRowUnit key={unit} end={unit === 'total' ? true : false}>
+                {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
+                {unit !== buildingName && rentInfo[unit] &&
+                  rentInfo[unit].map((item:any, index:number) => {
+                    if (!isNaN(item)) {
+                      return <StyledCellNum key={index}>{item}</StyledCellNum>
+                    } else {
+                      return <StyledCellHyphen key={index}>{item}</StyledCellHyphen>
+                    }
+                  }
+                )}
+              </StyledRowUnit>
+            )}
+          </StyledTable>
+          </StyledContainer>
+        </>
+      } */}
 
     </>
   :null}</>
@@ -128,9 +173,13 @@ const StyledYearArrows = styled.div`
   justify-content: center;
   align-items: flex-end;
 `
-const StyledRowUnit = styled.tr<StyledRowUnitProps>`
-  background-color: ${props => props.end ? '#4f5e50' : 'none'};
-  color: ${props => props.end ? '#cde6d5' : 'none'};
+const StyledRowUnit = styled.tr`
+
+`;
+
+const StyledRowUnitTotal = styled.tr`
+  background-color:  #4f5e50;
+  color: #cde6d5;
 `;
 
 const StyledCellText = styled.td`
