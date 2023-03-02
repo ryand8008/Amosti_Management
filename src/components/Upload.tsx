@@ -262,7 +262,7 @@ const findGastos = (json)=>{
           { showAll ?
             <DragBox>
               {files.map((item) =>
-                <StyledTest key={item}>{item}<span><DeleteButton onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
+                <StyledTest key={item}>{item}<span key={item}><DeleteButton key={item} onClick={() => handleRemoveFile(item)}>delete</DeleteButton></span></StyledTest>
               )}
               {files.length === 1 ? null : <DeleteButton onClick={(e) => handleDeleteAll(e)}>delete all</DeleteButton>}
             </DragBox> : null}

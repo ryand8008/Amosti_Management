@@ -10,11 +10,9 @@ interface Button {
 
 const Report = ({aggregate, load, setLoad}) => {
 
-  // boolean to show individual Report
   const [showIndividual, setShowIndividual] = useState(false)
   const [showFullReport, setShowFullReport] = useState(false)
 
-  // to print things
   const componentToPrint = useRef(null)
 
   // DO NOT TOUCH
@@ -51,37 +49,65 @@ const Report = ({aggregate, load, setLoad}) => {
 
   return (
     <>
-      {aggregate && JSON.stringify(aggregate) !== '{}' ?
-      <>
-        <StyledH2>What do you want to do?</StyledH2>
-        <StyledButtonDiv>
-          <TestButton active={showIndividual} onClick={() => {setShowIndividual(() => !showIndividual); setShowFullReport(() => false)}}>{showIndividual ? 'close individual report' : 'See individual Report'}</TestButton>
-          <TestButton active={showFullReport} onClick={(e) => handleClickFullReport(e)}>{showFullReport ? 'close full report' : 'Generate a full report'}</TestButton>
-        </StyledButtonDiv></> : null}
-      <p />
-      {showIndividual ? buildings.map((building) =>
-        <>
-          <div ref={componentToPrint}>
+  {aggregate && JSON.stringify(aggregate) !== '{}' ? (
+    <>
+      <StyledH2 key="heading">What do you want to do?</StyledH2>
+      <StyledButtonDiv key="buttons">
+        <TestButton
+          key="individual"
+          active={showIndividual}
+          onClick={() => {
+            setShowIndividual(() => !showIndividual);
+            setShowFullReport(() => false);
+          }}
+        >
+          {showIndividual ? 'close individual report' : 'See individual Report'}
+        </TestButton>
+        <TestButton
+          key="full"
+          active={showFullReport}
+          onClick={(e) => handleClickFullReport(e)}
+        >
+          {showFullReport ? 'close full report' : 'Generate a full report'}
+        </TestButton>
+      </StyledButtonDiv>
+    </>
+  ) : null}
+  <p key="spacer" />
+  {showIndividual
+    ? buildings.map((building, index) => (
+        <React.Fragment key={index}>
+          <div key={index} ref={componentToPrint}>
             <NewBuilding aggregate={aggregate} buildingName={building} />
           </div>
-          <StyledTemp>
-            {<StyledButton onClick={handlePrint}><img src={'https://img.icons8.com/ios/32/printer-door-open.png'}/>{building}</StyledButton>}
+          <StyledTemp key={`button-${index}`}>
+            {
+              <StyledButton
+                key={`print-${index}`}
+                onClick={handlePrint}
+              >
+                <img src={'https://img.icons8.com/ios/32/printer-door-open.png'} />
+                {building}
+              </StyledButton>
+            }
           </StyledTemp>
-        </>
-      ) : null}
-
-      {showFullReport ?
-        <>
-        <div ref={componentToPrint}>
-          <NewFullReport aggregate={aggregate} buildings={buildings} />
-        </div>
-        <StyledTemp>
-          <StyledButton onClick={handlePrint}><img src={'https://img.icons8.com/ios/32/printer-door-open.png'}/></StyledButton>
-
-        </StyledTemp>
-        </>
-        : null}
+        </React.Fragment>
+      ))
+    : null}
+  {showFullReport ? (
+    <>
+      <div key="full-report" ref={componentToPrint}>
+        <NewFullReport aggregate={aggregate} buildings={buildings} />
+      </div>
+      <StyledTemp key="full-report-button">
+        <StyledButton key="print-full" onClick={handlePrint}>
+          <img src={'https://img.icons8.com/ios/32/printer-door-open.png'} />
+        </StyledButton>
+      </StyledTemp>
     </>
+  ) : null}
+</>
+
   )
 }
 

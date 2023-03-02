@@ -73,29 +73,57 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
 
       {
         <>
-        <StyledContainer>
+        {/* <StyledContainer>
           <StyledTable>
             <StyledHeaderContainer>
               <StyleMonthsHeaders>Depto</StyleMonthsHeaders>
-              {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>)}
+              {hardCodeMonths.map((item) => <StyleMonthsHeaders key={item}>{item}</StyleMonthsHeaders>)}
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
             {units.map((unit, index) =>
-              <StyledRowUnit end={unit === 'total'}>
+              <StyledRowUnit key={unit} end={unit === 'total' ? true : false}>
                 {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
                 {unit !== buildingName && rentInfo[unit] &&
                   rentInfo[unit].map((item:any, index:number) => {
                     if (!isNaN(item)) {
-                      return <StyledCellNum>{item}</StyledCellNum>
+                      return <StyledCellNum key={index}>{item}</StyledCellNum>
                     } else {
-                      return <StyledCellHyphen>{item}</StyledCellHyphen>
+                      return <StyledCellHyphen key={index}>{item}</StyledCellHyphen>
                     }
                   }
                 )}
               </StyledRowUnit>
             )}
           </StyledTable>
+          </StyledContainer> */}
+          <StyledContainer>
+            <StyledTable>
+              <thead>
+                <StyledHeaderContainer>
+                  <StyleMonthsHeaders>Depto</StyleMonthsHeaders>
+                  {hardCodeMonths.map((item) => <StyleMonthsHeaders key={item}>{item}</StyleMonthsHeaders>)}
+                  <StyleMonthsHeaders>annual</StyleMonthsHeaders>
+                </StyledHeaderContainer>
+              </thead>
+              <tbody>
+                {units.map((unit, index) =>
+                  <StyledRowUnit key={unit} end={unit === 'total'}>
+                    {unit !== buildingName ? <StyledCellText>{unit} </StyledCellText> : null}
+                    {unit !== buildingName && rentInfo[unit] &&
+                      rentInfo[unit].map((item:any, index:number) => {
+                        if (!isNaN(item)) {
+                          return <StyledCellNum key={index}>{item}</StyledCellNum>
+                        } else {
+                          return <StyledCellHyphen key={index}>{item}</StyledCellHyphen>
+                        }
+                      }
+                    )}
+                  </StyledRowUnit>
+                )}
+              </tbody>
+            </StyledTable>
           </StyledContainer>
+
         </>
       }
 

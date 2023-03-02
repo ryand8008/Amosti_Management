@@ -96,7 +96,7 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
   dataRows.push(totalRow);
   // Move the 'total' value to the first column of the row
   totalRow[0] = { v: 'total' };
-  totalRow.push({ v: '' }); // add an empty cell at the end
+  totalRow.push({ v: '' }); // add an empty cell at the ends
 
 
 
@@ -153,7 +153,7 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
               );
             }) : null}
             {totalObj && totalObj.total ? (
-              <StyledRowUnitTotal key="total">
+              <StyledRowUnitTotal key={"total"}>
                 <StyledCellText>total</StyledCellText>
                 {totalObj.total.map((item) => {
                   if (!isNaN(item)) {
