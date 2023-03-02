@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, lazy, Suspense } from "react";
 import styled, { keyframes } from "styled-components";
-import Report from "./Report/Report";
+// import Report from "./Report/Report";
 
+const Report = lazy(() => import("./Report/Report"));
 
 var xlsx = require("xlsx");
 
@@ -273,7 +274,12 @@ const findGastos = (json)=>{
       : null}
 
       </Window>
-      {parsedInfo && parsedInfo !== '{}' ? <Report aggregate={parsedInfo} load={loadInfo} setLoad={setLoadInfo}/> : null}
+
+      {parsedInfo && parsedInfo !== '{}' ?
+        <Suspense fallback={<div>Loading Report...</div>}>
+          <Report aggregate={parsedInfo} load={loadInfo} setLoad={setLoadInfo}/>
+        </Suspense>
+        : null}
     </>
   )
 }
