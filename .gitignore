@@ -4,3 +4,5 @@ notepad.txt
 BuildingList.tsx
 .eslintrc.js
 copy.txt
+.vercel
+/api
