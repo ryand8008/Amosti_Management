@@ -13,15 +13,6 @@ declare module 'react' {
   }
 }
 
-interface Testing {
-  testing: any
-}
-
-// TODO: create a way to show the uploaded files => DONE
-// TODO: delete a file and information => DONE
-// TODO: batch add files
-// TODO: Handle multiple years
-
 export const Upload = () => {
   const { aggregate, setAggregate} = useContext(AggregateContext)
 
@@ -92,7 +83,7 @@ export const Upload = () => {
           }
         }
       } catch {
-        console.log('ERROR: UPLOAD ISSUE')
+        console.log('ERROR: UPLOAD ISSUE CHECK YOUR FILES')
       }
     })
   }
@@ -210,7 +201,6 @@ const findGastos = (json)=>{
       return copy;
     })
 
-
     // needed to reset and re-render based off new raw data
     setParsedInfo({})
 
@@ -265,17 +255,6 @@ const findGastos = (json)=>{
   )
 }
 
-const UploadText = styled.p`
-  font-size: 1rem;
-  color: #aaa;
-`;
-
-const UploadForm = styled.form`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-`;
-
 const UploadLabel = styled.label`
   display: inline-block;
   padding: 0.5rem 1rem;
@@ -293,16 +272,6 @@ const UploadLabel = styled.label`
     position: absolute;
     left: -99999px;
   }
-`;
-
-const UploadContainer = styled.div`
-  width: 100%;
-  height: 10rem;
-  border: 2px dashed #aaa;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 const StyledFileDiv = styled.div`
@@ -370,8 +339,6 @@ const DragBox = styled.div`
   border-radius: 6px;
   flex-direction: column;
   height: fit-content;
-  // padding-left: 5px;
-  // padding-right: 5px;
   padding: 16px;
 `
 
