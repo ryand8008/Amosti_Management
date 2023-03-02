@@ -34,8 +34,9 @@ export class Building {
 
   getUnits(aggregate: any) {
     let temp: string[] = []
-    if (aggregate[this.buildingName][this.year]) {
-      aggregate[this.buildingName][this.year][Object.keys(aggregate[this.buildingName][this.year])[0]]['unitInfo'].map((item, index) => {
+    const tempYear = this.getAllYears(aggregate)
+    if (aggregate[this.buildingName][tempYear[0]]) {
+      aggregate[this.buildingName][tempYear[0]][Object.keys(aggregate[this.buildingName][tempYear[0]])[0]]['unitInfo'].map((item, index) => {
           temp.push(item['Depto'])
       })
       temp.splice(temp.length-1, 1)

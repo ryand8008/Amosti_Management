@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useMemo, useState } from "react";
 import styled, { keyframes } from "styled-components";
 import { AggregateContext } from "./context/ProjectContext";
+import Report from "./Report/Report";
 
 
 var xlsx = require("xlsx");
@@ -28,12 +29,15 @@ export const Upload = () => {
    // SHOW MORE FILES
    const [showAll, setShowAll] = useState(false)
 
+   // Force reload
+   const [loadInfo, setLoadInfo] = useState<boolean>(false)
+
   useEffect(() => {
     if (splitExcel !== undefined && Object.keys(splitExcel).length > 0) {
       splittingFunction(splitExcel);
-      setAggregate(parsedInfo);
     }
-  }, [JSON.stringify(parsedInfo), JSON.stringify(aggregate), JSON.stringify(splitExcel), files.length]);
+}, [JSON.stringify(parsedInfo), JSON.stringify(splitExcel), files.length]);
+
 
   // parses aggregate information
   const splittingFunction = async (splitExcel) => {
@@ -174,37 +178,67 @@ const findGastos = (json)=>{
   }
 
   const handleRemoveFile = (file) => {
+    const year = splitExcel[file]['unitInfo'][0]['Año'];
+    const month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
+    const buildingName = splitExcel[file]['unitInfo'][0]['Depto'];
 
-    let year = splitExcel[file]['unitInfo'][0]['Año'];
-    let month = splitExcel[file]['unitInfo'][0]['Mes'].toLowerCase();
-    let buildingName = splitExcel[file]['unitInfo'][0]['Depto']
+    // Remove file from other state variables
+    setFiles((current) => {
+      const copy = [...current];
+      copy.splice(copy.indexOf(file), 1);
+      return copy;
+    });
 
-    if (JSON.stringify(aggregate) === '{}') {
-      delete parsedInfo[buildingName][year][month]
-      setAggregate(parsedInfo)
-    }
-    setAggregate(current => {
-      const copy = {...current};
-      delete copy[buildingName][year][month]
-      return copy
-    })
-
-    setFiles( current => {
-      const copy = [...current]
-      copy.splice(copy.indexOf(file), 1)
-      return copy
-    })
-
-    setSplitExcel(current => {
-      const copy = {...current};
+    setSplitExcel((current) => {
+      const copy = { ...current };
       delete copy[file];
       return copy;
-    })
+    });
 
-    // needed to reset and re-render based off new raw data
-    setParsedInfo((prevState) => {})
+    setParsedInfo((prevState) => {
+      const newParsedInfo = { ...prevState };
 
-  }
+      if (JSON.stringify(newParsedInfo[buildingName]) === '{}') {
+        const fileInput = document.getElementById('uploads') as HTMLInputElement;
+        if (fileInput) {
+          fileInput.value = ''
+        }
+        return {};
+      }
+      if (newParsedInfo[buildingName][year] && newParsedInfo[buildingName][year][month]) {
+
+        delete newParsedInfo[buildingName][year][month];
+        let newParseTest = removeEmptyProps(newParsedInfo)
+
+        return newParseTest;
+      }
+
+      if (files.length === 1) {
+        return {}
+      } else {
+
+        return parsedInfo;
+      }
+    });
+    setLoadInfo(true)
+  };
+
+  const removeEmptyProps = (obj) => {
+    Object.keys(obj).forEach((key) => {
+      if (obj[key] && typeof obj[key] === 'object') {
+        removeEmptyProps(obj[key]);
+        if (Object.keys(obj[key]).length === 0) {
+          delete obj[key];
+        }
+      } else if (JSON.stringify(obj[key]) === '{}') {
+        delete obj[key];
+      }
+    });
+    return obj;
+  };
+
+
+
 
   const handleDeleteAll = (e) => {
     e.preventDefault()
@@ -252,6 +286,7 @@ const findGastos = (json)=>{
       : null}
 
       </Window>
+      {parsedInfo && parsedInfo !== '{}' ? <Report aggregate={parsedInfo} load={loadInfo} setLoad={setLoadInfo}/> : null}
     </>
   )
 }

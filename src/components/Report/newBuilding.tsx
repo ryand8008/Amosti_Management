@@ -19,15 +19,26 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
       return Object.keys(aggregate[buildingName]).sort()
     }
     return []
-  }, [aggregate])
+  }, [aggregate, buildingName])
 
-  const [selectedYear, setSelectedYear] = useState(years[0])
+ const [selectedYear, setSelectedYear] = useState(years[0])
+
+  useEffect(() => {
+    if (years.indexOf(selectedYear) === -1) {
+      setSelectedYear(years[0])
+    }
+  }, [aggregate, years, selectedYear])
 
   const information = new Building(buildingName, selectedYear)
-  let units = information.getUnits(aggregate)
-  units.push('total')
-  const rent = information.getTotalRent(aggregate)
-  const rentInfo = rent[buildingName][selectedYear]['units']
+  let units;
+  let rentInfo;
+  if (information.isValid(aggregate)) {
+    units = information.getUnits(aggregate)
+    units.push('total')
+    const rent = information.getTotalRent(aggregate)
+    rentInfo = rent[buildingName][selectedYear]['units']
+
+  }
 
   const handleClickYear = (e, num) => {
     e.preventDefault()
@@ -37,6 +48,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
   }
 
   return (
+   <> { information.isValid(aggregate) ?
     <>
       <StyledTitle>{`building: ${buildingName}`}</StyledTitle>
       {
@@ -88,6 +100,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
       }
 
     </>
+  :null}</>
   )
 }
 

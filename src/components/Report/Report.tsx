@@ -9,8 +9,7 @@ interface Button {
   active: boolean
 }
 
-const Report = () => {
-  const { aggregate } = useContext(AggregateContext)
+const Report = ({aggregate, load, setLoad}) => {
 
   // boolean to show individual Report
   const [showIndividual, setShowIndividual] = useState(false)
@@ -32,6 +31,11 @@ const Report = () => {
   }, [aggregate])
 
   useEffect(() => {
+    if (load) {
+      setShowFullReport(false);
+      setShowIndividual(false);
+      setLoad(false)
+    }
     if (aggregate && JSON.stringify(aggregate) === '{}' ) {
       setShowFullReport(false);
       setShowIndividual(false);
@@ -62,7 +66,7 @@ const Report = () => {
             <NewBuilding aggregate={aggregate} buildingName={building} />
           </div>
           <StyledTemp>
-            <StyledButton onClick={handlePrint}><img src={'https://img.icons8.com/ios/32/printer-door-open.png'}/>{building}</StyledButton>
+            {<StyledButton onClick={handlePrint}><img src={'https://img.icons8.com/ios/32/printer-door-open.png'}/>{building}</StyledButton>}
           </StyledTemp>
         </>
       ) : null}

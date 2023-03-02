@@ -11,9 +11,9 @@ export const App = () => {
       <Header />
       <AggregateProvider>
         <Upload />
-        <Suspense fallback={<div>Loading Report...</div>}>
+        {/* <Suspense fallback={<div>Loading Report...</div>}>
           <Report />
-        </Suspense>
+        </Suspense> */}
       </AggregateProvider>
     </>
   );
