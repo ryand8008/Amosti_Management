@@ -2,6 +2,7 @@
 
 const path = require("path");
 const CompressionPlugin = require("compression-webpack-plugin");
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -37,6 +38,7 @@ module.exports = {
       threshold: 10240,
       minRatio: 0.8,
     }),
+    new CleanWebpackPlugin(),
   ],
   optimization: {
     minimize: false,
