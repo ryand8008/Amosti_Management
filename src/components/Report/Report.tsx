@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import ReactToPrint, { useReactToPrint } from "react-to-print";
-import { AggregateContext } from "../context/ProjectContext";
 import { NewBuilding } from "./newBuilding";
 import { NewFullReport } from "./NewFullReport";
 

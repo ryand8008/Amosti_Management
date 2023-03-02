@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { keyframes } from "styled-components";
-import { AggregateContext } from "./context/ProjectContext";
 import Report from "./Report/Report";
 
 
@@ -15,22 +14,13 @@ declare module 'react' {
 }
 
 export const Upload = () => {
-  const { aggregate, setAggregate} = useContext(AggregateContext)
 
   // testing SPLIT EXCEL
   const [splitExcel, setSplitExcel] = useState<any>({})
-
-  // display file names
   const [files, setFiles] = useState<string[]>([])
-
-  // // checking aggregate
-   const [parsedInfo, setParsedInfo] = useState<any>({})
-
-   // SHOW MORE FILES
-   const [showAll, setShowAll] = useState(false)
-
-   // Force reload
-   const [loadInfo, setLoadInfo] = useState<boolean>(false)
+  const [parsedInfo, setParsedInfo] = useState<any>({})
+  const [showAll, setShowAll] = useState(false)
+  const [loadInfo, setLoadInfo] = useState<boolean>(false)
 
   useEffect(() => {
     if (splitExcel !== undefined && Object.keys(splitExcel).length > 0) {
@@ -38,8 +28,6 @@ export const Upload = () => {
     }
 }, [JSON.stringify(parsedInfo), JSON.stringify(splitExcel), files.length]);
 
-
-  // parses aggregate information
   const splittingFunction = async (splitExcel) => {
 
     const filesNames = Object.keys(splitExcel)
@@ -244,7 +232,6 @@ const findGastos = (json)=>{
     e.preventDefault()
     setParsedInfo({})
     setFiles([])
-    setAggregate({})
     setSplitExcel({})
     setShowAll(false)
     const fileInput = document.getElementById('uploads') as HTMLInputElement;
