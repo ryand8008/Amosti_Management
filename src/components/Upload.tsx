@@ -241,6 +241,16 @@ const findGastos = (json)=>{
     }
   }
 
+  const goToBuilding = (e, building) => {
+    e.preventDefault();
+    console.log(building, 'this is building?')
+    const targetElement = document.getElementById(building) as HTMLElement;
+    if (targetElement) {
+      console.log(targetElement, 'target?')
+      targetElement.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <>
       <Window>

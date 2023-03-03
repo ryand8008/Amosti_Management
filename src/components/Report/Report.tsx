@@ -77,7 +77,7 @@ const Report = ({aggregate, load, setLoad}) => {
   {showIndividual
     ? buildings.map((building, index) => (
         <React.Fragment key={index}>
-          <div key={index} ref={componentToPrint}>
+          <div id={'#`${building}`'}key={index} ref={componentToPrint}>
             <NewBuilding aggregate={aggregate} buildingName={building} />
           </div>
           <StyledTemp key={`button-${index}`}>

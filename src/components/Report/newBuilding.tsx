@@ -50,7 +50,7 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
   return (
    <> { information.isValid(aggregate) ?
     <>
-      <StyledTitle>{`building: ${buildingName}`}</StyledTitle>
+      <StyledTitle id={`#${buildingName}`}>{`building: ${buildingName}`}</StyledTitle>
       {
         <StyledYearArrows>
           { years.indexOf(selectedYear) > 0 ? (
