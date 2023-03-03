@@ -131,21 +131,24 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
         <>
         <StyledContainer>
           <StyledTable>
+            <thead>
             <StyledHeaderContainer>
               <StyleMonthsHeaders>Edificio</StyleMonthsHeaders>
-              {hardCodeMonths.map((item) => <StyleMonthsHeaders>{item}</StyleMonthsHeaders>)}
+              {hardCodeMonths.map((item, index) => <StyleMonthsHeaders key={index}>{item}</StyleMonthsHeaders>)}
               <StyleMonthsHeaders>annual</StyleMonthsHeaders>
             </StyledHeaderContainer>
+            </thead>
+            <tbody>
             {totalObj ? Object.keys(totalObj).map((item, index) => {
               if (item === 'total') return null; // skip rendering the 'total' row here
               return (
                 <StyledRowUnit key={item}>
                   <StyledCellText>{item}</StyledCellText>
-                  {totalObj[item].map((item) => {
+                  {totalObj[item].map((item, index2) => {
                     if (!isNaN(item)) {
-                      return <StyledCellNum>{item}</StyledCellNum>
+                      return <StyledCellNum key={index2}>{item}</StyledCellNum>
                     } else {
-                      return <StyledCellHyphen>{item}</StyledCellHyphen>
+                      return <StyledCellHyphen key={index2}>{item}</StyledCellHyphen>
                     }
                   }
                   )}
@@ -155,16 +158,17 @@ export const NewFullReport = ({aggregate, buildings}: NewReportProps) => {
             {totalObj && totalObj.total ? (
               <StyledRowUnitTotal key={"total"}>
                 <StyledCellText>total</StyledCellText>
-                {totalObj.total.map((item) => {
+                {totalObj.total.map((item, index) => {
                   if (!isNaN(item)) {
-                    return <StyledCellNum>{item}</StyledCellNum>
+                    return <StyledCellNum key={index}>{item}</StyledCellNum>
                   } else {
-                    return <StyledCellHyphen>{item}</StyledCellHyphen>
+                    return <StyledCellHyphen key={index}>{item}</StyledCellHyphen>
                   }
                 }
                 )}
               </StyledRowUnitTotal>
             ) : null}
+            </tbody>
 
           </StyledTable>
           </StyledContainer>

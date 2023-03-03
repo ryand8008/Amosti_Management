@@ -101,13 +101,13 @@ export const NewBuilding = ({aggregate, buildingName}: NewBuildingProps) => {
                 );
               })}
               {units && rentInfo && rentInfo.total ? (
-              <StyledRowUnitTotal key={"total"}>
+              <StyledRowUnitTotal key={'total'}>
                 <StyledCellText>total</StyledCellText>
-                {rentInfo.total.map((item) => {
+                {rentInfo.total.map((item, index) => {
                   if (!isNaN(item)) {
-                    return <StyledCellNum>{item}</StyledCellNum>
+                    return <StyledCellNum key={index}>{item}</StyledCellNum>
                   } else {
-                    return <StyledCellHyphen>{item}</StyledCellHyphen>
+                    return <StyledCellHyphen key={index}>{item}</StyledCellHyphen>
                   }
                 }
                 )}
